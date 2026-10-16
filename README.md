@@ -62,7 +62,9 @@ The baseline helper returned **zero candidates**; this finding came from ChatNoi
 
 A second real-app review covered [Roadster Reference](docs/roadster-evaluation.md), a Python-built static web app. It produced **no confirmed vulnerabilities**: 9 existing tests, the 17-page build and 6 local security boundary controls passed. Four review hypotheses were dismissed with evidence; no ChatNoir code fix was needed. This bounded negative result is not a security certification.
 
-A [backend/auth/database evaluation](docs/backend-evaluation.md) then exercised a private FastAPI app with real service-token/JWT verification and fresh PostgreSQL. **18 API integration checks passed**, covering invalid credentials, JWT bypass attempts, SQL injection text and worker workspace consistency. No vulnerability or new ChatNoir defect was confirmed in that scope. Browser sign-in and complete customer authorization remain untested.
+A [backend/auth/database evaluation](docs/backend-evaluation.md) then exercised a private FastAPI app with real service-token/JWT verification and fresh PostgreSQL. **18 API integration checks passed**, covering invalid credentials, JWT bypass attempts, SQL injection text and worker workspace consistency. No vulnerability or new ChatNoir defect was confirmed in that scope. That run excluded browser sign-in and complete customer authorization.
+
+A [browser/customer authorization follow-up](docs/browser-auth-evaluation.md) completed two local email-code sign-ins and **26 authorization assertions** across isolated browser sessions. It reproduced **one low-severity authentication finding**, retained privately pending app remediation. Selected cross-user reads/writes held; production Clerk/Google sign-in and complete customer isolation are not established. No new ChatNoir runtime defect surfaced.
 
 ## Install where you build
 

@@ -1,0 +1,77 @@
+{
+  "format": "chatnoir.browser-auth-evaluation/v1",
+  "observed": "2026-10-16",
+  "chatnoir_version": "0.1.2",
+  "surface": "Codex desktop review with Playwright CLI and two isolated headless Chrome browser sessions",
+  "target": {
+    "kind": "Existing private web application with customer sign-in, workspace-scoped authorization and PostgreSQL",
+    "identity_revision_source_and_raw_traces": "Retained locally; no private app source or endpoint names published",
+    "source_changed": false,
+    "included_file_hashes_unchanged": true
+  },
+  "browser": {
+    "version": "155.0.8059.84",
+    "successful_ui_signins": 2,
+    "flow": "Actual NextAuth email-code forms and session cookies; delivery used the app development simulation",
+    "session_or_auth_verifier_mocked": false,
+    "dependencies": {
+      "next": "16.3.6",
+      "next-auth": "5.0.0-beta.32",
+      "@prisma/client": "6.4.1",
+      "react": "18.3.1",
+      "jose": "6.2.2"
+    },
+    "prisma_generated_schema_matched_source": true
+  },
+  "baseline": {
+    "included_files": 708,
+    "skipped_files": 126,
+    "skip_reasons": {
+      "missing_sparse_paths": 100,
+      "binary_files": 25,
+      "excluded_credential_files": 1
+    },
+    "heuristic_candidates": 104,
+    "candidate_disposition": "Retained as needs_review outside the declared browser/customer auth focus; not adjudicated as vulnerabilities"
+  },
+  "review": {
+    "confirmed_vulnerabilities": 1,
+    "confirmed_severity": "low",
+    "finding_details": "Retained locally while the app finding is unfixed; public aggregate excludes mechanism, source locations and reproducer",
+    "dismissed_flow_hypotheses": 3,
+    "chatnoir_implementation_defects_found": 0,
+    "app_fix_made": false
+  },
+  "checks": {
+    "core_authorization_assertions_passed": 26,
+    "bidirectional_own_data_controls": "passed",
+    "foreign_team_read_status": 403,
+    "foreign_workspace_switch_status": 403,
+    "foreign_member_role_write_status": 404,
+    "foreign_record_selector": "returned only the caller records, never the other user sentinel",
+    "legitimate_own_member_writes": "200; restored afterward",
+    "anonymous_or_tampered_session_read_status": 401,
+    "logout": "UI sign-out cleared the signed-out user session and protected data returned 401; other browser remained signed in",
+    "final_database_state": "expected membership roles and sentinel record identities retained",
+    "finding_validation": "Local real HTTP authentication boundary failure reproduced; full conditions and raw outcome retained locally",
+    "report_validation_markdown_sarif": "passed"
+  },
+  "containment": {
+    "database": "Fresh PostgreSQL with the full app schema and only synthetic users/workspaces/records",
+    "dependency_installation": false,
+    "live_mail_or_model_credentials": false,
+    "browser_external_requests": "blocked",
+    "final_server_network_guard": "restricted to isolated app/database ports",
+    "cleanup_complete": true
+  },
+  "limitations": [
+    "Local development email-code flow; no live mail delivery or production Clerk/Google/OAuth sign-in.",
+    "A confirmed finding is not a production exposure or impact claim; details await app remediation.",
+    "Selected customer team/record/switch/member-role paths were tested; not every resource, invitation, billing or outbound path.",
+    "Stolen pre-logout cookie replay/global revocation was not tested.",
+    "104 broader baseline leads remain needs_review; sparse-source skips are explicit.",
+    "Initial runtime/plan fixture mismatches were corrected before final authorization assertions.",
+    "Private source makes this public summary independently unreproducible; not a blind benchmark or security certification.",
+    "No new ChatNoir runtime defect was found, so no runtime patch or version bump was needed."
+  ]
+}
