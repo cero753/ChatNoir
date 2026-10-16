@@ -60,6 +60,8 @@ The same local 1 MiB ASCII request exercised the actual create route, configured
 
 The baseline helper returned **zero candidates**; this finding came from ChatNoir's agent-guided source review and local validation. Five suspected issues were dismissed. Body cancellation was verified with local `Request` streams; no oversized production request or memory-exhaustion test was attempted. Practical production denial-of-service impact was not established. [Full case, revisions and verification commands →](docs/separate-app-evaluation.md)
 
+A second real-app review covered [Roadster Reference](docs/roadster-evaluation.md), a Python-built static web app. It produced **no confirmed vulnerabilities**: 9 existing tests, the 17-page build and 6 local security boundary controls passed. Four review hypotheses were dismissed with evidence; no ChatNoir code fix was needed. This bounded negative result is not a security certification.
+
 ## Install where you build
 
 **Claude Code plugin**
