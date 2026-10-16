@@ -17,6 +17,10 @@ Observed October 16, 2026 on macOS arm64. This is bounded release evidence, not 
 
 The [real-project self-audit](real-project-audit.md) reviewed ChatNoir's shipped helper, installer and report boundaries. Source review found and harmless local execution reproduced Git filter execution during dirty-state checks and imported Markdown injection. Both were fixed. The updated suite passed 42 tests; actual repository inventory/scan, report validation, Markdown/SARIF export, demos and manifest validation succeeded. The [structured verification](e2e/real-project-review.json) preserves source hashes, prerequisites, baseline dispositions and remaining gaps. This is an owner self-review, not a blind or external audit.
 
+## Separate real application
+
+A subsequent [separate-app evaluation](separate-app-evaluation.md) used a disposable clone of a real TypeScript/Next.js application. ChatNoir's installed baseline returned zero leads; its source-guided workflow confirmed one low-severity code-level finding and dismissed five candidates. Actual route/helper validation and 18 selected application control tests ran locally. The complete report passed validation, Markdown rendering and SARIF export. Target-specific details remain local pending maintainer review. No new ChatNoir implementation defect or runtime patch resulted. This is distinct from the self-audit and demo fixtures.
+
 ## Native provider sessions
 
 The [end-to-end report](harness-e2e.md) and [normalized evidence](e2e/results.json) record actual CLI model sessions. Codex and Cursor each loaded ChatNoir natively, found/reproduced the three known HTTP-fixture vulnerabilities, and dismissed the constant-expression negative control. Codex then generated and verified a patch; an independent loopback HTTP probe passed all 8 checks against that exact patched source. Cursor's provider blocked remediation. Claude's model request was blocked by authentication, although its native plugin was discovered. These are distinct outcomes, not three complete passes.

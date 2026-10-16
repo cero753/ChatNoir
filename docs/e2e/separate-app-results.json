@@ -1,0 +1,38 @@
+{
+  "format": "chatnoir.separate-app-evaluation/v1",
+  "observed": "2026-10-16",
+  "chatnoir_version": "0.1.2",
+  "surface": "Current Codex desktop chat using installed ChatNoir skill and helper",
+  "target": {
+    "kind": "Separate publicly distributed TypeScript/Next.js web application",
+    "identity": "Retained locally pending maintainer review of an unfixed finding",
+    "tracked_source_changed": false
+  },
+  "baseline": {
+    "included_files": 115,
+    "skipped_files": 3,
+    "candidates": 0,
+    "language_limit": "JS/TS lexical dynamic-evaluation check, not a semantic security scanner"
+  },
+  "agent_workflow": {
+    "confirmed_code_level_findings": 1,
+    "severity": "low",
+    "dismissed_candidates": 5,
+    "method": "Source review and actual route/helper invocations with bounded local Request streams"
+  },
+  "checks": {
+    "selected_application_tests_passed": 18,
+    "chatnoir_report_validate_render_sarif": "passed",
+    "target_specific_boundary_observations": "Retained locally; a positive control passed and one code-level finding was reproduced"
+  },
+  "chatnoir_implementation_defects_found": 0,
+  "limitations": [
+    "Not a blind or independent evaluation.",
+    "No production request, memory-exhaustion attempt, live model generation or external database call.",
+    "Actual route functions were invoked locally; full deployed HTTP behavior was not tested.",
+    "Effective upstream limits and production availability impact are unverified.",
+    "Reused installed dependencies; selected versions matched the public lockfile.",
+    "Full target-specific report and reproducer remain local while the finding is unfixed.",
+    "No runtime change or new release version was required by this evaluation."
+  ]
+}

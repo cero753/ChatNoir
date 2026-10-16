@@ -149,6 +149,6 @@ ChatNoir does not certify an app as secure. It has no comparative benchmark or e
 python3 -m unittest discover -s tests -v
 ```
 
-[Real-project self-audit and fixes →](docs/real-project-audit.md) · [Validation evidence →](docs/validation.md) · [Contributing →](CONTRIBUTING.md) · [Report a vulnerability privately →](SECURITY.md) · [MIT license →](LICENSE)
+[Separate-app evaluation →](docs/separate-app-evaluation.md) · [Real-project self-audit and fixes →](docs/real-project-audit.md) · [Validation evidence →](docs/validation.md) · [Contributing →](CONTRIBUTING.md) · [Report a vulnerability privately →](SECURITY.md) · [MIT license →](LICENSE)
 
 *Chat noir* is French for *black cat*. Quiet, watchful, and curious about the places a boundary can break.
