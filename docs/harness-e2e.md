@@ -32,6 +32,10 @@ Retained final reports: [Codex vulnerable-app review](e2e/codex-review.json), [C
 - Cursor's remediation provider refusal is retained as a blocked result. It was not retried through altered prompts or another model to evade the restriction. A separate static review of the already-fixed control is a different, safer test and does not count as Cursor-generated remediation.
 - Claude initially returned a structured authentication error despite a zero process exit code and a cached “logged in” status. A follow-up review request on October 16 also returned HTTP 401 with `is_error: true`, used zero model tokens and left the fixture unchanged. Valid model access was unavailable, so review and remediation remain blocked. Native plugin discovery is established; a successful model session is not. CLI exit status alone is not a sufficient test verdict.
 
+## Desktop follow-up
+
+A subsequent [desktop/IDE test](desktop-e2e.md) verified Cursor's project skill picker, review and remediation using its visible default IDE model, Cursor Grok 4.6 Medium. It also exercised the installed skill in the current Codex desktop chat, with the self-UI automation limit stated explicitly. These are separate runs; the earlier CLI provider refusal and Claude access block remain recorded above.
+
 ## Reproduce
 
 Install ChatNoir using the [host-specific instructions](compatibility.md), make a disposable copy of `examples/http-app/vulnerable`, and provide the intended contracts from its README. Ask the host to load ChatNoir natively, review the app read-only, and distinguish source evidence from runtime observations. Keep the probe outside the agent's target while reviewing.

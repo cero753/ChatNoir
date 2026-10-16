@@ -1,0 +1,111 @@
+{
+  "format": "chatnoir.desktop-e2e/v1",
+  "observed": "2026-10-16",
+  "fixture": "examples/http-app",
+  "scope": "Known synthetic cases; integration regression, not blind review or a general detection benchmark.",
+  "tested_plugin_version": "0.1.1",
+  "codex_desktop": {
+    "app_version": "26.1013.31256 (20586)",
+    "surface": "Current Codex desktop chat; no new chat was created.",
+    "native_skill_available": true,
+    "skill_resource": "chatnoir-marketplace/chatnoir/0.1.1/skills/chatnoir/SKILL.md",
+    "references_loaded": [
+      "review.md",
+      "evidence.md",
+      "remediation.md"
+    ],
+    "baseline_executed": true,
+    "confirmed_cwes": [
+      "CWE-89",
+      "CWE-639",
+      "CWE-22"
+    ],
+    "constant_eval_dismissed": true,
+    "input_app_sha256": "a838a50d869905cc446cffe7051ea8bda181eb7c6ac42d9e6bfa172cf4b860b0",
+    "before_http_checks": {
+      "sql_injection_blocked": false,
+      "cross_user_invoice_blocked": false,
+      "path_traversal_blocked": false,
+      "legitimate_catalog": true,
+      "legitimate_invoice": true,
+      "unauthenticated_invoice_blocked": true,
+      "legitimate_download": true,
+      "health": true
+    },
+    "remediation": {
+      "status": "passed",
+      "changed_tracked_files": [
+        "app.py"
+      ],
+      "patch": "codex-desktop-fix.diff",
+      "after_http_checks": {
+        "sql_injection_blocked": true,
+        "cross_user_invoice_blocked": true,
+        "path_traversal_blocked": true,
+        "legitimate_catalog": true,
+        "legitimate_invoice": true,
+        "unauthenticated_invoice_blocked": true,
+        "legitimate_download": true,
+        "health": true
+      },
+      "patched_app_sha256": "91345ba632d43515d1366e3b1235e7c25e474de43406e7513ef65de9351752e6",
+      "note": "Executed by the existing owner chat with prior fixture knowledge; no independent reviewer claim."
+    },
+    "gui_automation": "blocked_by_computer_use_policy",
+    "fresh_install_and_picker": "not_verified",
+    "limitations": [
+      "Existing owner chat had prior fixture knowledge.",
+      "No fresh desktop install or GUI interaction was verified by automation.",
+      "Current chat model identity was not independently inspected."
+    ]
+  },
+  "cursor_ide": {
+    "app_version": "3.24.12",
+    "model": "Cursor Grok 4.6 Medium (visible IDE selection; no model change)",
+    "installation": "Project-local .cursor/skills/chatnoir via scripts/install.py",
+    "native_skill_picker": true,
+    "native_skill_loaded": true,
+    "references_loaded": [
+      "review.md",
+      "evidence.md",
+      "remediation.md"
+    ],
+    "baseline_executed": true,
+    "review_source_unchanged": true,
+    "confirmed_cwes": [
+      "CWE-89",
+      "CWE-639",
+      "CWE-22"
+    ],
+    "constant_eval_dismissed": true,
+    "validation": "Actual in-memory dispatch calls to app implementation, observed in IDE command output.",
+    "input_app_sha256": "a838a50d869905cc446cffe7051ea8bda181eb7c6ac42d9e6bfa172cf4b860b0",
+    "remediation": {
+      "status": "passed",
+      "changed_tracked_files": [
+        "app.py"
+      ],
+      "patch": "cursor-ide-fix.diff",
+      "agent_reported_wsgi_checks_passed": 13,
+      "independent_http_checks": {
+        "sql_injection_blocked": true,
+        "cross_user_invoice_blocked": true,
+        "path_traversal_blocked": true,
+        "legitimate_catalog": true,
+        "legitimate_invoice": true,
+        "unauthenticated_invoice_blocked": true,
+        "legitimate_download": true,
+        "health": true
+      },
+      "patched_app_sha256": "e7b82d4b74656595a500eb7dbbb32eba7954e9cb8f6a1fda1801c27c2579f5cf"
+    },
+    "limitations": [
+      "Project skill integration tested; native marketplace/plugin installation not tested.",
+      "Earlier Cursor CLI Auto remediation refusal remains a separate blocked result."
+    ],
+    "screenshots": [
+      "cursor-ide-skill-picker.jpg",
+      "cursor-ide-fix-verification.jpg"
+    ]
+  }
+}

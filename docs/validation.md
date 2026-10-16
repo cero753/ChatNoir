@@ -17,12 +17,16 @@ Observed October 16, 2026 on macOS arm64. This is bounded release evidence, not 
 
 The [end-to-end report](harness-e2e.md) and [normalized evidence](e2e/results.json) record actual CLI model sessions. Codex and Cursor each loaded ChatNoir natively, found/reproduced the three known HTTP-fixture vulnerabilities, and dismissed the constant-expression negative control. Codex then generated and verified a patch; an independent loopback HTTP probe passed all 8 checks against that exact patched source. Cursor's provider blocked remediation. Claude's model request was blocked by authentication, although its native plugin was discovered. These are distinct outcomes, not three complete passes.
 
+## Desktop and IDE sessions
+
+The [desktop report](desktop-e2e.md) records a Cursor 3.24.12 IDE run through the native `/chatnoir` skill picker with the visible default model, Cursor Grok 4.6 Medium. It loaded the references/helper, reproduced all three flaws, dismissed constant `eval`, generated a patch and reported 13 passing in-memory WSGI checks. A separate evaluator HTTP probe passed all 8 checks against that exact patch. The current Codex desktop chat also used its natively available installed skill and verified a disposable patch with 8 HTTP checks; this owner chat had prior fixture knowledge. Codex self-UI automation was blocked, so no fresh install/picker screen is claimed. See [normalized desktop results](e2e/desktop-results.json). No ChatNoir code change was required by these tests.
+
 ## Independent skill exercise
 
 A fresh read-only agent used the skill and raw fixtures to inspect the SQL and constant-evaluation cases. It observed the SQL boundary failure with an alternate crafted input, retained the absence of application-level exposure evidence, and dismissed the literal-only expression. It also assessed “rename a button” as outside the skill's trigger. The unrelated-request result was a manual contract assessment, not an empirical routing test in every host.
 
 ## Not established
 
-Full Claude model-session behavior and Cursor-generated remediation; desktop UI discovery; Windows/Linux execution; detection accuracy on unseen applications; comparative performance; real customer outcomes; and official marketplace approval are not established by these checks. The tests run under the available local Python version, not a multi-version matrix. Source workflows cover more security topics than the five deterministic lead rules; those workflows need the host model's source inspection and judgment.
+Full Claude model-session behavior; remediation in the earlier Cursor CLI Auto session; fresh Codex desktop install/picker screens; Cursor IDE marketplace/plugin installation; Windows/Linux execution; detection accuracy on unseen applications; comparative performance; real customer outcomes; and official marketplace approval are not established by these checks. The tests run under the available local Python version, not a multi-version matrix. Source workflows cover more security topics than the five deterministic lead rules; those workflows need the host model's source inspection and judgment.
 
 Reproduce locally with the commands above. Inspect the code and pinned release before using it against sensitive projects. No new CI workflow is required to run this suite.

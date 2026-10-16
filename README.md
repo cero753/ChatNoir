@@ -69,7 +69,7 @@ For a local plugin session with Cursor CLI:
 cursor-agent --plugin-dir /absolute/path/to/ChatNoir
 ```
 
-For the IDE, use the skill installer below, or copy the full plugin into `~/.cursor/plugins/local/chatnoir` and reload Cursor if local imports are permitted. The package includes Cursor's native manifest; marketplace submission remains separate.
+For the IDE, use the project skill installer below, open that project, then type `/chatnoir` in a new agent conversation. This path was exercised through the native skill picker, review and remediation in Cursor 3.24.12. [Desktop test evidence →](docs/desktop-e2e.md) The package also includes Cursor's native plugin manifest; IDE marketplace/plugin installation remains unverified.
 
 **Codex, Cursor, Claude Code, or another Agent Skills host**
 
