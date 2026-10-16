@@ -5,7 +5,7 @@ ChatNoir ships a portable Agent Plugins 1.0 manifest, native Claude/Codex compat
 | Host | Distribution | Evidence / limit |
 |---|---|---|
 | Codex | Repository marketplace, compatibility manifest, or `.agents/skills/chatnoir/` | Native CLI 0.157.0 model sessions loaded the plugin, found/reproduced all 3 known HTTP-fixture flaws, and produced a patch that passed an independent HTTP check. No desktop UI install test. |
-| Claude Code | `.claude-plugin` marketplace/plugin or `.claude/skills/chatnoir/` | CLI 2.1.42 validated and discovered the native plugin. A model request was attempted but authentication blocked execution; full behavior remains unverified. |
+| Claude Code | `.claude-plugin` marketplace/plugin or `.claude/skills/chatnoir/` | CLI 2.1.42 validated and discovered the native plugin. Initial and follow-up model requests failed authentication; valid model access was unavailable. Detection and remediation remain unverified. |
 | Cursor | Native `.cursor-plugin` or portable manifest; project skill | Native CLI sessions loaded the skill and found/reproduced all 3 known flaws. The provider blocked remediation; it is not verified. No IDE install test. |
 | VS Code | Through a compatible agent extension | VS Code itself is an editor, not a universal skill/plugin host. No blanket extension compatibility claim. |
 | Other Agent Skills hosts | Copy `skills/chatnoir/` into the host's supported skill root | Must support `SKILL.md`, relative references, file inspection and, for helpers, Python/terminal access. Not individually verified. |

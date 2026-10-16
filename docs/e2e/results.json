@@ -66,7 +66,14 @@
       "native_plugin_discovered": true,
       "model_execution": "authentication_blocked",
       "review": "not_verified",
-      "remediation": "not_verified"
+      "remediation": "not_verified",
+      "follow_up": {
+        "observed": "2026-10-16",
+        "status": "access_blocked",
+        "result": "Review request returned HTTP 401 with is_error true; no model tokens were used. Valid model access was unavailable.",
+        "review_source_unchanged": true,
+        "detection_and_remediation": "not_verified"
+      }
     }
   }
 }

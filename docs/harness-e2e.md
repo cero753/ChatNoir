@@ -16,7 +16,7 @@ Review sessions were read-only. Authorized remediation sessions could edit only 
 |---|---|---|---|
 | Codex CLI 0.157.0; `gpt-6-sol`, high reasoning | Loaded the installed `0.1.1` skill, review/evidence references and baseline helper from Codex's plugin cache | Confirmed all three flaws through in-memory calls to the actual app; dismissed constant `eval` | Produced a minimal patch and verified through WSGI calls. The evaluator independently tested the patched app over HTTP: all 8 checks passed. |
 | Cursor CLI 2026.05.16-0338208; Auto | Loaded the native plugin skill and references, ran the baseline, read source and contracts | Confirmed all three flaws through actual in-memory calls; dismissed constant `eval`. A separate static review of the already-fixed control returned no confirmed findings and four evidence-backed dismissals. | Provider blocked the subsequent remediation request under its cyber-content restrictions before code edits. Automated remediation is not verified. |
-| Claude Code 2.1.42 | Native initialization listed `chatnoir:chatnoir` and the plugin | Model execution was blocked by an invalid cached OAuth token | Authentication blocked at the time of this test; detection and remediation remain unverified. |
+| Claude Code 2.1.42 | Native initialization listed `chatnoir:chatnoir` and the plugin | The initial and follow-up model requests returned an invalid OAuth token error | Valid model access was unavailable for the follow-up test. Detection and remediation remain unverified. |
 
 Codex initially rejected the user's default `gpt-6.1-sol`; the user explicitly approved `gpt-6-sol` with high reasoning for these tests. This is a test-runtime choice, not a model requirement imposed by ChatNoir.
 
@@ -30,7 +30,7 @@ Retained final reports: [Codex vulnerable-app review](e2e/codex-review.json), [C
 - Cursor plan mode denied Python helper/runtime commands. Static findings were kept separate from execution. The successful runtime review used normal agent mode with a project-local permission allowlist for the trusted synthetic fixture. The unavailable optional sandbox was not represented as working. No `--force`/`--yolo` bypass was used.
 - Codex marketplace discovery alone was insufficient: the plugin had to be installed. An incorrectly quoted command-line plugin key in the test runner also prevented loading; correcting the test setup restored native skill discovery. Neither failure is counted as a successful review.
 - Cursor's remediation provider refusal is retained as a blocked result. It was not retried through altered prompts or another model to evade the restriction. A separate static review of the already-fixed control is a different, safer test and does not count as Cursor-generated remediation.
-- Claude returned a structured authentication error despite a zero process exit code and a cached “logged in” status. Only native plugin discovery is established until a model request succeeds. CLI exit status alone is not a sufficient test verdict.
+- Claude initially returned a structured authentication error despite a zero process exit code and a cached “logged in” status. A follow-up review request on October 16 also returned HTTP 401 with `is_error: true`, used zero model tokens and left the fixture unchanged. Valid model access was unavailable, so review and remediation remain blocked. Native plugin discovery is established; a successful model session is not. CLI exit status alone is not a sufficient test verdict.
 
 ## Reproduce
 
