@@ -4,9 +4,11 @@
   "chatnoir_version": "0.1.2",
   "surface": "Current Codex desktop chat using installed ChatNoir skill and helper",
   "target": {
+    "name": "Workshop Prep Agent",
     "kind": "Separate publicly distributed TypeScript/Next.js web application",
-    "identity": "Retained locally pending maintainer review of an unfixed finding",
-    "tracked_source_changed": false
+    "repository": "https://github.com/fhajjej-ship-it/workshop-prep-agent",
+    "review_commit": "83daa0c5befb6ae6c7a2184fdb9aa6438d7da0a6",
+    "tracked_source_changed_during_initial_assessment": false
   },
   "baseline": {
     "included_files": 115,
@@ -23,16 +25,54 @@
   "checks": {
     "selected_application_tests_passed": 18,
     "chatnoir_report_validate_render_sarif": "passed",
-    "target_specific_boundary_observations": "Retained locally; a positive control passed and one code-level finding was reproduced"
+    "target_specific_boundary_observations": "Initial whole-body buffering reproduced locally; legitimate JSON control passed before and after the subsequent fix."
   },
   "chatnoir_implementation_defects_found": 0,
   "limitations": [
     "Not a blind or independent evaluation.",
-    "No production request, memory-exhaustion attempt, live model generation or external database call.",
-    "Actual route functions were invoked locally; full deployed HTTP behavior was not tested.",
-    "Effective upstream limits and production availability impact are unverified.",
+    "No memory-exhaustion attempt, oversized production request, live model generation or external database call.",
+    "Body cancellation verified with in-process Request streams; production smoke was read-only configuration.",
+    "Effective upstream limits and production denial-of-service impact are unverified.",
     "Reused installed dependencies; selected versions matched the public lockfile.",
-    "Full target-specific report and reproducer remain local while the finding is unfixed.",
-    "No runtime change or new release version was required by this evaluation."
-  ]
+    "Full local reports and raw traces were not uploaded.",
+    "No ChatNoir runtime change or new release version was required."
+  ],
+  "remediation": {
+    "finding": "CWE-400: JSON body fully buffered before size check",
+    "severity": "low",
+    "fix_commit": "6fbd0bd5790d10305b6c70e02f1d14eb0764ef68",
+    "commit_url": "https://github.com/fhajjej-ship-it/workshop-prep-agent/commit/6fbd0bd5790d10305b6c70e02f1d14eb0764ef68",
+    "change": "Incremental UTF-8 decoding and stream cancellation at the existing character limit",
+    "before": {
+      "total_bytes": 1048576,
+      "offered_bytes": 1048576,
+      "status": 413,
+      "cancelled": false
+    },
+    "after": {
+      "route": "POST /api/runs",
+      "limit_chars": 250000,
+      "supplied_bytes": 1048576,
+      "status": 413,
+      "offered": 262144,
+      "cancelled": true,
+      "legitimate_small_json": true
+    },
+    "verification": {
+      "focused_tests": 24,
+      "typecheck": "passed",
+      "production_webpack_build": "passed",
+      "github_source_bytes": "matched",
+      "production": {
+        "method": "GET",
+        "url": "https://workshop-prep-agent.vercel.app/api/config",
+        "http_status": 200,
+        "json_object": true,
+        "deployment_commit": "6fbd0bd5790d10305b6c70e02f1d14eb0764ef68",
+        "github_vercel_status": "success",
+        "production_deployment_id": 7127788925,
+        "scope": "read-only config smoke; production oversize requests not tested"
+      }
+    }
+  }
 }

@@ -41,6 +41,25 @@ The demo also challenges a false positive and binds a committed patch to exact r
 
 For real HTTP boundary checks, [the local application fixture](examples/http-app/README.md) demonstrates SQL injection, cross-user invoice access and file traversal, with fixed controls. All data is synthetic.
 
+## Real app: Workshop Prep Agent
+
+On October 16, 2026, ChatNoir 0.1.2 guided a security review of [Workshop Prep Agent](https://github.com/fhajjej-ship-it/workshop-prep-agent), a separate TypeScript/Next.js app, in Codex desktop. It found a **low-severity request-body buffering weakness (CWE-400)**: `lib/http.ts` read the entire JSON stream before enforcing its size limit.
+
+**The fix:** replace whole-body buffering with incremental UTF-8 decoding and cancel the stream as soon as the existing character limit is exceeded. Valid JSON, split Unicode characters and existing origin checks retain their behavior. [Shipped patch and regression tests →](https://github.com/fhajjej-ship-it/workshop-prep-agent/commit/6fbd0bd5790d10305b6c70e02f1d14eb0764ef68)
+
+The same local 1 MiB ASCII request exercised the actual create route, configured for a 250,000-character limit:
+
+| Observed behavior | Before | After |
+|---|---|---|
+| Bytes read from the test stream | 1,048,576 (entire body) | 262,144 (stopped early) |
+| Stream cancelled | No | Yes |
+| Response | 413 | 413 |
+| Small valid JSON control | Passed | Passed |
+
+**Verification:** new regression tests reproduced the failure before the fix; all **24 focused app tests**, TypeScript checking and the production webpack build passed afterward. The automatic production deployment succeeded on the exact fix commit, and a read-only `/api/config` smoke check returned HTTP 200.
+
+The baseline helper returned **zero candidates**; this finding came from ChatNoir's agent-guided source review and local validation. Five suspected issues were dismissed. Body cancellation was verified with local `Request` streams; no oversized production request or memory-exhaustion test was attempted. Practical production denial-of-service impact was not established. [Full case, revisions and verification commands →](docs/separate-app-evaluation.md)
+
 ## Install where you build
 
 **Claude Code plugin**
