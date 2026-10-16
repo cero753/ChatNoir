@@ -52,12 +52,17 @@
       "note": "Executed by the existing owner chat with prior fixture knowledge; no independent reviewer claim."
     },
     "gui_automation": "blocked_by_computer_use_policy",
-    "fresh_install_and_picker": "not_verified",
+    "fresh_install_and_picker": "fresh_install_flow_and_picker_not_verified",
     "limitations": [
       "Existing owner chat had prior fixture knowledge.",
       "No fresh desktop install or GUI interaction was verified by automation.",
       "Current chat model identity was not independently inspected."
-    ]
+    ],
+    "installation_visible_state": {
+      "status": "installed_and_enabled",
+      "method": "User manually checked the Codex Plugins page",
+      "observed": "2026-10-16"
+    }
   },
   "cursor_ide": {
     "app_version": "3.24.12",
