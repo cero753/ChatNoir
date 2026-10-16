@@ -1,0 +1,9 @@
+/S.md
+/s.md
+__pycache__/
+*.py[cod]
+.venv/
+.DS_Store
+.chatnoir/
+/dist/
+/private/

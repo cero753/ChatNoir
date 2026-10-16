@@ -1,0 +1,345 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/fhajjej-ship-it/ChatNoir/main/schemas/report.schema.json",
+  "title": "ChatNoir report v1",
+  "type": "object",
+  "description": "Run the bundled validate command as well for path, duplicate-ID and coverage invariants. This schema cannot verify evidence truth.",
+  "required": [
+    "format",
+    "version",
+    "mode",
+    "target",
+    "coverage",
+    "findings"
+  ],
+  "properties": {
+    "format": {
+      "const": "chatnoir.report/v1"
+    },
+    "version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "mode": {
+      "enum": [
+        "baseline",
+        "repository",
+        "diff",
+        "deep",
+        "triage",
+        "verify"
+      ]
+    },
+    "target": {
+      "type": "object",
+      "required": [
+        "snapshot_sha256",
+        "files",
+        "skipped"
+      ],
+      "properties": {
+        "snapshot_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "git_head": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "dirty": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "inventory_strategy": {
+          "type": "string",
+          "minLength": 1
+        },
+        "files": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "path",
+              "sha256",
+              "bytes"
+            ],
+            "properties": {
+              "path": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Repository-relative POSIX path; semantic validation rejects absolute and parent paths."
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              },
+              "bytes": {
+                "type": "integer",
+                "minimum": 0
+              }
+            }
+          }
+        },
+        "skipped": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "path",
+              "reason"
+            ],
+            "properties": {
+              "path": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Repository-relative POSIX path; semantic validation rejects absolute and parent paths."
+              },
+              "reason": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        }
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "required": [
+        "complete",
+        "reviewed",
+        "deferred",
+        "limitations"
+      ],
+      "properties": {
+        "complete": {
+          "type": "boolean"
+        },
+        "reviewed": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Repository-relative POSIX path; semantic validation rejects absolute and parent paths."
+          }
+        },
+        "deferred": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "path",
+              "reason"
+            ],
+            "properties": {
+              "path": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Repository-relative POSIX path; semantic validation rejects absolute and parent paths."
+              },
+              "reason": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        },
+        "limitations": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "rule_id",
+          "title",
+          "path",
+          "line",
+          "status",
+          "severity",
+          "confidence",
+          "evidence",
+          "attack_path",
+          "counterevidence",
+          "proof_gaps",
+          "remediation",
+          "validation"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "rule_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "cwe": {
+            "type": "string",
+            "minLength": 1
+          },
+          "path": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Repository-relative POSIX path; semantic validation rejects absolute and parent paths."
+          },
+          "line": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "status": {
+            "enum": [
+              "candidate",
+              "confirmed",
+              "dismissed",
+              "needs_review",
+              "fixed",
+              "still_vulnerable",
+              "inconclusive"
+            ]
+          },
+          "severity": {
+            "enum": [
+              "critical",
+              "high",
+              "medium",
+              "low",
+              "info",
+              "unknown"
+            ]
+          },
+          "confidence": {
+            "enum": [
+              "high",
+              "medium",
+              "low",
+              "unknown"
+            ]
+          },
+          "evidence": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "attack_path": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "counterevidence": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "proof_gaps": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "remediation": {
+            "type": "string",
+            "minLength": 1
+          },
+          "validation": {
+            "type": "object",
+            "required": [
+              "method",
+              "result"
+            ],
+            "properties": {
+              "method": {
+                "enum": [
+                  "not_run",
+                  "static",
+                  "runtime"
+                ]
+              },
+              "result": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        },
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "status": {
+                  "enum": [
+                    "confirmed",
+                    "fixed",
+                    "still_vulnerable"
+                  ]
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "evidence": {
+                  "minItems": 1
+                },
+                "attack_path": {
+                  "minItems": 1
+                },
+                "proof_gaps": {
+                  "maxItems": 0
+                },
+                "validation": {
+                  "properties": {
+                    "method": {
+                      "enum": [
+                        "static",
+                        "runtime"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "status": {
+                  "const": "dismissed"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "counterevidence": {
+                  "minItems": 1
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

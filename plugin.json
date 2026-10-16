@@ -1,0 +1,25 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "chatnoir",
+  "version": "0.1.0",
+  "description": "Evidence-first security review for the code you ship. Portable skills, local scan helpers, and verified-fix workflows.",
+  "author": {"name": "Farouk Hajjej", "url": "https://github.com/fhajjej-ship-it"},
+  "homepage": "https://github.com/fhajjej-ship-it/ChatNoir",
+  "repository": "https://github.com/fhajjej-ship-it/ChatNoir",
+  "license": "MIT",
+  "keywords": ["security", "vulnerability", "agent-skills", "codex", "claude-code", "cursor"],
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "ChatNoir",
+        "shortDescription": "Security review. Evidence before confidence.",
+        "developerName": "Farouk Hajjej",
+        "category": "Developer Tools",
+        "brandColor": "#111111",
+        "logo": "./assets/logo.png",
+        "composerIcon": "./assets/logo.png",
+        "defaultPrompt": ["Use ChatNoir to review this project for security vulnerabilities."]
+      }
+    }
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "format": "chatnoir.report/v1",
+  "version": "0.1.0",
+  "mode": "repository",
+  "target": {
+    "snapshot_sha256": "21d9e3919e75e5ce4d1c175e6852c0942fa93dcd4434aa5ab982bf8923623d68",
+    "git_head": null,
+    "dirty": null,
+    "inventory_strategy": "git tracked and untracked, honoring Git ignores for untracked files",
+    "files": [
+      {
+        "path": "app.py",
+        "sha256": "88f9dbb2ff563027faa62a9631a6908a67abece1ee76c8f6825326b0952cd4ce",
+        "bytes": 237
+      }
+    ],
+    "skipped": []
+  },
+  "coverage": {
+    "complete": true,
+    "reviewed": [
+      "app.py"
+    ],
+    "deferred": [],
+    "limitations": [
+      "Declared scope: the synthetic invoice-query function only. No application, authentication, network, deployment or other database-engine assessment.",
+      "Runtime check used in-memory SQLite and synthetic Alice/Bob invoice rows."
+    ]
+  },
+  "findings": [
+    {
+      "id": "CN-0ea0d2408f06",
+      "rule_id": "CN004",
+      "title": "SQL injection in the synthetic invoice lookup",
+      "cwe": "CWE-89",
+      "path": "app.py",
+      "line": 5,
+      "status": "confirmed",
+      "severity": "high",
+      "confidence": "high",
+      "evidence": [
+        "app.py:4-6 interpolates the owner argument into SQL syntax.",
+        "The included reproducer observed two invoice rows for the crafted owner value and one Alice row for legitimate input."
+      ],
+      "attack_path": [
+        "A caller controls the owner value passed to invoices_for.",
+        "String interpolation makes that value part of the WHERE clause.",
+        "The crafted value changes the predicate and returns both synthetic owners' records."
+      ],
+      "counterevidence": [
+        "No HTTP route, authentication system or deployed service exists in this fixture; no external application reachability is asserted."
+      ],
+      "proof_gaps": [],
+      "remediation": "Bind the owner as a SQL value, as demonstrated in examples/sql-injection/fixed/app.py. Application callers must separately derive owner identity from an authorized principal.",
+      "validation": {
+        "method": "runtime",
+        "result": "python3 examples/sql-injection/reproduce.py: vulnerable attack=2 rows, legitimate=1; fixed attack=0 rows, legitimate=1. All assertions passed."
+      }
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+{
+  "name": "chatnoir-marketplace",
+  "owner": {"name": "Farouk Hajjej"},
+  "metadata": {"description": "ChatNoir security-review skills and local evidence helpers."},
+  "plugins": [{"name": "chatnoir", "source": "./", "description": "Evidence-first security review for coding agents."}]
+}

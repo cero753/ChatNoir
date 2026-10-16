@@ -1,0 +1,25 @@
+CHATNOIR / Find the flaw. Prove the path. Verify the fix.
+
+01 / Find a candidate in a real Python fixture
+  CN004 CWE-89: Dynamically constructed SQL
+  app.py:5 | candidate | validation: not_run
+  A match is a lead. It needs a reachable attack path.
+
+02 / Reproduce the attack and check the fix
+  vulnerable: attack=2 rows; legitimate=1 row
+  fixed: attack=0 rows; legitimate=1 row
+  Fixed baseline: 0 candidates. Coverage remains incomplete.
+  Runtime boundary check: PASS (synthetic in-memory SQLite).
+
+03 / Challenge a false positive
+  Baseline: 1 candidate, not a confirmed vulnerability.
+  Source: fixed literal expression, no caller input. Runtime result: 4.
+  Reviewer disposition: dismiss this claim; literal input defeats the proposed injection.
+
+04 / Bind an exact committed patch
+  Changed files: [{"status": "M", "path": "app.py"}]
+  Base/head: both resolved to full 40-character commit IDs.
+  Patch SHA-256: 126c34eafb49c6569c5b8b14ae2f2418cc4c14e98176b2a4e5dddf4121e1e4cf
+  Identity captured. A merge recommendation still requires source review.
+
+All demos completed. These fixtures do not measure real-world detection accuracy.

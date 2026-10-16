@@ -1,0 +1,20 @@
+{
+  "name": "chatnoir",
+  "version": "0.1.0",
+  "description": "Evidence-first security review, attack-path analysis, and fix verification for coding agents.",
+  "author": {"name": "Farouk Hajjej", "url": "https://github.com/fhajjej-ship-it"},
+  "homepage": "https://github.com/fhajjej-ship-it/ChatNoir",
+  "repository": "https://github.com/fhajjej-ship-it/ChatNoir",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "ChatNoir",
+    "shortDescription": "Security review. Evidence before confidence.",
+    "developerName": "Farouk Hajjej",
+    "category": "Developer Tools",
+    "brandColor": "#111111",
+    "logo": "./assets/logo.png",
+    "composerIcon": "./assets/logo.png",
+    "defaultPrompt": ["Use ChatNoir to review this project for security vulnerabilities."]
+  }
+}

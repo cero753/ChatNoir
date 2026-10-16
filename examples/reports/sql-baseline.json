@@ -1,0 +1,58 @@
+{
+  "format": "chatnoir.report/v1",
+  "version": "0.1.0",
+  "mode": "baseline",
+  "target": {
+    "snapshot_sha256": "21d9e3919e75e5ce4d1c175e6852c0942fa93dcd4434aa5ab982bf8923623d68",
+    "git_head": null,
+    "dirty": null,
+    "inventory_strategy": "git tracked and untracked, honoring Git ignores for untracked files",
+    "files": [
+      {
+        "path": "app.py",
+        "sha256": "88f9dbb2ff563027faa62a9631a6908a67abece1ee76c8f6825326b0952cd4ce",
+        "bytes": 237
+      }
+    ],
+    "skipped": []
+  },
+  "coverage": {
+    "complete": false,
+    "reviewed": [
+      "app.py"
+    ],
+    "deferred": [],
+    "limitations": [
+      "Five heuristic rule families; not a complete security audit.",
+      "No taint, dependency, credential-content or runtime analysis.",
+      "Absence of candidates does not establish safety.",
+      "Snapshot identifies included readable files, not excluded content or an atomic filesystem snapshot."
+    ]
+  },
+  "findings": [
+    {
+      "id": "CN-0ea0d2408f06",
+      "rule_id": "CN004",
+      "title": "Dynamically constructed SQL",
+      "cwe": "CWE-89",
+      "path": "app.py",
+      "line": 5,
+      "status": "candidate",
+      "severity": "unknown",
+      "confidence": "low",
+      "evidence": [
+        "AST matched connection.execute call; source values omitted."
+      ],
+      "attack_path": [],
+      "counterevidence": [],
+      "proof_gaps": [
+        "Establish input provenance, runtime reachability and effective controls."
+      ],
+      "remediation": "Bind data as query parameters; allowlist identifiers separately.",
+      "validation": {
+        "method": "not_run",
+        "result": "Not validated"
+      }
+    }
+  ]
+}

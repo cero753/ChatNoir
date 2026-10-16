@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "ChatNoir",
+          "version": "0.1.0",
+          "informationUri": "https://github.com/fhajjej-ship-it/ChatNoir",
+          "rules": [
+            {
+              "id": "CN004",
+              "shortDescription": {
+                "text": "Dynamically constructed SQL"
+              }
+            }
+          ]
+        }
+      },
+      "results": [
+        {
+          "ruleId": "CN004",
+          "kind": "review",
+          "level": "note",
+          "message": {
+            "text": "[candidate] Dynamically constructed SQL \u2014 AST matched connection.execute call; source values omitted."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "app.py",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 5
+                }
+              }
+            }
+          ],
+          "properties": {
+            "status": "candidate",
+            "confidence": "low",
+            "severity": "unknown"
+          }
+        }
+      ]
+    }
+  ]
+}
