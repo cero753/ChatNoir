@@ -14,7 +14,7 @@ AST matching recognizes straightforward import aliases. It is not type checking,
 
 ## Scope and privacy
 
-Git inventory includes tracked and non-ignored untracked paths under the chosen target. Without Git, a directory walk is used; `.gitignore` is not interpreted. Common generated/dependency directories, Git metadata, credential filenames, binary/non-UTF-8 files, symlink files and oversized files are skipped. Directory symlinks are pruned and not traversed; they are not individually listed in walk inventories. Git submodule contents are not recursively audited. All such exclusions limit coverage.
+Git inventory includes tracked and non-ignored untracked paths under the chosen target. Without Git, a directory walk is used; `.gitignore` is not interpreted. Common generated/dependency directories, Git metadata, credential filenames, binary/non-UTF-8 files, symlink files and oversized files are skipped. Directory symlinks are pruned and not traversed; they are not individually listed in walk inventories. Git submodule contents are not recursively audited and are ignored in dirty-state checks. If effective Git configuration defines a clean/process filter, the helper omits `git status` and returns `target.dirty: null` with `target.dirty_reason`; Git can execute those filters while comparing content. Source inventory and baseline review still proceed. Unknown dirty state is not a clean checkout. All such exclusions limit coverage.
 
 Credential exclusion is based on filenames (`.env*`, private-key extensions and common credential names). It is **not a secret detector**: credentials can exist anywhere. Baseline findings omit source values, but filenames and other report data may still be sensitive. A report or SARIF file should be reviewed before publication or upload. Host agents may transmit inspected source to their model provider according to that provider's settings; ChatNoir cannot change that policy.
 
@@ -31,3 +31,5 @@ Bounds: 1 MiB per file, 64 MiB cumulative read budget and 20,000 paths. Narrow t
 No candidate count implies a security pass. Baseline `coverage.complete` is always false. A full declared-scope agent review may mark its work complete only when relevant deferred/skipped work is resolved or explicitly removed from its declared scope.
 
 `validate` enforces essential field types and verdict invariants. It does not verify source truth or the semantic quality of evidence. SARIF uses review/note for unresolved leads and fail for confirmed open findings; it omits dismissed/fixed findings. No upload is performed. `diff` compares committed base/head IDs only; it never includes dirty or untracked changes automatically.
+
+Imported report text is encoded as literal punctuation and line breaks are folded before Markdown rendering. This prevents report data from introducing links, headings or HTML; rendering is not a general-purpose HTML sanitizer for other inputs.

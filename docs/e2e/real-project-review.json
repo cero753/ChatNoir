@@ -1,0 +1,675 @@
+{
+  "format": "chatnoir.report/v1",
+  "version": "0.1.2",
+  "mode": "verify",
+  "target": {
+    "snapshot_sha256": "7346daf8c3fa453390d392dcec5dfb1ce44cbb7d05c03b9c5d19e292e229ce92",
+    "git_head": "471a1087b5b28a77d813268ee723cf41a43c707c",
+    "dirty": null,
+    "dirty_reason": "not checked: Git clean/process filters are configured",
+    "inventory_strategy": "git tracked and untracked, honoring Git ignores for untracked files",
+    "files": [
+      {
+        "path": ".agents/plugins/marketplace.json",
+        "sha256": "b795251f3051686d82730e2849e609d385d2afccfbc3a31e1b7948dfe2a6f605",
+        "bytes": 287
+      },
+      {
+        "path": ".claude-plugin/marketplace.json",
+        "sha256": "e010689232f79e327b38300844a955b7e59a8c9ecdc16f1b2b89e4ea63fb54ae",
+        "bytes": 290
+      },
+      {
+        "path": ".claude-plugin/plugin.json",
+        "sha256": "895d3eb4f9e391b1c54f62e1e74908e40303296f9fa2e2bbb974dccdde9593f4",
+        "bytes": 450
+      },
+      {
+        "path": ".codex-plugin/plugin.json",
+        "sha256": "bc7c6f4d31821fdb008f9f310df5de4695c6a2d19f9463cf90856ca8c993dc34",
+        "bytes": 806
+      },
+      {
+        "path": ".cursor-plugin/marketplace.json",
+        "sha256": "9e3fbd48584ba5a2ae8278b5bbd917ad6b62d0ad188e710d5490d3f3c082ab6c",
+        "bytes": 338
+      },
+      {
+        "path": ".cursor-plugin/plugin.json",
+        "sha256": "c21495c5a1f86125e517aa27de19e4e4bd3e69f4e5d0661400ed9d550cbb148d",
+        "bytes": 458
+      },
+      {
+        "path": ".gitignore",
+        "sha256": "d7467cb6a26bf1175a96bf0220b927be3e32d6211563fd2fa3caeabbba56722b",
+        "bytes": 80
+      },
+      {
+        "path": "CHANGELOG.md",
+        "sha256": "9dcd2ec817773e1c566a0b74ead81ff66a99a75d9d5c2d71b7f8173538fc7c06",
+        "bytes": 2045
+      },
+      {
+        "path": "CONTRIBUTING.md",
+        "sha256": "6ea862de5c17f56875f0c2b48023c56914c5de9687149e79a15f02fe957f0a32",
+        "bytes": 1433
+      },
+      {
+        "path": "LICENSE",
+        "sha256": "5b78dd3fb9be85152a97ae8cbf7be08b993ecba4e7f6738f1073a9ec3982a9c7",
+        "bytes": 1070
+      },
+      {
+        "path": "README.md",
+        "sha256": "f61a1809665df75307c9f43b1629ca393330954275b4f20cfb6f8d6e80409e19",
+        "bytes": 7767
+      },
+      {
+        "path": "SECURITY.md",
+        "sha256": "f3d8613464f297fb7da8c41a432e86bee3272729bde7c6b99a575de1f71193f3",
+        "bytes": 2265
+      },
+      {
+        "path": "chatnoir.py",
+        "sha256": "2330784c4b71c97cc8da5a4f1c7b3a74176d7d48603e497f3c4f7b887e7bc6fc",
+        "bytes": 286
+      },
+      {
+        "path": "docs/brand.md",
+        "sha256": "076098ec0e1e1512bd6d8e8e4fff51f0718132edaf443a587cb20fdcce52bcf7",
+        "bytes": 1399
+      },
+      {
+        "path": "docs/capabilities.md",
+        "sha256": "cd954b0b731c641aca5a3acd162b51d588047ac2581595893e11afdc11b60e6d",
+        "bytes": 3225
+      },
+      {
+        "path": "docs/compatibility.md",
+        "sha256": "1b980a5574c1911140d20c7e91d05862eb965f5586f9d2d4c209b33fcd24604c",
+        "bytes": 4758
+      },
+      {
+        "path": "docs/demo-output.txt",
+        "sha256": "78479054f777f78e54c85d77ee5e9fcdec4e05f36a437433af812ab52e6741ab",
+        "bytes": 1143
+      },
+      {
+        "path": "docs/demos.md",
+        "sha256": "4d682625dddadf66f7ff11177064d8bca12d078aff01c0933b6f72a1bdbf5aff",
+        "bytes": 4018
+      },
+      {
+        "path": "docs/desktop-e2e.md",
+        "sha256": "859114ad49dc7d536db61b9fe4597b4f72e6a3bf31d9814604823d90098d5320",
+        "bytes": 4219
+      },
+      {
+        "path": "docs/e2e/codex-desktop-fix.diff",
+        "sha256": "077627fd232a0f428ff5cf8418e308d56ccb58bef969802a938fbef3f679bba2",
+        "bytes": 1090
+      },
+      {
+        "path": "docs/e2e/codex-fix.diff",
+        "sha256": "b431d9c2b3e08471f813e6d3aa8346c54b7a55837bb6d4774ffbcf7b2976b536",
+        "bytes": 1157
+      },
+      {
+        "path": "docs/e2e/codex-review.json",
+        "sha256": "36f89beb02025e2a25965802b1c83b29093f8177e8e24abfb79a6fbb82cf5089",
+        "bytes": 3056
+      },
+      {
+        "path": "docs/e2e/cursor-control.json",
+        "sha256": "5edafd04cafd4b3593c7a28f05dc999c1beb9c9497f27077cb4a0c81ab63bb15",
+        "bytes": 6204
+      },
+      {
+        "path": "docs/e2e/cursor-ide-fix.diff",
+        "sha256": "63d3136b7feec338c77ef85931af17f4a3c05298a4b260d62f9c6dfa1d3596f6",
+        "bytes": 1186
+      },
+      {
+        "path": "docs/e2e/cursor-review.json",
+        "sha256": "efd9efbc8731a7c1ce19fb8ddcba82ac277e488e6899e5ccd2523909aab04ef1",
+        "bytes": 3988
+      },
+      {
+        "path": "docs/e2e/desktop-results.json",
+        "sha256": "bb17255535bf4cafba9ebdbf8e16407c1236655f064878bcf38eb1d53371ace3",
+        "bytes": 4148
+      },
+      {
+        "path": "docs/e2e/results.json",
+        "sha256": "9991e9ed79b4a091ebccaa8d8e8b29ccf4b3ed23b00812770afc8dd95ba679a4",
+        "bytes": 3079
+      },
+      {
+        "path": "docs/harness-e2e.md",
+        "sha256": "7d8b7e66ad9cd3474925fd627c1f394e688c71158587013eef66127d8ecc4a48",
+        "bytes": 6830
+      },
+      {
+        "path": "docs/scanner.md",
+        "sha256": "18b74fe2b38b0ce9e8e4b393d32876af854a5665f792909b4ed8f33fdd9f80f5",
+        "bytes": 4428
+      },
+      {
+        "path": "docs/validation.md",
+        "sha256": "4938b26e4c33a787938689ba03bb6d508716e7e58887475dc56c63495c94024c",
+        "bytes": 4513
+      },
+      {
+        "path": "examples/false-positive/app.py",
+        "sha256": "f7b8cdd36de6b9293618e27d2b519509fca63c3d1947d3f0c80076c4d2a0567d",
+        "bytes": 207
+      },
+      {
+        "path": "examples/http-app/README.md",
+        "sha256": "71088bd66760a02adaa93ecb1670b66e93cbbed6efb617e381190f4c2e978262",
+        "bytes": 1209
+      },
+      {
+        "path": "examples/http-app/fixed/app.py",
+        "sha256": "17a5d14375946651a40617b47784c5c1ee780193c8ea3b354cb0df863a4b5192",
+        "bytes": 3352
+      },
+      {
+        "path": "examples/http-app/fixed/data/internal/notes.txt",
+        "sha256": "621db875e2b5ebcec919a08ac12e0d976a2c050fcdb9b33d69f26a785e258a28",
+        "bytes": 53
+      },
+      {
+        "path": "examples/http-app/fixed/data/public/readme.txt",
+        "sha256": "1606ff7e7278a74c1ddb97a5cc9a49aad0f376b0274489979c34f8c40a32f2da",
+        "bytes": 25
+      },
+      {
+        "path": "examples/http-app/vulnerable/app.py",
+        "sha256": "c9cdf068aa131dd91699033302fc2ca4476c64af3ef9b4dc49b7067f4b7d8b05",
+        "bytes": 3116
+      },
+      {
+        "path": "examples/http-app/vulnerable/data/internal/notes.txt",
+        "sha256": "621db875e2b5ebcec919a08ac12e0d976a2c050fcdb9b33d69f26a785e258a28",
+        "bytes": 53
+      },
+      {
+        "path": "examples/http-app/vulnerable/data/public/readme.txt",
+        "sha256": "1606ff7e7278a74c1ddb97a5cc9a49aad0f376b0274489979c34f8c40a32f2da",
+        "bytes": 25
+      },
+      {
+        "path": "examples/reports/sql-baseline.json",
+        "sha256": "119c72c66e6f2b42f076e3191fda65c941fa78323d4e7ad2994b15180571bcef",
+        "bytes": 1690
+      },
+      {
+        "path": "examples/reports/sql-baseline.sarif.json",
+        "sha256": "823b684ef80eb6674f6c60bdb6dc6c4d1ae20c47609e97b6d35a73daaa9bd6ee",
+        "bytes": 1270
+      },
+      {
+        "path": "examples/reports/sql-reviewed.json",
+        "sha256": "c3d0ebe52878855744a0029dfd3fdc333896d518473b873bf0989c8d85262681",
+        "bytes": 2310
+      },
+      {
+        "path": "examples/reports/sql-reviewed.md",
+        "sha256": "13bffeeb8b5bfd2b107536d3af5b5b823aacc4f13ae6eb5bbd59cdc50404de67",
+        "bytes": 1581
+      },
+      {
+        "path": "examples/sql-injection/fixed/app.py",
+        "sha256": "33cb929c4e8844c8ec7ec1189eeaa4c80cc39d21945ed7eb45a974d3d0bb8bd8",
+        "bytes": 233
+      },
+      {
+        "path": "examples/sql-injection/reproduce.py",
+        "sha256": "938b140648d59e1c82ea147a6601dd8dc0415be5ccedefadbdf0d315391f34df",
+        "bytes": 1372
+      },
+      {
+        "path": "examples/sql-injection/vulnerable/app.py",
+        "sha256": "88f9dbb2ff563027faa62a9631a6908a67abece1ee76c8f6825326b0952cd4ce",
+        "bytes": 237
+      },
+      {
+        "path": "plugin.json",
+        "sha256": "6b48a9ecd81595318485ba84c85a984e8de1d1b87504933fedd748914156d58a",
+        "bytes": 1064
+      },
+      {
+        "path": "schemas/report.schema.json",
+        "sha256": "a91aa4292096873f377143985e7b88efb424ad22c2e33d9f1bc3795871eded0f",
+        "bytes": 8457
+      },
+      {
+        "path": "scripts/demo.py",
+        "sha256": "4156439ec280fabd8ccdeb69ffd9417c3484376bd460667009b33c434f91e071",
+        "bytes": 3074
+      },
+      {
+        "path": "scripts/http_probe.py",
+        "sha256": "c47992d410ff446ff70a0df410fa29883705f8ebe83d290d0c84e9698627548e",
+        "bytes": 3682
+      },
+      {
+        "path": "scripts/install.py",
+        "sha256": "c6d9a6c911a533adb726d046155795fe5c9f4857127af4f387c4c374ea4ac589",
+        "bytes": 1879
+      },
+      {
+        "path": "skills/chatnoir/SKILL.md",
+        "sha256": "adc44c7a36dc171cc3795b89f59425d8d7d5522b9b4c2aa94c0dd3795b33c594",
+        "bytes": 5518
+      },
+      {
+        "path": "skills/chatnoir/references/disclosure.md",
+        "sha256": "cbabf295c872305199319f07eba47cc29f95299b0a44a439fcc5616644df92cf",
+        "bytes": 1565
+      },
+      {
+        "path": "skills/chatnoir/references/evidence.md",
+        "sha256": "77fd9c7d9714af59655fd33c2c8454f604168042ba4734a972169f9f4ac913f6",
+        "bytes": 3062
+      },
+      {
+        "path": "skills/chatnoir/references/hardening.md",
+        "sha256": "bc2698a14cef7c7227a2d7d5fb9141c56d941898251de7e693558dd423488872",
+        "bytes": 1198
+      },
+      {
+        "path": "skills/chatnoir/references/patch.md",
+        "sha256": "e157ae6495e8f40c9bbaabf44c63b4f7d8634c3591da2b151d91ef1c9b496139",
+        "bytes": 2063
+      },
+      {
+        "path": "skills/chatnoir/references/policy.md",
+        "sha256": "1a5f737dddd9039b70362206131af6bffcb5c26bc94f5a4e9bcad2d017dd12d5",
+        "bytes": 1425
+      },
+      {
+        "path": "skills/chatnoir/references/remediation.md",
+        "sha256": "04febeded34d771d5ebded1266174745bc53cebaa78c1417a42c85a1e70d4195",
+        "bytes": 2257
+      },
+      {
+        "path": "skills/chatnoir/references/report.md",
+        "sha256": "de86f54892785721c44e88c7cf8b459e2f50aa976a26ca23befe51ba1a61f163",
+        "bytes": 2513
+      },
+      {
+        "path": "skills/chatnoir/references/review.md",
+        "sha256": "ee5c126eca75775ce1739139993df7ede0289b6a3a818ca1211128b4967aa2b9",
+        "bytes": 3526
+      },
+      {
+        "path": "skills/chatnoir/scripts/chatnoir.py",
+        "sha256": "152747cf1e3ef4a935c5405df4d909455a895739e38bb4d14c1d05060fc72856",
+        "bytes": 25026
+      },
+      {
+        "path": "tests/test_chatnoir.py",
+        "sha256": "ef1db216d520b9b15372f007bb728eae8a3b45756824609f991c5fd9a56989c6",
+        "bytes": 18132
+      },
+      {
+        "path": "tests/test_http_app.py",
+        "sha256": "373529a33f2f4f98baf62b324c457fc494e5a717aabe70f0ca54b05e6ce6ca5a",
+        "bytes": 885
+      }
+    ],
+    "skipped": [
+      {
+        "path": "assets/logo.png",
+        "reason": "file size limit"
+      },
+      {
+        "path": "docs/e2e/cursor-ide-fix-verification.jpg",
+        "reason": "binary file"
+      },
+      {
+        "path": "docs/e2e/cursor-ide-skill-picker.jpg",
+        "reason": "binary file"
+      }
+    ]
+  },
+  "coverage": {
+    "complete": false,
+    "reviewed": [
+      "chatnoir.py",
+      "skills/chatnoir/scripts/chatnoir.py",
+      "scripts/install.py",
+      "SECURITY.md",
+      "docs/scanner.md",
+      "skills/chatnoir/SKILL.md",
+      "skills/chatnoir/references/review.md",
+      "skills/chatnoir/references/evidence.md",
+      "skills/chatnoir/references/remediation.md",
+      "skills/chatnoir/references/report.md",
+      "schemas/report.schema.json",
+      "plugin.json",
+      ".codex-plugin/plugin.json",
+      ".claude-plugin/plugin.json",
+      ".cursor-plugin/plugin.json"
+    ],
+    "deferred": [
+      {
+        "path": ".agents/plugins/marketplace.json",
+        "reason": "Outside the shipped helper/installer/report-boundary source review; demo vulnerabilities are intentional."
+      },
+      {
+        "path": ".claude-plugin/marketplace.json",
+        "reason": "Outside the shipped helper/installer/report-boundary source review; demo vulnerabilities are intentional."
+      },
+      {
+        "path": ".cursor-plugin/marketplace.json",
+        "reason": "Outside the shipped helper/installer/report-boundary source review; demo vulnerabilities are intentional."
+      },
+      {
+        "path": ".gitignore",
+        "reason": "Outside the shipped helper/installer/report-boundary source review; demo vulnerabilities are intentional."
+      },
+      {
+        "path": "CHANGELOG.md",
+        "reason": "Outside the shipped helper/installer/report-boundary source review; demo vulnerabilities are intentional."
+      },
+      {
+        "path": "CONTRIBUTING.md",
+        "reason": "Outside the shipped helper/installer/report-boundary source review; demo vulnerabilities are intentional."
+      },
+      {
+        "path": "LICENSE",
+        "reason": "Outside the shipped helper/installer/report-boundary source review; demo vulnerabilities are intentional."
+      },
+      {
+        "path": "README.md",
+        "reason": "Outside the shipped helper/installer/report-boundary source review; demo vulnerabilities are intentional."
+      },
+      {
+        "path": "docs/brand.md",
+        "reason": "Outside the shipped helper/installer/report-boundary source review; demo vulnerabilities are intentional."
+      },
+      {
+        "path": "docs/capabilities.md",
+        "reason": "Outside the shipped helper/installer/report-boundary source review; demo vulnerabilities are intentional."
+      },
+      {
+        "path": "docs/compatibility.md",
+        "reason": "Outside the shipped helper/installer/report-boundary source review; demo vulnerabilities are intentional."
+      },
+      {
+        "path": "docs/demo-output.txt",
+        "reason": "Outside the shipped helper/installer/report-boundary source review; demo vulnerabilities are intentional."
+      },
+      {
+        "path": "docs/demos.md",
+        "reason": "Outside the shipped helper/installer/report-boundary source review; demo vulnerabilities are intentional."
+      },
+      {
+        "path": "docs/desktop-e2e.md",
+        "reason": "Outside the shipped helper/installer/report-boundary source review; demo vulnerabilities are intentional."
+      },
+      {
+        "path": "docs/e2e/codex-desktop-fix.diff",
+        "reason": "Outside the shipped helper/installer/report-boundary source review; demo vulnerabilities are intentional."
+      },
+      {
+        "path": "docs/e2e/codex-fix.diff",
+        "reason": "Outside the shipped helper/installer/report-boundary source review; demo vulnerabilities are intentional."
+      },
+      {
+        "path": "docs/e2e/codex-review.json",
+        "reason": "Outside the shipped helper/installer/report-boundary source review; demo vulnerabilities are intentional."
+      },
+      {
+        "path": "docs/e2e/cursor-control.json",
+        "reason": "Outside the shipped helper/installer/report-boundary source review; demo vulnerabilities are intentional."
+      },
+      {
+        "path": "docs/e2e/cursor-ide-fix.diff",
+        "reason": "Outside the shipped helper/installer/report-boundary source review; demo vulnerabilities are intentional."
+      },
+      {
+        "path": "docs/e2e/cursor-review.json",
+        "reason": "Outside the shipped helper/installer/report-boundary source review; demo vulnerabilities are intentional."
+      },
+      {
+        "path": "docs/e2e/desktop-results.json",
+        "reason": "Outside the shipped helper/installer/report-boundary source review; demo vulnerabilities are intentional."
+      },
+      {
+        "path": "docs/e2e/results.json",
+        "reason": "Outside the shipped helper/installer/report-boundary source review; demo vulnerabilities are intentional."
+      },
+      {
+        "path": "docs/harness-e2e.md",
+        "reason": "Outside the shipped helper/installer/report-boundary source review; demo vulnerabilities are intentional."
+      },
+      {
+        "path": "docs/validation.md",
+        "reason": "Outside the shipped helper/installer/report-boundary source review; demo vulnerabilities are intentional."
+      },
+      {
+        "path": "examples/false-positive/app.py",
+        "reason": "Outside the shipped helper/installer/report-boundary source review; demo vulnerabilities are intentional."
+      },
+      {
+        "path": "examples/http-app/README.md",
+        "reason": "Outside the shipped helper/installer/report-boundary source review; demo vulnerabilities are intentional."
+      },
+      {
+        "path": "examples/http-app/fixed/app.py",
+        "reason": "Outside the shipped helper/installer/report-boundary source review; demo vulnerabilities are intentional."
+      },
+      {
+        "path": "examples/http-app/fixed/data/internal/notes.txt",
+        "reason": "Outside the shipped helper/installer/report-boundary source review; demo vulnerabilities are intentional."
+      },
+      {
+        "path": "examples/http-app/fixed/data/public/readme.txt",
+        "reason": "Outside the shipped helper/installer/report-boundary source review; demo vulnerabilities are intentional."
+      },
+      {
+        "path": "examples/http-app/vulnerable/app.py",
+        "reason": "Outside the shipped helper/installer/report-boundary source review; demo vulnerabilities are intentional."
+      },
+      {
+        "path": "examples/http-app/vulnerable/data/internal/notes.txt",
+        "reason": "Outside the shipped helper/installer/report-boundary source review; demo vulnerabilities are intentional."
+      },
+      {
+        "path": "examples/http-app/vulnerable/data/public/readme.txt",
+        "reason": "Outside the shipped helper/installer/report-boundary source review; demo vulnerabilities are intentional."
+      },
+      {
+        "path": "examples/reports/sql-baseline.json",
+        "reason": "Outside the shipped helper/installer/report-boundary source review; demo vulnerabilities are intentional."
+      },
+      {
+        "path": "examples/reports/sql-baseline.sarif.json",
+        "reason": "Outside the shipped helper/installer/report-boundary source review; demo vulnerabilities are intentional."
+      },
+      {
+        "path": "examples/reports/sql-reviewed.json",
+        "reason": "Outside the shipped helper/installer/report-boundary source review; demo vulnerabilities are intentional."
+      },
+      {
+        "path": "examples/reports/sql-reviewed.md",
+        "reason": "Outside the shipped helper/installer/report-boundary source review; demo vulnerabilities are intentional."
+      },
+      {
+        "path": "examples/sql-injection/fixed/app.py",
+        "reason": "Outside the shipped helper/installer/report-boundary source review; demo vulnerabilities are intentional."
+      },
+      {
+        "path": "examples/sql-injection/reproduce.py",
+        "reason": "Outside the shipped helper/installer/report-boundary source review; demo vulnerabilities are intentional."
+      },
+      {
+        "path": "examples/sql-injection/vulnerable/app.py",
+        "reason": "Outside the shipped helper/installer/report-boundary source review; demo vulnerabilities are intentional."
+      },
+      {
+        "path": "scripts/demo.py",
+        "reason": "Outside the shipped helper/installer/report-boundary source review; demo vulnerabilities are intentional."
+      },
+      {
+        "path": "scripts/http_probe.py",
+        "reason": "Outside the shipped helper/installer/report-boundary source review; demo vulnerabilities are intentional."
+      },
+      {
+        "path": "skills/chatnoir/references/disclosure.md",
+        "reason": "Outside the shipped helper/installer/report-boundary source review; demo vulnerabilities are intentional."
+      },
+      {
+        "path": "skills/chatnoir/references/hardening.md",
+        "reason": "Outside the shipped helper/installer/report-boundary source review; demo vulnerabilities are intentional."
+      },
+      {
+        "path": "skills/chatnoir/references/patch.md",
+        "reason": "Outside the shipped helper/installer/report-boundary source review; demo vulnerabilities are intentional."
+      },
+      {
+        "path": "skills/chatnoir/references/policy.md",
+        "reason": "Outside the shipped helper/installer/report-boundary source review; demo vulnerabilities are intentional."
+      },
+      {
+        "path": "tests/test_chatnoir.py",
+        "reason": "Outside the shipped helper/installer/report-boundary source review; demo vulnerabilities are intentional."
+      },
+      {
+        "path": "tests/test_http_app.py",
+        "reason": "Outside the shipped helper/installer/report-boundary source review; demo vulnerabilities are intentional."
+      }
+    ],
+    "limitations": [
+      "Source-guided self-audit by the existing owner chat; not an independent or blind review.",
+      "No third-party application, production service, adversarial resource-exhaustion or hostile concurrent filesystem test.",
+      "Configured filter commands/programs are prerequisites for the Git execution issue; .gitattributes alone does not create a command in an ordinary clone.",
+      "Markdown rendering verified with locally available marked 17.0.5; no browser XSS or automatic image request established.",
+      "No dependency/advisory or credential-content scan; runtime dependencies are Python and Git."
+    ]
+  },
+  "findings": [
+    {
+      "id": "CN-SELF-GIT-001",
+      "rule_id": "GIT-001",
+      "title": "Git dirty-state inspection could execute configured target filters",
+      "cwe": "CWE-78",
+      "path": "skills/chatnoir/scripts/chatnoir.py",
+      "line": 54,
+      "status": "fixed",
+      "severity": "medium",
+      "confidence": "high",
+      "evidence": [
+        "At pre-fix commit 471a1087b5b28a77d813268ee723cf41a43c707c, collect invoked git status on the target.",
+        "A configured clean filter wrote a marker during baseline scan after a same-length tracked-file change. Process filters and nested repository filters were also reproduced.",
+        "The updated helper checks effective filter keys first and omits status when configured; it ignores submodule content when status is allowed."
+      ],
+      "attack_path": [
+        "Repository contributor controls a program referenced by an already-configured Git filter, or an attacker supplies prepared local Git configuration.",
+        "A file requiring a content comparison is encountered during the scan dirty-state check.",
+        "Git invokes the configured filter with the scanner user privileges, violating the non-execution boundary."
+      ],
+      "counterevidence": [
+        "Plain .gitattributes in a normal clone does not install a filter command.",
+        "The proof only created local disposable markers; no credentials, network or destructive commands were used."
+      ],
+      "proof_gaps": [],
+      "remediation": "Skip Git status when effective clean/process filters exist; return unknown dirty state with a reason and ignore submodule content.",
+      "validation": {
+        "method": "runtime",
+        "result": "Before: clean, process and nested filter execution reproduced. After: all three non-execution regression assertions pass; inventory and normal no-filter dirty-state controls remain functional."
+      }
+    },
+    {
+      "id": "CN-SELF-RENDER-001",
+      "rule_id": "REPORT-001",
+      "title": "Imported report text could insert active links and forged Markdown headings",
+      "cwe": "CWE-116",
+      "path": "skills/chatnoir/scripts/chatnoir.py",
+      "line": 356,
+      "status": "fixed",
+      "severity": "low",
+      "confidence": "high",
+      "evidence": [
+        "Backslash-prefixed brackets bypassed the previous escaping; bare URLs and embedded line breaks also remained active Markdown syntax.",
+        "Local marked 17.0.5 parsing of a crafted report produced three links and a forged heading before the fix.",
+        "Encoding punctuation as character entities and folding line breaks produced zero links/images and no forged heading after the fix."
+      ],
+      "attack_path": [
+        "An imported report or retained source excerpt contributes attacker-controlled strings.",
+        "The user runs chatnoir render and later views the Markdown.",
+        "Incomplete escaping allows the data to become active links or forged report structure in a compatible viewer."
+      ],
+      "counterevidence": [
+        "No browser code execution or automatic remote image request was established.",
+        "The validator is structural and does not authenticate a report; this fix protects rendering boundaries, not report truth."
+      ],
+      "proof_gaps": [],
+      "remediation": "Treat imported fields as literal text by encoding ASCII punctuation and folding embedded line breaks before Markdown parsing.",
+      "validation": {
+        "method": "runtime",
+        "result": "marked 17.0.5: before links=3, images=0, forged heading=true; after links=0, images=0, forged heading=false. Unit regressions for HTML, links, backslashes and newlines pass."
+      }
+    }
+  ],
+  "review_provenance": {
+    "reviewed_pre_fix_commit": "471a1087b5b28a77d813268ee723cf41a43c707c",
+    "pre_fix_snapshot_sha256": "a2b5e2c0fccd847a4c7c9e1dda9b4ed337b2b5b7f6c0524ab9a57b9696ac2b3b",
+    "verified_helper_sha256": "152747cf1e3ef4a935c5405df4d909455a895739e38bb4d14c1d05060fc72856",
+    "baseline_leads": [
+      {
+        "path": "examples/false-positive/app.py",
+        "line": 6,
+        "rule_id": "CN001",
+        "disposition": "dismissed: fixed literal eval"
+      },
+      {
+        "path": "examples/http-app/fixed/app.py",
+        "line": 22,
+        "rule_id": "CN001",
+        "disposition": "dismissed: fixed literal eval"
+      },
+      {
+        "path": "examples/http-app/vulnerable/app.py",
+        "line": 22,
+        "rule_id": "CN001",
+        "disposition": "dismissed: fixed literal eval"
+      },
+      {
+        "path": "examples/http-app/vulnerable/app.py",
+        "line": 26,
+        "rule_id": "CN004",
+        "disposition": "confirmed intentional SQL teaching vulnerability; excluded from real-code remediation"
+      },
+      {
+        "path": "examples/sql-injection/vulnerable/app.py",
+        "line": 5,
+        "rule_id": "CN004",
+        "disposition": "confirmed intentional SQL teaching vulnerability; excluded from real-code remediation"
+      }
+    ],
+    "finding_origin": "Source-guided ChatNoir workflow review; neither new issue was emitted by a baseline heuristic.",
+    "test_suite": {
+      "command": "python3 -m unittest discover -s tests -v",
+      "passed": 42
+    },
+    "markdown_proof": {
+      "before": {
+        "active_links": 3,
+        "active_images": 0,
+        "forged_heading": true
+      },
+      "after": {
+        "active_links": 0,
+        "active_images": 0,
+        "forged_heading": false
+      },
+      "parser": "marked 17.0.5; local parsing only; no browser or network"
+    },
+    "git_version": "git version 2.52.0"
+  }
+}

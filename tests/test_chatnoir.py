@@ -5,10 +5,12 @@ import json
 import os
 from pathlib import Path
 import runpy
+import shlex
 import subprocess
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "skills/chatnoir/scripts/chatnoir.py"
@@ -20,6 +22,10 @@ installer = runpy.run_path(str(ROOT / "scripts/install.py"))
 
 class ChatNoirTests(unittest.TestCase):
     def setUp(self):
+        # Fixture filter policies must not inherit the developer's global Git/LFS setup.
+        git_environment = patch.dict(os.environ, {"GIT_CONFIG_NOSYSTEM": "1", "GIT_CONFIG_GLOBAL": os.devnull})
+        git_environment.start()
+        self.addCleanup(git_environment.stop)
         self.temp = tempfile.TemporaryDirectory()
         self.root = Path(self.temp.name).resolve()
 
@@ -177,6 +183,54 @@ class ChatNoirTests(unittest.TestCase):
         cn.collect(self.root)
         self.assertFalse((self.root / "executed").exists())
 
+    def assert_git_filter_not_executed(self, kind):
+        self.init_git()
+        app = self.write("app.py", "value = 1\n")
+        self.commit()
+        hook = self.write("filter.py", 'import sys\nfrom pathlib import Path\nPath(__file__).with_name("executed").touch()\n' + ('sys.exit(0)\n' if kind == "process" else 'sys.stdout.buffer.write(sys.stdin.buffer.read())\n'))
+        self.write(".gitattributes", "*.py filter=proof\n")
+        self.git("config", f"filter.proof.{kind}", shlex.join([sys.executable, str(hook)]))
+        app.write_text("value = 2\n")  # Same length forces Git to compare content.
+        changed = app.stat().st_mtime + 2
+        os.utime(app, (changed, changed))
+        result = self.cmd("scan", self.root)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertFalse((self.root / "executed").exists(), "scan executed a Git content filter")
+        report = json.loads(result.stdout)
+        self.assertIsNone(report["target"]["dirty"])
+        self.assertIn("filter", report["target"]["dirty_reason"])
+        self.assertIn("app.py", report["coverage"]["reviewed"])
+
+    def test_git_clean_filter_not_executed(self):
+        self.assert_git_filter_not_executed("clean")
+
+    def test_git_process_filter_not_executed(self):
+        self.assert_git_filter_not_executed("process")
+
+    def test_submodule_filter_not_executed(self):
+        self.init_git()
+        child = self.root / "child"
+        child.mkdir()
+        def git(*args):
+            subprocess.run(["git", "-C", str(child), *args], check=True, capture_output=True)
+        git("init", "-b", "main")
+        git("config", "user.name", "Fixture")
+        git("config", "user.email", "fixture@example.invalid")
+        git("config", "commit.gpgsign", "false")
+        app = self.write("child/app.py", "value = 1\n")
+        git("add", ".")
+        git("commit", "-m", "child")
+        self.commit()
+        hook = self.write("child/filter.py", 'import sys\nfrom pathlib import Path\nPath(__file__).with_name("executed").touch()\nsys.stdout.buffer.write(sys.stdin.buffer.read())\n')
+        self.write("child/.gitattributes", "*.py filter=proof\n")
+        git("config", "filter.proof.clean", shlex.join([sys.executable, str(hook)]))
+        app.write_text("value = 2\n")
+        changed = app.stat().st_mtime + 2
+        os.utime(app, (changed, changed))
+        result = self.cmd("scan", self.root)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertFalse((child / "executed").exists(), "scan ran a submodule's filter")
+
     def test_committed_diff_retains_deleted_file_and_unusual_path(self):
         self.init_git()
         self.write("old\nname.py", "eval(value)\n")
@@ -260,7 +314,15 @@ class ChatNoirTests(unittest.TestCase):
         report["findings"][0]["title"] = '<script>bad</script> [click](https://bad.invalid)'
         output = cn.render(report)
         self.assertNotIn("<script>", output)
-        self.assertIn("\\[click\\]", output)
+        self.assertIn("&#91;click&#93;", output)
+
+    def test_markdown_imported_text_is_inert_even_with_backslashes_and_newlines(self):
+        report = self.report()
+        report["findings"][0]["title"] = "\\[trusted\\](https://example.invalid)\n\n## Forged verdict"
+        report["findings"][0]["evidence"] = ["https://example.invalid/track", "first\n\n![image](https://example.invalid/pixel)"]
+        output = cn.render(report)
+        self.assertNotIn("https://", output)
+        self.assertNotIn("\n## Forged verdict", output)
 
     def test_cli_exit_codes_and_roundtrip(self):
         self.write("app.py", "eval(value)\n")

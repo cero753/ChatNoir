@@ -8,7 +8,7 @@
 
 <p align="center">
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-111111"></a>
-  <a href="https://github.com/fhajjej-ship-it/ChatNoir/releases"><img alt="Release v0.1.1" src="https://img.shields.io/badge/release-0.1.1-111111"></a>
+  <a href="https://github.com/fhajjej-ship-it/ChatNoir/releases"><img alt="Release v0.1.2" src="https://img.shields.io/badge/release-0.1.2-111111"></a>
   <a href="docs/compatibility.md"><img alt="Codex, Claude Code, Cursor" src="https://img.shields.io/badge/skills-Codex%20%C2%B7%20Claude%20Code%20%C2%B7%20Cursor-111111"></a>
 </p>
 
@@ -149,6 +149,6 @@ ChatNoir does not certify an app as secure. It has no comparative benchmark or e
 python3 -m unittest discover -s tests -v
 ```
 
-[Validation evidence →](docs/validation.md) · [Contributing →](CONTRIBUTING.md) · [Report a vulnerability privately →](SECURITY.md) · [MIT license →](LICENSE)
+[Real-project self-audit and fixes →](docs/real-project-audit.md) · [Validation evidence →](docs/validation.md) · [Contributing →](CONTRIBUTING.md) · [Report a vulnerability privately →](SECURITY.md) · [MIT license →](LICENSE)
 
 *Chat noir* is French for *black cat*. Quiet, watchful, and curious about the places a boundary can break.

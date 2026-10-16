@@ -2,7 +2,7 @@
 
 Use `chatnoir.report/v1` when saving a structured scan report. Start from the baseline helper output or `schemas/report.schema.json` in the repository. A copied skill remains self-contained: `scripts/chatnoir.py validate` enforces the essential contract without needing the root schema or third-party libraries.
 
-The report contains `format`, `version`, `mode`, `target`, `coverage` and `findings`. Target identity records the digest of included file entries, Git revision/dirty state when available, inventory strategy, per-file hashes and skipped paths. Do not relabel a baseline inventory as reviewed source. `reviewed` and `deferred` describe the work actually completed for that mode. Retain baseline provenance when expanding it into an agent review; regenerate file identity if source changes.
+The report contains `format`, `version`, `mode`, `target`, `coverage` and `findings`. Target identity records the digest of included file entries, Git revision/dirty state when available (`dirty: null` with `dirty_reason` when Git filters prevent a safe status check), inventory strategy, per-file hashes and skipped paths. Do not relabel a baseline inventory as reviewed source. `reviewed` and `deferred` describe the work actually completed for that mode. Retain baseline provenance when expanding it into an agent review; regenerate file identity if source changes.
 
 Each finding has stable `id`, `rule_id`, human `title`, repository-relative `path`, positive `line`, `status`, `severity`, `confidence`, `evidence`, `attack_path`, `counterevidence`, `proof_gaps`, `remediation` and `validation` (`method`: `not_run`, `static` or `runtime`; `result`: explanation). Use a new `rule_id` for an agent finding outside the baseline rules, such as `AUTHZ-001`.
 

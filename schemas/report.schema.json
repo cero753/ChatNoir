@@ -104,6 +104,13 @@
               }
             }
           }
+        },
+        "dirty_reason": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Why dirty state was not determined, such as configured Git content filters."
         }
       }
     },

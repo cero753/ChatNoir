@@ -4,7 +4,7 @@ Observed October 16, 2026 on macOS arm64. This is bounded release evidence, not 
 
 ## Executed checks
 
-- `python3 -m unittest discover -s tests -v`: 38 tests passed. Coverage includes candidate rules and safe controls, no scanner execution of target code, symlink/FIFO/credential-file handling, Git ignore/diff behavior, fsmonitor disabling, report verdict/inventory invariants, Markdown/SARIF output, CLI exit codes and installation without overwriting user changes. New checks reproduce the SQL-variable miss, verify assignment scope/reassignment, and exercise the vulnerable/fixed HTTP routes.
+- Version 0.1.1: `python3 -m unittest discover -s tests -v` passed 38 tests. Coverage includes candidate rules and safe controls, no scanner execution of target code, symlink/FIFO/credential-file handling, Git ignore/diff behavior, fsmonitor disabling, report verdict/inventory invariants, Markdown/SARIF output, CLI exit codes and installation without overwriting user changes. New checks reproduce the SQL-variable miss, verify assignment scope/reassignment, and exercise the vulnerable/fixed HTTP routes.
 - `python3 scripts/demo.py`: completed the actual candidate, synthetic SQL reproduction/fix, false-positive challenge and committed-patch identity demos. [Recorded stdout](demo-output.txt).
 - CLI JSON validation, Markdown rendering and SARIF export succeeded for the published baseline/review samples.
 - Both sample reports passed the published JSON Schema; the portable plugin manifest and SARIF sample passed their upstream schemas. This development check used `jsonschema` in a temporary tool environment; shipped helpers and tests do not require it.
@@ -12,6 +12,10 @@ Observed October 16, 2026 on macOS arm64. This is bounded release evidence, not 
 - Codex CLI 0.157.0 discovered `chatnoir@chatnoir-marketplace` with version `0.1.0` using command-line local-marketplace overrides. No global config change was required.
 - The installed Skill Creator format validator accepted `skills/chatnoir/`. Project-local copies for Codex, Claude Code, Cursor and the generic Agent Skills location executed their bundled helper successfully.
 - Local JSON parsing and Markdown link checks passed for the distribution.
+
+## Version 0.1.2 real-project audit
+
+The [real-project self-audit](real-project-audit.md) reviewed ChatNoir's shipped helper, installer and report boundaries. Source review found and harmless local execution reproduced Git filter execution during dirty-state checks and imported Markdown injection. Both were fixed. The updated suite passed 42 tests; actual repository inventory/scan, report validation, Markdown/SARIF export, demos and manifest validation succeeded. The [structured verification](e2e/real-project-review.json) preserves source hashes, prerequisites, baseline dispositions and remaining gaps. This is an owner self-review, not a blind or external audit.
 
 ## Native provider sessions
 

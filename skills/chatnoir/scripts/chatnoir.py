@@ -11,11 +11,12 @@ import os
 from pathlib import Path, PurePosixPath
 import re
 import stat
+import string
 import subprocess
 import sys
 from urllib.parse import quote
 
-VERSION = "0.1.1"
+VERSION = "0.1.2"
 FORMAT = "chatnoir.report/v1"
 MAX_FILE = 1024 * 1024
 MAX_TOTAL = 64 * 1024 * 1024
@@ -37,7 +38,7 @@ class ChatNoirError(Exception):
 
 
 def git(root: Path, *args: str) -> bytes:
-    """No shell, hooks, pager, external diff or target code execution."""
+    """Use fixed caller operations; disable pager and filesystem-monitor execution."""
     return subprocess.run(["git", "--no-pager", "-c", "core.fsmonitor=false", "-C", str(root), *args],
                           check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                           timeout=30).stdout
@@ -48,6 +49,21 @@ def git_root(root: Path) -> Path | None:
         return Path(os.fsdecode(git(root, "rev-parse", "--show-toplevel")).strip()).resolve()
     except (OSError, subprocess.SubprocessError):
         return None
+
+
+def dirty_state(root: Path) -> tuple[bool | None, str | None]:
+    # Even `git status` can run clean/process filters while comparing content.
+    # Inspect effective configuration without executing the configured programs.
+    try:
+        filters = git(root, "config", "--null", "--name-only", "--get-regexp", r"^filter\..*\.(clean|process)$")
+    except subprocess.CalledProcessError as error:
+        if error.returncode != 1:  # 1 means no matching configuration keys.
+            raise
+        filters = b""
+    if filters:
+        return None, "not checked: Git clean/process filters are configured"
+    # Submodule content is outside this inventory; do not invoke its own filters.
+    return bool(git(root, "status", "--porcelain", "--untracked-files=normal", "--ignore-submodules=all", "--", ".")), None
 
 
 def safe_relative(value: str) -> bool:
@@ -132,14 +148,14 @@ def collect(root: Path) -> tuple[dict, dict[str, bytes]]:
         files.append({"path": rel, "sha256": digest, "bytes": len(data)})
         blobs[rel] = data
     identity = hashlib.sha256(json.dumps(files, sort_keys=True, ensure_ascii=True).encode()).hexdigest()
-    head, dirty = None, None
+    head, dirty, dirty_reason = None, None, None
     if git_root(root):
         try:
             head = git(root, "rev-parse", "--verify", "HEAD").decode().strip()
-            dirty = bool(git(root, "status", "--porcelain", "--untracked-files=normal", "--", "."))
+            dirty, dirty_reason = dirty_state(root)
         except (OSError, subprocess.SubprocessError):
-            pass
-    return {"snapshot_sha256": identity, "git_head": head, "dirty": dirty,
+            dirty_reason = "Git state unavailable"
+    return {"snapshot_sha256": identity, "git_head": head, "dirty": dirty, "dirty_reason": dirty_reason,
             "inventory_strategy": strategy, "files": files, "skipped": skipped}, blobs
 
 
@@ -335,10 +351,11 @@ def validate_report(report: dict) -> None:
 
 def render(report: dict) -> str:
     validate_report(report)
-    # Escape embedded markup so imported report strings cannot add HTML or links.
+    # Encode punctuation before Markdown parsing; backslashes, autolinks and
+    # embedded line breaks must not turn report data into active markup.
     def plain(value: object) -> str:
-        text = str(value)
-        return "".join(c if c >= " " or c == "\n" else "?" for c in text).replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("[", "\\[").replace("]", "\\]").replace("`", "\\`")
+        text = " ".join(str(value).splitlines())
+        return "".join(f"&#{ord(c)};" if c in string.punctuation else c if c >= " " else "?" for c in text)
     lines = ["# ChatNoir security review", "", f"Mode: {report['mode']} · coverage complete: {str(report['coverage']['complete']).lower()}",
              f"Snapshot: `{report['target']['snapshot_sha256']}`", "", "Pattern matches are review leads. A zero-candidate baseline is not a clean bill of health.", ""]
     for f in report["findings"]:

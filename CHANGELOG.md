@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.2 — October 16, 2026
+
+- Fixed target-code execution through Git clean/process filters during inventory and scan dirty-state checks. Configured filters now leave dirty state unknown with a reason; submodule content is excluded from that check.
+- Fixed Markdown output injection through crafted report text, backslashes, bare URLs and embedded newlines. Imported strings now remain literal text.
+- Added regressions for clean/process filters, nested Git filters and imported report markup.
+- Recorded a source-guided self-audit of the actual ChatNoir repository, with before/after runtime evidence and explicit coverage limits.
+
 ## 0.1.1 — October 16, 2026
 
 - Fixed a missed SQL-injection lead when a constructed query is assigned to a local variable before execution; kept reassignment and function scope controls.

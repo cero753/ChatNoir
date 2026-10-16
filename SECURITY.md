@@ -10,7 +10,7 @@ The current 0.1.x release is the supported line. This is an early release, not a
 
 ## Threat model
 
-ChatNoir's helpers read authorized local source and emit review evidence. They do not deliberately execute target code, install packages or make network calls. Reports and source files can be hostile data. The helpers bound file size/count, reject linked file components during ordinary stable-tree reads, disable Git external diff/textconv and filesystem-monitor execution, and omit source values from baseline findings.
+ChatNoir's helpers read authorized local source and emit review evidence. They do not deliberately execute target code, install packages or make network calls. Reports and source files can be hostile data. The helpers bound file size/count, reject linked file components during ordinary stable-tree reads, disable Git external diff/textconv and filesystem-monitor execution, skip dirty-state checks when content filters are configured, ignore submodule contents in those checks, and omit source values from baseline findings.
 
 ChatNoir is not a sandbox. The host agent, model provider, Python/Git runtime, operating system, plugin distribution and selected working directory remain trusted dependencies. Concurrent hostile filesystem mutation is outside the helper's containment model. Running target tests, build scripts or reproductions needs a separate appropriate environment and authorization.
 
