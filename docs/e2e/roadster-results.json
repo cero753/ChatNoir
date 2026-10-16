@@ -1,0 +1,117 @@
+{
+  "format": "chatnoir.real-app-evaluation/v1",
+  "observed": "2026-10-16",
+  "chatnoir_version": "0.1.2",
+  "surface": "Current Codex desktop chat using installed ChatNoir skill/helper; source review is performed by the agent",
+  "target": {
+    "name": "Roadster Reference",
+    "repository": "https://github.com/fhajjej-ship-it/roadster-reference",
+    "commit": "d37ada4bd81cd8228c4865286e24964e7e25c8fc",
+    "kind": "Static Python-built web app with browser JavaScript; no identified backend or public content-submission endpoint",
+    "snapshot_sha256": "f078253f6808d4b56cf1dec87e060e3051b3b374d33ec46f8671362053ad4ddd",
+    "tracked_source_changed": false,
+    "git_dirty": null,
+    "git_dirty_reason": "not checked: Git clean/process filters are configured",
+    "unchanged_verification": "Initial and final included-file hashes and snapshot digest match"
+  },
+  "baseline": {
+    "included_files": 32,
+    "skipped_files": 0,
+    "candidates": 0,
+    "limit": "Five heuristic rule families; JS/TS check is lexical only"
+  },
+  "agent_review": {
+    "confirmed_vulnerabilities": 0,
+    "dismissed_hypotheses": 4,
+    "dismissals": [
+      {
+        "id": "CN-RR-001",
+        "title": "HTML/script injection through rendered content",
+        "method": "runtime",
+        "counterevidence": [
+          "Actual inline renderer emitted no img/script tags for raw HTML.",
+          "Actual full builder with synthetic script-closing claim data emitted only the two intended script tags; original text round-tripped through JSON."
+        ]
+      },
+      {
+        "id": "CN-RR-002",
+        "title": "Active-link scheme or attribute injection",
+        "method": "runtime",
+        "counterevidence": [
+          "Actual destination function rewrote javascript (including mixed case) and data links to #.",
+          "An HTTPS URL containing quotes remained one href attribute with no event handler.",
+          "Actual validator rejected injected javascript source data; original source data passed."
+        ]
+      },
+      {
+        "id": "CN-RR-003",
+        "title": "Filesystem path escape through Markdown link destinations",
+        "method": "runtime",
+        "counterevidence": [
+          "The actual destination function raised ValueError for a path outside ROOT."
+        ]
+      },
+      {
+        "id": "CN-RR-004",
+        "title": "Server-side request forgery through source URLs",
+        "method": "static",
+        "counterevidence": [
+          "No server-side URL-fetch operation or deployed backend entrypoint was identified in the reviewed source."
+        ]
+      }
+    ],
+    "scope": "Renderer output, source URLs, local path handling and app execution boundaries"
+  },
+  "checks": {
+    "app_tests_passed": 9,
+    "app_data_and_local_link_validation": "passed",
+    "static_build_pages": 17,
+    "local_boundary_controls_passed": 6,
+    "controls": [
+      {
+        "case": "raw Markdown HTML",
+        "result": "passed",
+        "observation": "img and script input escaped as text; no element tags emitted"
+      },
+      {
+        "case": "active Markdown link schemes",
+        "result": "passed",
+        "observation": "javascript (including mixed case) and data schemes rewritten to #"
+      },
+      {
+        "case": "HTTPS href attribute boundary",
+        "result": "passed",
+        "observation": "quoted URL remains one href attribute; no event attribute; legitimate HTTPS link preserved"
+      },
+      {
+        "case": "outside-root Markdown destination",
+        "result": "passed",
+        "observation": "resolved path outside repository rejected by relative_to before use"
+      },
+      {
+        "case": "source-registry URL validation",
+        "result": "passed",
+        "observation": "actual validator rejects injected javascript source URL; original data validates"
+      },
+      {
+        "case": "embedded JSON script boundary",
+        "result": "passed",
+        "observation": "full actual builder on a synthetic-content scratch copy keeps script-closing text inside JSON; only the two intended script elements emitted"
+      }
+    ],
+    "report_validation_markdown_sarif": "passed",
+    "python_version": "3.14.6"
+  },
+  "chatnoir_implementation_defects_found": 0,
+  "runtime_fix_required": false,
+  "limitations": [
+    "Source review and local Python/output-parser controls only; no browser execution or live production test.",
+    "Repository JSON, Markdown and templates are maintainer-controlled inputs; no public submission endpoint or runtime backend was identified.",
+    "No independent dependency-advisory or secret-content scan; all Python runtime imports used here were standard-library or inspected local modules.",
+    "No blind or independent evaluation; no security certification or established detection rate.",
+    "The lack of a security policy is a documentation gap, not a vulnerability.",
+    "Git dirty state is unknown because effective clean/process filters are configured; included-file bytes were verified separately.",
+    "Synthetic inputs challenge real rendering functions; they are negative controls, not newly discovered vulnerabilities.",
+    "No production requests, package installation, paid model inference or database calls."
+  ]
+}
