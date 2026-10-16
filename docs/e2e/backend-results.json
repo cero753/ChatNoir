@@ -1,0 +1,75 @@
+{
+  "format": "chatnoir.backend-evaluation/v1",
+  "observed": "2026-10-16",
+  "chatnoir_version": "0.1.2",
+  "surface": "Current Codex desktop chat using installed ChatNoir workflow/helper",
+  "target": {
+    "kind": "Existing private application with FastAPI backend, service-token and signed-JWT authentication, and PostgreSQL-backed resources",
+    "identity_and_pinned_revision": "Retained locally; private source and raw traces not uploaded",
+    "scope": "Selected backend middleware, privileged token verification, session read and workflow identity checks",
+    "source_changed": false,
+    "source_verification": "Initial/final included-file hashes and staged runtime Python bytes matched"
+  },
+  "baseline": {
+    "included_files": 23,
+    "binary_files_skipped": 2,
+    "candidates": 0,
+    "coverage": "Five heuristic rule families; zero candidates is not a security pass"
+  },
+  "review": {
+    "confirmed_vulnerabilities": 0,
+    "dismissed_hypotheses": 4,
+    "hypotheses": [
+      "Service-token authentication bypass/pre-auth database initialization",
+      "Signed JWT signature, expiry or role bypass",
+      "SQL injection in the selected database read",
+      "Worker workspace/record identity mismatch"
+    ],
+    "chatnoir_implementation_defects_found": 0
+  },
+  "runtime": {
+    "checks_passed": 18,
+    "service_auth": "Missing/wrong credentials rejected before database initialization; configured primary, fallback and bearer controls accepted",
+    "jwt_auth": "Missing, forged, expired, unsigned and wrong-role tokens rejected; valid signed token reached offline-provider guard",
+    "database": "Fresh PostgreSQL 17; minimal synthetic schema with two messages and one workflow record",
+    "query_control": {
+      "legitimate_read_rows": 1,
+      "injection_read_rows": 0,
+      "unauthenticated_read_status": 401
+    },
+    "worker_identity": {
+      "matching_database_lookup": "passed",
+      "mismatched_workspace_status": 409
+    },
+    "data_unchanged": "passed",
+    "dependencies": {
+      "fastapi": "0.135.3",
+      "starlette": "1.0.0",
+      "asyncpg": "0.31.0",
+      "PyJWT": "2.12.1",
+      "httpx": "0.28.1"
+    },
+    "transport": "Actual unpatched app routes/middleware through HTTPX ASGITransport and real asyncpg/PostgreSQL; no socket HTTP server",
+    "credentials_and_database_mocks": false
+  },
+  "report_pipeline": "Full local report validated and exported to Markdown/SARIF",
+  "containment": {
+    "dedicated_internal_docker_network": true,
+    "existing_images_reused": true,
+    "source_and_probe_mounts_read_only": true,
+    "production_data_or_config_mounted": false,
+    "host_ports_published": false,
+    "model_or_email_keys_present": false,
+    "containers_and_network_cleaned_up": true
+  },
+  "limitations": [
+    "Scope is selected backend paths, not the complete app.",
+    "No browser or identity-provider sign-in, frontend user-membership authorization, full application startup or model workflow test.",
+    "Real database used a minimal synthetic schema, not full production migrations.",
+    "A valid privileged JWT reached the offline-provider guard; this is not a completed model chat.",
+    "No production endpoint, package installation, live model inference, email, billing or external database use.",
+    "No dependency-advisory or secret-content scan; two binary files excluded.",
+    "Private target identity/source revision/raw traces remain local; this public summary is not an independently reproducible benchmark.",
+    "No confirmed vulnerability or new ChatNoir implementation defect surfaced; no runtime patch/version bump was required."
+  ]
+}

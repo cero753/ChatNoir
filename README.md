@@ -62,6 +62,8 @@ The baseline helper returned **zero candidates**; this finding came from ChatNoi
 
 A second real-app review covered [Roadster Reference](docs/roadster-evaluation.md), a Python-built static web app. It produced **no confirmed vulnerabilities**: 9 existing tests, the 17-page build and 6 local security boundary controls passed. Four review hypotheses were dismissed with evidence; no ChatNoir code fix was needed. This bounded negative result is not a security certification.
 
+A [backend/auth/database evaluation](docs/backend-evaluation.md) then exercised a private FastAPI app with real service-token/JWT verification and fresh PostgreSQL. **18 API integration checks passed**, covering invalid credentials, JWT bypass attempts, SQL injection text and worker workspace consistency. No vulnerability or new ChatNoir defect was confirmed in that scope. Browser sign-in and complete customer authorization remain untested.
+
 ## Install where you build
 
 **Claude Code plugin**
