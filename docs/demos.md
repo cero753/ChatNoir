@@ -52,4 +52,15 @@ Keep it read-only. Validate against the synthetic reproducer if appropriate,
 and distinguish the demonstrated function-level failure from unknown app exposure.
 ```
 
-Expected behavior: a source-backed explanation of the SQL injection, an explicit validation method, a legitimate control, and a narrow remedy. The exact wording depends on the model. The published local runtime demo does not imply that every supported host's model session has been tested.
+Expected behavior: a source-backed explanation of the SQL injection, an explicit validation method, a legitimate control, and a narrow remedy. The exact wording depends on the model. See [measured harness results](harness-e2e.md) for actual provider-session outcomes and gaps.
+
+## 4. Three flaws through real HTTP routes
+
+```sh
+python3 scripts/http_probe.py examples/http-app/vulnerable
+python3 scripts/http_probe.py examples/http-app/fixed
+```
+
+The first command exits 1: SQL injection exposes unpublished records, Alice can fetch Bob's invoice, and a download escapes its public directory. The second exits 0: the same three attacks are blocked and all five legitimate/authentication controls pass. Both commands start only an ephemeral loopback WSGI server; all data is synthetic and proxy environment variables are ignored.
+
+The fixed fixture contains the patch produced during the native Codex ChatNoir test, independently checked through HTTP afterward. [Inspect the actual agent patch](e2e/codex-fix.diff). This demonstrates source review, remediation and verification on a bounded local application, not a detection benchmark for unseen applications.

@@ -1,0 +1,72 @@
+{
+  "format": "chatnoir.harness-e2e/v1",
+  "observed": "2026-10-16",
+  "fixture": "examples/http-app",
+  "scope": "Known synthetic local cases; not a general detection benchmark.",
+  "harnesses": {
+    "codex": {
+      "version": "0.157.0",
+      "model": "gpt-6-sol (high reasoning; user-approved fallback)",
+      "native_skill_loaded": true,
+      "review_source_unchanged": true,
+      "confirmed_cwes": [
+        "CWE-89",
+        "CWE-639",
+        "CWE-22"
+      ],
+      "constant_eval_dismissed": true,
+      "validation": "Actual in-memory calls to the application implementation",
+      "input_app_sha256": "a838a50d869905cc446cffe7051ea8bda181eb7c6ac42d9e6bfa172cf4b860b0",
+      "local_trace_sha256": "1d9fbc8400c31064b8197573d9f3d7aa3c1fbb5e5e5f0bd3de0c6a71fe3fd74b",
+      "remediation": {
+        "status": "passed",
+        "patch": "codex-fix.diff",
+        "independent_http_checks": {
+          "sql_injection_blocked": true,
+          "cross_user_invoice_blocked": true,
+          "path_traversal_blocked": true,
+          "legitimate_catalog": true,
+          "legitimate_invoice": true,
+          "unauthenticated_invoice_blocked": true,
+          "legitimate_download": true,
+          "health": true
+        },
+        "fixture_source": "Agent-generated patch adopted as the fixed public example; teaching header restored."
+      }
+    },
+    "cursor": {
+      "version": "2026.05.16-0338208",
+      "model": "Auto",
+      "native_skill_loaded": true,
+      "review_source_unchanged": true,
+      "confirmed_cwes": [
+        "CWE-89",
+        "CWE-639",
+        "CWE-22"
+      ],
+      "constant_eval_dismissed": true,
+      "validation": "Actual in-memory calls to the application implementation",
+      "input_app_sha256": "a838a50d869905cc446cffe7051ea8bda181eb7c6ac42d9e6bfa172cf4b860b0",
+      "local_trace_sha256": "df34d0919fc4073e50a83b6c49e0c781b06790dc94af232cebc1d222579db931",
+      "remediation": {
+        "status": "provider_blocked",
+        "reason": "Model provider rejected cyber-content remediation request before code edits. No retry to bypass restriction."
+      },
+      "fixed_control": {
+        "status": "passed_static_review",
+        "confirmed_findings": 0,
+        "dismissed_claims": 4,
+        "report": "cursor-control.json",
+        "local_trace_sha256": "4a45f0eb71a55d2385821e2009a6e9b33b62047a9bb83c002f4b093db20af9e3",
+        "note": "Separate source review of an already-fixed fixture, not a Cursor-generated patch or bypass of the refused remediation."
+      }
+    },
+    "claude": {
+      "version": "2.1.42",
+      "native_plugin_discovered": true,
+      "model_execution": "authentication_blocked",
+      "review": "not_verified",
+      "remediation": "not_verified"
+    }
+  }
+}

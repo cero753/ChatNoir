@@ -1,0 +1,52 @@
+{
+  "skill_loaded": {
+    "name": "chatnoir",
+    "actual_path": "<codex-plugin>/skills/chatnoir/SKILL.md"
+  },
+  "findings": [
+    {
+      "title": "Public catalog query exposes invoices through SQL injection",
+      "CWE": "CWE-89",
+      "path": "app.py",
+      "line": 25,
+      "status": "confirmed",
+      "evidence": "The public category parameter is interpolated into SQL and executed at line 26. A UNION query can read the invoices table without the invoice route's authentication check.",
+      "attack_path": "Unauthenticated caller \u2192 category query parameter \u2192 constructed SQL \u2192 invoices returned in the public catalog response.",
+      "validation_method": "In-memory Python standard-library call to the application's dispatch method using synthetic data.",
+      "actual_result": "A UNION payload exposed an invoice owner and amount. A separate OR payload returned unpublished product 2 and product 3; the normal books query returned only product 1."
+    },
+    {
+      "title": "Download path can escape the public directory",
+      "CWE": "CWE-22",
+      "path": "app.py",
+      "line": 39,
+      "status": "confirmed",
+      "evidence": "The caller-controlled name is appended to data/public without checking the resolved path before read_text() at line 40.",
+      "attack_path": "Unauthenticated caller \u2192 name=../internal/notes.txt \u2192 path traversal \u2192 private application file returned.",
+      "validation_method": "In-memory Python standard-library call to dispatch using the app's synthetic fixtures.",
+      "actual_result": "The traversal request returned HTTP 200; its content matched data/internal/notes.txt."
+    },
+    {
+      "title": "Authenticated users can read other users' invoices",
+      "CWE": "CWE-639",
+      "path": "app.py",
+      "line": 33,
+      "status": "confirmed",
+      "evidence": "The invoice lookup filters by ID but never compares the returned owner with the authenticated user before returning the row at line 36.",
+      "attack_path": "Alice's valid token \u2192 Bob's invoice ID in the URL \u2192 ID-only lookup \u2192 Bob's invoice returned.",
+      "validation_method": "In-memory Python standard-library call to dispatch using the documented synthetic tokens.",
+      "actual_result": "Alice's token received Bob's invoice with HTTP 200. An anonymous request received HTTP 401."
+    }
+  ],
+  "dismissed_candidates": [
+    {
+      "claim": "The health endpoint's eval permits attacker-controlled code execution.",
+      "counterevidence": "Line 22 evaluates the fixed literal \"2 + 2\". No request value reaches eval; the endpoint returned 4."
+    }
+  ],
+  "coverage_gaps": [
+    "Reviewed the current clean Git snapshot, README contracts, app.py, and both data fixtures. The ChatNoir baseline helper provided leads but does not establish complete coverage.",
+    "Validation called dispatch directly; the WSGI server and HTTP transport were not exercised.",
+    "No external services, dependency audit, credential access, or broader runtime testing were used."
+  ]
+}

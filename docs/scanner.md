@@ -7,10 +7,10 @@ Run `python3 chatnoir.py --help` from the checkout, or the installed skill's `sc
 | CN001 | `eval` / `exec` | 95 |
 | CN002 | Shell APIs, or subprocess calls with literal `shell=True` | 78 |
 | CN003 | Pickle/dill/marshal loading and unsafe YAML loaders | 502 |
-| CN004 | Query execution with directly constructed expressions | 89 |
+| CN004 | Query execution with constructed expressions, including prior straight-line local assignments | 89 |
 | CN005 | Requests/httpx calls with literal `verify=False` | 295 |
 
-AST matching recognizes straightforward import aliases. It is not type checking, interprocedural data flow or taint analysis. Rebindings can create false positives; wrapped calls, variable-built queries, computed keywords, custom loaders and indirect imports can be missed. Rule CN004 may flag a safe query-construction API and can miss unsafe SQL built in an earlier assignment. The JS/TS check matches only lexical `eval(...)` and `new Function(...)`; comments and strings can match. Agent validation is essential.
+AST matching recognizes straightforward import aliases. It is not type checking, interprocedural data flow or taint analysis. Rebindings can create false positives; wrapped calls, computed keywords, custom loaders and indirect imports can be missed. CN004 follows prior simple local assignments in the same statement block, respecting later reassignment and function boundaries. It does not trace branches, compound updates, object attributes, closures or cross-function query construction, and may flag a safe query-construction API. The JS/TS check matches only lexical `eval(...)` and `new Function(...)`; comments and strings can match. Agent validation is essential.
 
 ## Scope and privacy
 

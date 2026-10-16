@@ -1,0 +1,59 @@
+{
+  "skill_loaded": {
+    "name": "chatnoir",
+    "path": "<plugin>/skills/chatnoir/SKILL.md"
+  },
+  "findings": [
+    {
+      "title": "SQL injection in product catalog category filter",
+      "CWE": "CWE-89",
+      "path": "app.py",
+      "line": 26,
+      "status": "confirmed",
+      "evidence": "User-controlled query parameter category is interpolated into SQL via f-string: statement = f\"SELECT id, title, published FROM products WHERE category = '{category}' AND published = 1\", then executed with self.db.execute(statement). Violates the documented contract that the catalog returns only published products in the requested category.",
+      "attack_path": "Unauthenticated client \u2192 GET /api/products?category=... \u2192 parse_qs yields category \u2192 string-built SELECT \u2192 sqlite3 execute \u2192 unpublished or out-of-category rows returned (e.g. Unannounced draft).",
+      "validation": {
+        "method": "runtime",
+        "result": "In-memory create_app().dispatch('/api/products', \"category=books' OR published=0 OR category='\", '') returned HTTP 200 including product id 2 title 'Unannounced draft' with published=0; normal category=books returned only the published books row."
+      }
+    },
+    {
+      "title": "Missing invoice ownership authorization (IDOR)",
+      "CWE": "CWE-639",
+      "path": "app.py",
+      "line": 36,
+      "status": "confirmed",
+      "evidence": "After mapping Authorization to user, invoice_id is loaded with a parameterized SELECT by id only; row is returned without comparing row owner to the authenticated user. Documented contract: a signed-in user can read only their own invoices.",
+      "attack_path": "Authenticated low-privilege user (Bearer alice-test-token) \u2192 GET /api/invoices/2 \u2192 auth succeeds as alice \u2192 SELECT by id=2 \u2192 bob's invoice amount returned.",
+      "validation": {
+        "method": "runtime",
+        "result": "dispatch('/api/invoices/2', '', 'Bearer alice-test-token') returned 200 {\"id\": 2, \"owner\": \"bob\", \"amount\": 200}; unauthenticated request correctly returned 401."
+      }
+    },
+    {
+      "title": "Path traversal in /download escapes data/public",
+      "CWE": "CWE-22",
+      "path": "app.py",
+      "line": 39,
+      "status": "confirmed",
+      "evidence": "Query parameter name is joined as self.data_root / \"public\" / name with no canonicalization or containment check before destination.read_text(). Documented contract: downloads serve files under data/public; data/internal is private.",
+      "attack_path": "Unauthenticated client \u2192 GET /download?name=../internal/notes.txt \u2192 Path join retains .. segment \u2192 read_text() opens data/internal/notes.txt \u2192 internal content returned in JSON.",
+      "validation": {
+        "method": "runtime",
+        "result": "dispatch('/download', 'name=../internal/notes.txt', '') returned 200 with content 'Synthetic internal planning note: draft launch date.\\n'; resolved path is not relative to data/public."
+      }
+    }
+  ],
+  "dismissed_candidates": [
+    {
+      "claim": "Baseline CN001/CWE-95 dynamic code evaluation at app.py:22 (eval) is attacker-exploitable",
+      "counterevidence": "eval(\"2 + 2\") uses a compile-time literal only; no request input reaches eval. Runtime dispatch('/health', '', '') returns {\"value\": 4} per contract, with no injection surface on this path."
+    }
+  ],
+  "coverage_gaps": [
+    "Baseline scan only applied rules to app.py; README.md, .cursor/cli.json, and data/* had no baseline rules (heuristic leads only).",
+    "No dependency, secret-content, or WSGI server/deployment review; loopback __main__ server path not exercised.",
+    "Budget-limited pass: authentication token scheme treated as intentional synthetic test credentials, not assessed as production crypto/session design.",
+    "Absence of further baseline matches is not evidence the application is safe; confirmed findings above are independent of unmatched rules."
+  ]
+}

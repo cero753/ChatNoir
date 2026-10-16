@@ -15,7 +15,7 @@ import subprocess
 import sys
 from urllib.parse import quote
 
-VERSION = "0.1.0"
+VERSION = "0.1.1"
 FORMAT = "chatnoir.report/v1"
 MAX_FILE = 1024 * 1024
 MAX_TOTAL = 64 * 1024 * 1024
@@ -165,6 +165,7 @@ def candidate(rule: str, path: str, line: int, detail: str) -> dict:
 
 def python_candidates(path: str, text: str) -> list[dict]:
     tree = ast.parse(text, filename=path)
+    parents = {child: parent for parent in ast.walk(tree) for child in ast.iter_child_nodes(parent)}
     aliases = {}
     for node in ast.walk(tree):
         if isinstance(node, ast.Import):
@@ -178,6 +179,35 @@ def python_candidates(path: str, text: str) -> list[dict]:
         name = dotted(node)
         first, dot, rest = name.partition(".")
         return aliases.get(first, first) + (dot + rest if dot else "")
+
+    def local_value(expression: ast.AST, use: ast.AST, seen: frozenset = frozenset()) -> ast.AST:
+        """Follow prior straight-line bindings in the same statement block only.
+
+        This intentionally does not claim branch, closure or interprocedural flow.
+        A local query must not inherit an unrelated function's similarly named value.
+        """
+        if not isinstance(expression, ast.Name) or expression.id in seen:
+            return expression
+        statement = use
+        while statement in parents:
+            parent = parents[statement]
+            block = next((value for _, value in ast.iter_fields(parent)
+                          if isinstance(value, list) and any(item is statement for item in value)), None)
+            if block is not None and isinstance(statement, ast.stmt):
+                for previous in reversed(block[:block.index(statement)]):
+                    targets = previous.targets if isinstance(previous, ast.Assign) else [previous.target] if isinstance(previous, (ast.AnnAssign, ast.AugAssign)) else []
+                    if any(isinstance(target, ast.Name) and target.id == expression.id for target in targets):
+                        if isinstance(previous, ast.AugAssign):
+                            return previous  # unsupported compound updates remain unresolved
+                        value = previous.value
+                        return local_value(value, previous, seen | {expression.id}) if value else expression
+                    # Do not trust an older binding across an intervening control-flow write.
+                    if any(isinstance(node, ast.Name) and isinstance(node.ctx, ast.Store) and node.id == expression.id
+                           for node in ast.walk(previous)):
+                        return expression
+                return expression
+            statement = parent
+        return expression
 
     result = []
     for node in ast.walk(tree):
@@ -198,7 +228,7 @@ def python_candidates(path: str, text: str) -> list[dict]:
             loader = kwargs.get("Loader") or (node.args[1] if len(node.args) > 1 else None)
             if loader is None or resolve(loader) not in {"yaml.SafeLoader", "yaml.CSafeLoader"}:
                 rule = "CN003"
-        elif name.rsplit(".", 1)[-1] in {"execute", "executemany", "executescript"} and node.args and isinstance(node.args[0], (ast.JoinedStr, ast.BinOp, ast.Call)):
+        elif name.rsplit(".", 1)[-1] in {"execute", "executemany", "executescript"} and node.args and isinstance(local_value(node.args[0], node), (ast.JoinedStr, ast.BinOp, ast.Call)):
             rule = "CN004"
         elif isinstance(kwargs.get("verify"), ast.Constant) and kwargs["verify"].value is False and name.startswith(("requests.", "httpx.")):
             rule = "CN005"

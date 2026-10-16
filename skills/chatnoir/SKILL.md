@@ -45,6 +45,8 @@ python3 <skill-dir>/scripts/chatnoir.py diff <target> --base <base> --head <head
 
 `scan` supplies heuristic leads from five rule families, not confirmed vulnerabilities. It omits credential files, binaries, linked files, ignored untracked files and common generated directories; it reports skips and unsupported file types. Git-tracked ignored files remain in scope except explicit exclusions. Baseline coverage always remains incomplete. Inventory digests identify included bytes; rerun or re-read affected files when the target changes. Diff mode binds committed revisions only.
 
+If a host's read-only mode blocks the helper or runtime checks, continue with permitted source inspection, label those checks not run, and report the limit. Do not repeatedly retry the same denied command or infer safety from a blocked check.
+
 For dependency or secret-content coverage, use existing trusted tooling such as the project's dependency auditor, Semgrep or Gitleaks only when available and authorized. Report actual tool/version, command, network behavior and gaps. Do not silently download a scanner or submit source to a service.
 
 ## Deliver

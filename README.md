@@ -8,7 +8,7 @@
 
 <p align="center">
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-111111"></a>
-  <a href="https://github.com/fhajjej-ship-it/ChatNoir/releases"><img alt="Release v0.1.0" src="https://img.shields.io/badge/release-0.1.0-111111"></a>
+  <a href="https://github.com/fhajjej-ship-it/ChatNoir/releases"><img alt="Release v0.1.1" src="https://img.shields.io/badge/release-0.1.1-111111"></a>
   <a href="docs/compatibility.md"><img alt="Codex, Claude Code, Cursor" src="https://img.shields.io/badge/skills-Codex%20%C2%B7%20Claude%20Code%20%C2%B7%20Cursor-111111"></a>
 </p>
 
@@ -38,6 +38,8 @@ Runtime boundary check: PASS (synthetic in-memory SQLite).
 ```
 
 The demo also challenges a false positive and binds a committed patch to exact revisions and a SHA-256 digest. [See the full recorded run and examples →](docs/demos.md)
+
+For real HTTP boundary checks, [the local application fixture](examples/http-app/README.md) demonstrates SQL injection, cross-user invoice access and file traversal, with fixed controls. All data is synthetic.
 
 ## Install where you build
 

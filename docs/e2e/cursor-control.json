@@ -1,0 +1,177 @@
+{
+  "format": "chatnoir.report/v1",
+  "version": "0.1.1",
+  "mode": "repository",
+  "target": {
+    "snapshot_sha256": "e493e1ce6ffd22fd6af5b791e5d6e3a50f103700af0e8b5c65fbdc5801441c7d",
+    "git_head": null,
+    "dirty": null,
+    "inventory_strategy": "git tracked and untracked, honoring Git ignores for untracked files",
+    "files": [
+      {
+        "path": ".cursor/cli.json",
+        "sha256": "c1a29be738c3e9d450fc6387a827799c5d8a599bcaed527741bef38a6b37a1f8",
+        "bytes": 344
+      },
+      {
+        "path": "README.md",
+        "sha256": "b199ddf9667a20f24f99163fca35b13dbfccf6ea6c32baff0873af06bf296b80",
+        "bytes": 634
+      },
+      {
+        "path": "app.py",
+        "sha256": "856c6c6d417c7d6fa12fb9e11b9178534bf673062f949eb6caa8c64cc9d974f7",
+        "bytes": 3302
+      },
+      {
+        "path": "data/internal/notes.txt",
+        "sha256": "621db875e2b5ebcec919a08ac12e0d976a2c050fcdb9b33d69f26a785e258a28",
+        "bytes": 53
+      },
+      {
+        "path": "data/public/readme.txt",
+        "sha256": "1606ff7e7278a74c1ddb97a5cc9a49aad0f376b0274489979c34f8c40a32f2da",
+        "bytes": 25
+      }
+    ],
+    "skipped": []
+  },
+  "coverage": {
+    "complete": true,
+    "reviewed": [
+      ".cursor/cli.json",
+      "README.md",
+      "app.py",
+      "data/internal/notes.txt",
+      "data/public/readme.txt"
+    ],
+    "deferred": [],
+    "limitations": [
+      "Static source review only; no runtime reproduction authorized.",
+      "Surfaces reviewed against README: product catalog publication filter, invoice authn/authz, download confinement to data/public, /health value, loopback WSGI entry.",
+      "No dependency advisory scan (stdlib-only application).",
+      "No TLS/session/browser analysis; CLI binds 127.0.0.1 only per README.",
+      "Absence of confirmed findings is not a security certification."
+    ]
+  },
+  "findings": [
+    {
+      "id": "CN-3f4667b1aa1f",
+      "rule_id": "CN001",
+      "title": "Dynamic code evaluation",
+      "cwe": "CWE-95",
+      "path": "app.py",
+      "line": 22,
+      "status": "dismissed",
+      "severity": "info",
+      "confidence": "high",
+      "evidence": [
+        "app.py:22 uses eval(\"2 + 2\") on the /health path.",
+        "Baseline heuristic CN001 matched the eval call."
+      ],
+      "attack_path": [],
+      "counterevidence": [
+        "The eval argument is a string Constant with no QUERY_STRING, PATH_INFO, or Authorization influence.",
+        "Reachable result is the integer 4 in JSON, matching the README /health contract.",
+        "No attacker-controlled input reaches eval; pattern match alone is not a vulnerability."
+      ],
+      "proof_gaps": [],
+      "remediation": "Optional clarity: replace eval(\"2 + 2\") with the literal 4; not required to close a security boundary.",
+      "validation": {
+        "method": "static",
+        "result": "Dismissed: constant operand, no taint from WSGI environ into eval."
+      }
+    },
+    {
+      "id": "CN-fs001-download",
+      "rule_id": "FS-001",
+      "title": "Download path traversal to data/internal",
+      "path": "app.py",
+      "line": 38,
+      "status": "dismissed",
+      "severity": "info",
+      "confidence": "high",
+      "evidence": [
+        "app.py:38-43 serves /download using query parameter name under data_root/public."
+      ],
+      "attack_path": [],
+      "counterevidence": [
+        "public_root and destination are both Path.resolve()'d; escape fails is_relative_to(public_root) and returns 403.",
+        "Absolute name segments resolve outside public_root and are rejected the same way.",
+        "No other route reads data/internal; private notes.txt is not exposed by dispatch()."
+      ],
+      "proof_gaps": [],
+      "remediation": "No change required for the README download confinement contract.",
+      "validation": {
+        "method": "static",
+        "result": "Dismissed: containment check after resolve enforces data/public boundary."
+      }
+    },
+    {
+      "id": "CN-authz001-invoice",
+      "rule_id": "AUTHZ-001",
+      "title": "Invoice IDOR across tenants",
+      "path": "app.py",
+      "line": 28,
+      "status": "dismissed",
+      "severity": "info",
+      "confidence": "high",
+      "evidence": [
+        "app.py:28-36 loads invoices by path id after Bearer token mapping."
+      ],
+      "attack_path": [],
+      "counterevidence": [
+        "Missing/unknown Authorization returns 401 before invoice lookup.",
+        "Ownership enforced: if row is None or row[1] != user then 404.",
+        "Matches README: signed-in user reads only own invoices with alice-test-token / bob-test-token."
+      ],
+      "proof_gaps": [],
+      "remediation": "No change required for the invoice ownership contract.",
+      "validation": {
+        "method": "static",
+        "result": "Dismissed: authentication and owner equality check present on the read path."
+      }
+    },
+    {
+      "id": "CN-sql001-products",
+      "rule_id": "SQLI-001",
+      "title": "Product catalog SQL injection or unpublished leak",
+      "path": "app.py",
+      "line": 24,
+      "status": "dismissed",
+      "severity": "info",
+      "confidence": "high",
+      "evidence": [
+        "app.py:24-27 builds a product query using category from parse_qs."
+      ],
+      "attack_path": [],
+      "counterevidence": [
+        "SQL text is a fixed string with category bound via ? parameter tuple; not string concatenation.",
+        "Filter includes AND published = 1, so unpublished id=2 Unannounced draft is excluded.",
+        "Matches README public catalog contract for published products in the requested category."
+      ],
+      "proof_gaps": [],
+      "remediation": "No change required for the catalog publication contract.",
+      "validation": {
+        "method": "static",
+        "result": "Dismissed: parameterized query plus published=1 filter."
+      }
+    }
+  ],
+  "summary": {
+    "confirmed": [],
+    "dismissed_count": 4,
+    "needs_review": [],
+    "ran": [
+      "chatnoir inventory",
+      "chatnoir scan (baseline lead)",
+      "chatnoir validate"
+    ],
+    "not_run": [
+      "application server",
+      "HTTP reproductions",
+      "external services",
+      "other agents"
+    ]
+  }
+}

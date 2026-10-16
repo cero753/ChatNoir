@@ -74,6 +74,14 @@ class ChatNoirTests(unittest.TestCase):
         source = "import yaml\nfrom yaml import SafeLoader as SL\nimport subprocess\nimport requests\nyaml.safe_load(value)\nyaml.load(value, Loader=SL)\nsubprocess.run(['echo', value], shell=False)\nrequests.get(url, verify=True)\ncursor.execute('SELECT ?',(value,))\n"
         self.assertEqual(cn.python_candidates("app.py", source), [])
 
+    def test_sql_built_in_local_variable_is_a_candidate(self):
+        source = "def query(db, category):\n    statement = f\"SELECT * FROM products WHERE category = '{category}'\"\n    return db.execute(statement).fetchall()\n"
+        self.assertEqual([x["rule_id"] for x in cn.python_candidates("app.py", source)], ["CN004"])
+
+    def test_query_bindings_do_not_cross_functions_or_overrides(self):
+        source = "def a(db, value):\n    query = f'SELECT {value}'\n    return db.execute(query)\ndef b(db, value):\n    query = 'SELECT ?'\n    return db.execute(query, (value,))\ndef c(db, value):\n    query = f'SELECT {value}'\n    query = 'SELECT ?'\n    return db.execute(query, (value,))\n"
+        self.assertEqual([x["line"] for x in cn.python_candidates("app.py", source)], [3])
+
     def test_comments_and_strings_do_not_trigger_python_ast_rules(self):
         self.assertEqual(cn.python_candidates("app.py", "# eval(value)\nx = 'eval(value)'\n"), [])
 

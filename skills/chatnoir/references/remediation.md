@@ -10,6 +10,8 @@ When authorized, run the original trigger and legitimate control before and afte
 
 Deliver the actual diff, evidence that the original boundary is closed, legitimate behavior retained, tests run and residual gaps. Fix authority does not include commit, push, merge, deploy or issue writeback.
 
+If a host or provider blocks a requested step, preserve the unresolved result and report the blocked action and stated reason. Do not turn a refusal or tool-permission failure into evidence that the code is safe or the fix is verified.
+
 ## Verify without changing code
 
 Preserve one result per supplied finding and do not edit source. Re-establish the original trigger and legitimate behavior against current code; follow moved implementations and equivalent supported paths. A missing line, closed ticket, passing unrelated suite, or absent baseline pattern does not prove remediation.

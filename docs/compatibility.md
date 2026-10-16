@@ -4,9 +4,9 @@ ChatNoir ships a portable Agent Plugins 1.0 manifest, native Claude/Codex compat
 
 | Host | Distribution | Evidence / limit |
 |---|---|---|
-| Codex | Repository marketplace, compatibility manifest, or `.agents/skills/chatnoir/` | CLI 0.157.0 discovers the plugin through a local marketplace supplied by command-line config; copied skill/helper tested. No fresh model-session or desktop UI install test. |
-| Claude Code | `.claude-plugin` marketplace/plugin or `.claude/skills/chatnoir/` | CLI 2.1.42 manifest validation passed; copied skill/helper tested. No authenticated model-session test. |
-| Cursor | Native `.cursor-plugin` or portable manifest; project skill | Copied skill/helper tested; formats/paths checked against official docs and CLI `--plugin-dir` availability. No Cursor agent-session or IDE install test. |
+| Codex | Repository marketplace, compatibility manifest, or `.agents/skills/chatnoir/` | Native CLI 0.157.0 model sessions loaded the plugin, found/reproduced all 3 known HTTP-fixture flaws, and produced a patch that passed an independent HTTP check. No desktop UI install test. |
+| Claude Code | `.claude-plugin` marketplace/plugin or `.claude/skills/chatnoir/` | CLI 2.1.42 validated and discovered the native plugin. A model request was attempted but authentication blocked execution; full behavior remains unverified. |
+| Cursor | Native `.cursor-plugin` or portable manifest; project skill | Native CLI sessions loaded the skill and found/reproduced all 3 known flaws. The provider blocked remediation; it is not verified. No IDE install test. |
 | VS Code | Through a compatible agent extension | VS Code itself is an editor, not a universal skill/plugin host. No blanket extension compatibility claim. |
 | Other Agent Skills hosts | Copy `skills/chatnoir/` into the host's supported skill root | Must support `SKILL.md`, relative references, file inspection and, for helpers, Python/terminal access. Not individually verified. |
 | Any text-capable agent | Manually provide `SKILL.md` and relevant references | Manual instruction use only, not native plugin integration. Tool and execution limits still apply. |
@@ -34,6 +34,8 @@ codex -c 'marketplaces.chatnoir-marketplace.source_type="local"' \
 ```
 
 The repository marketplace uses `./` as its plugin path. To distribute the release ZIP, extract the full plugin directory, including dot-directories; copying just a manifest is insufficient. For security-sensitive projects, inspect a tagged release and pin your own installation to an exact commit.
+
+See [native harness test evidence](harness-e2e.md) for exact outcomes. In Cursor, plan mode may block Python helpers and runtime checks: keep the review static or explicitly authorize trusted commands in normal agent mode using the host's [project permission configuration](https://cursor.com/docs/cli/reference/permissions). Do not disable protections or force execution merely to make a test pass. ChatNoir reports provider/permission failures as gaps; it cannot override them.
 
 ## Upstream formats
 

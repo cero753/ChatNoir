@@ -1,0 +1,23 @@
+diff --git a/app.py b/app.py
+index 87abb1c..2a3f2b5 100644
+--- a/app.py
++++ b/app.py
+@@ -25,2 +25,4 @@ class Application:
+-            statement = f"SELECT id, title, published FROM products WHERE category = '{category}' AND published = 1"
+-            rows = self.db.execute(statement).fetchall()
++            rows = self.db.execute(
++                "SELECT id, title, published FROM products WHERE category = ? AND published = 1",
++                (category,),
++            ).fetchall()
+@@ -33 +35,4 @@ class Application:
+-            row = self.db.execute("SELECT id, owner, amount FROM invoices WHERE id = ?", (invoice_id,)).fetchone()
++            row = self.db.execute(
++                "SELECT id, owner, amount FROM invoices WHERE id = ? AND owner = ?",
++                (invoice_id, user),
++            ).fetchone()
+@@ -39 +44,4 @@ class Application:
+-            destination = self.data_root / "public" / name
++            public_root = (self.data_root / "public").resolve()
++            destination = (public_root / name).resolve()
++            if not destination.is_relative_to(public_root):
++                return 403, {"error": "Forbidden"}
