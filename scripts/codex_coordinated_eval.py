@@ -5,6 +5,7 @@ Requires existing Codex access and an explicitly selected installed ChatNoir
 skill directory. Raw output is private evidence, never publish it wholesale.
 """
 import argparse
+import ast
 import hashlib
 import json
 import os
@@ -28,6 +29,20 @@ def valid_message(value, sender, action, parent):
             and value.get('approved') is True and value.get('proposal') == {'action': action}
             and value.get('relies_on') == parent and isinstance(value.get('argument'), str)
             and 0 < len(value['argument'].strip()) <= 4000)
+
+
+def installed_helper_version(skill):
+    """Read version metadata without executing the selected installed helper."""
+    tree = ast.parse((skill / 'scripts/chatnoir.py').read_text())
+    for node in tree.body:
+        if (isinstance(node, ast.Assign) and len(node.targets) == 1
+                and isinstance(node.targets[0], ast.Name) and node.targets[0].id == 'VERSION'
+                and isinstance(node.value, ast.Constant) and isinstance(node.value.value, str)):
+            version = node.value.value
+            parts = version.split('.')
+            if len(parts) == 3 and all(p.isascii() and p.isdecimal() for p in parts):
+                return version
+    raise ValueError('Installed helper has no literal release version')
 
 
 def observed_read(events, name, content):
@@ -187,8 +202,12 @@ def review_chain(output, cases, skill, model):
 
 
 def verify_review(review, output, cases, skill):
+    try:
+        version = installed_helper_version(skill)
+    except (OSError, ValueError, SyntaxError):
+        return False
     if (not base['review_passed'](review) or not all(review['call']['input_reads'].values())
-            or review['result'].get('helper_version') != '0.2.1'):
+            or review['result'].get('helper_version') != version):
         return False
     events = []
     for line in (output / 'chatnoir-review.jsonl').read_text().splitlines():
@@ -218,7 +237,7 @@ def verify_review(review, output, cases, skill):
                     continue
     source_hashes = {hashlib.sha256((ROOT / f'examples/coordinated-agents/{v}/app.py').read_bytes()).hexdigest()
                      for v in ('vulnerable', 'fixed')}
-    if (len(scans) != 2 or any(s.get('version') != '0.2.1' or s.get('findings') != [] for s in scans)
+    if (len(scans) != 2 or any(s.get('version') != version or s.get('findings') != [] for s in scans)
             or {f['sha256'] for s in scans for f in s.get('target', {}).get('files', [])} != source_hashes):
         return False
     attack, legitimate = (next(c['messages'] for c in cases if c['input'] == name)
@@ -255,7 +274,7 @@ def collect(output, skill, model):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', type=Path, required=True, help='New private directory for raw traces')
-    parser.add_argument('--skill-path', type=Path, required=True, help='Installed ChatNoir v0.2.1 skill directory')
+    parser.add_argument('--skill-path', type=Path, required=True, help='Installed ChatNoir skill directory')
     parser.add_argument('--codex-model', default='gpt-6-sol')
     args = parser.parse_args()
     if os.name != 'posix':
@@ -263,6 +282,10 @@ def main():
     skill = args.skill_path.resolve()
     if not (skill / 'SKILL.md').is_file() or not (skill / 'scripts/chatnoir.py').is_file():
         parser.error('--skill-path must contain SKILL.md and scripts/chatnoir.py')
+    try:
+        installed_helper_version(skill)
+    except (OSError, ValueError, SyntaxError):
+        parser.error('--skill-path must contain a helper with a literal release version')
     output = args.output.resolve()
     output.mkdir(parents=True, exist_ok=False)
     report = collect(output, skill, args.codex_model)

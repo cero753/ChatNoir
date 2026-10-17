@@ -1,6 +1,6 @@
 {
   "name": "chatnoir",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Protect what you build from agent attacks. Portable security review, attack-path analysis, and fix verification for coding agents.",
   "author": {"name": "Farouk Hajjej", "url": "https://github.com/fhajjej-ship-it"},
   "homepage": "https://github.com/fhajjej-ship-it/ChatNoir",
