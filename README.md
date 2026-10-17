@@ -8,9 +8,11 @@
 
 <p align="center">
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-111111"></a>
-  <a href="https://github.com/fhajjej-ship-it/ChatNoir/releases"><img alt="Release v0.2.0" src="https://img.shields.io/badge/release-0.2.0-111111"></a>
+  <a href="https://github.com/fhajjej-ship-it/ChatNoir/releases/latest"><img alt="Release v0.2.1" src="https://img.shields.io/badge/release-0.2.1-111111"></a>
   <a href="docs/compatibility.md"><img alt="Codex, Claude Code, Cursor" src="https://img.shields.io/badge/skills-Codex%20%C2%B7%20Claude%20Code%20%C2%B7%20Cursor-111111"></a>
 </p>
+
+[Download v0.2.1](https://github.com/fhajjej-ship-it/ChatNoir/releases/download/v0.2.1/chatnoir-0.2.1.zip) · [SHA-256 checksum](https://github.com/fhajjej-ship-it/ChatNoir/releases/download/v0.2.1/SHA256SUMS-0.2.1)
 
 You built the app. Now inspect the boundaries that matter: who can access another user's data, which inputs become commands or queries, and whether a fix closes the original hole.
 
