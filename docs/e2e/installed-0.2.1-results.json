@@ -1,0 +1,226 @@
+{
+  "format": "chatnoir.installed-harness-evidence/v1",
+  "observed": "2026-10-17",
+  "chatnoir_version": "0.2.1",
+  "source_revision": "3fd542268bcc17b304640025ed25bffab8fb1d8a",
+  "status": "partial; Codex passed, Cursor blocked before inference",
+  "source_sha256": {
+    "examples/http-app/vulnerable/app.py": "c9cdf068aa131dd91699033302fc2ca4476c64af3ef9b4dc49b7067f4b7d8b05",
+    "examples/http-app/fixed/app.py": "17a5d14375946651a40617b47784c5c1ee780193c8ea3b354cb0df863a4b5192",
+    "examples/http-app/vulnerable/data/internal/notes.txt": "621db875e2b5ebcec919a08ac12e0d976a2c050fcdb9b33d69f26a785e258a28",
+    "examples/http-app/vulnerable/data/public/readme.txt": "1606ff7e7278a74c1ddb97a5cc9a49aad0f376b0274489979c34f8c40a32f2da",
+    "skills/chatnoir/SKILL.md": "d2e8956b3b5a91e9e0e982102199fd11e7b7016fa8539e45b6f91cba9dd012dc",
+    "skills/chatnoir/references/review.md": "ee5c126eca75775ce1739139993df7ede0289b6a3a818ca1211128b4967aa2b9",
+    "skills/chatnoir/references/evidence.md": "77fd9c7d9714af59655fd33c2c8454f604168042ba4734a972169f9f4ac913f6",
+    "skills/chatnoir/scripts/chatnoir.py": "4b3c341d7000c261d623c504a3ddc09becb881ac9dd7b7cc5d8088154707ca1e",
+    "scripts/http_probe.py": "c47992d410ff446ff70a0df410fa29883705f8ebe83d290d0c84e9698627548e"
+  },
+  "method": {
+    "target": "Separate fresh disposable copies of the known synthetic HTTP fixture; no project-local skill copies.",
+    "scope": "Read-only native reviews; source inspected before local in-memory execution. No target network calls or dependency installation.",
+    "prompt": "Named ChatNoir, intended contracts and installed fallback path; no expected findings or evaluator probe supplied. Not a blind discovery test.",
+    "provider_calls": {
+      "codex": 1,
+      "cursor": 1
+    },
+    "raw_traces": "Private; public evidence contains normalized outcomes only."
+  },
+  "codex": {
+    "cli_version": "0.157.0",
+    "requested_model": "gpt-6-sol, high reasoning",
+    "observed_backend_model": null,
+    "native_registry": {
+      "version": "0.2.1",
+      "installed": true,
+      "enabled": true
+    },
+    "discovery": "Session reported native catalog availability; reads of installed skill and review/evidence references observed.",
+    "installed_helper_matches_tagged_source": true,
+    "helper_version": "0.2.1",
+    "exit_code": 0,
+    "seconds": 50.0,
+    "source_unchanged": true,
+    "baseline_candidates": [
+      "CN001",
+      "CN004"
+    ],
+    "findings": [
+      {
+        "title": "Category SQL injection exposes unpublished products",
+        "source_location": "app.py:24-26",
+        "controlled_input": "The unauthenticated category query parameter, demonstrated with category=books%27+OR+1%3D1+--+.",
+        "broken_boundary": "User input is interpolated into SQL, bypassing the category and published filters.",
+        "runtime_evidence": "An ordinary books request returned only published product 1. The injected request returned products 1, 2 and 3, including unpublished product 2.",
+        "remedy": "Bind category as a SQL parameter."
+      },
+      {
+        "title": "Signed-in user can read another user's invoice",
+        "source_location": "app.py:28-36",
+        "controlled_input": "An authenticated user controls the invoice ID in /api/invoices/{id}.",
+        "broken_boundary": "Authentication succeeds, but the fetched invoice's owner is never compared with the signed-in user.",
+        "runtime_evidence": "With alice-test-token, /api/invoices/2 returned Bob's invoice and amount 200.",
+        "remedy": "Query by both invoice ID and authenticated owner, returning 404 when no matching row exists."
+      },
+      {
+        "title": "Download path traversal exposes internal data",
+        "source_location": "app.py:37-40",
+        "controlled_input": "The unauthenticated name query parameter, demonstrated with name=..%2Finternal%2Fnotes.txt.",
+        "broken_boundary": "The constructed path is read without enforcing that its resolved location remains under data/public.",
+        "runtime_evidence": "The traversal returned the synthetic content of data/internal/notes.txt; a normal request returned data/public/readme.txt.",
+        "remedy": "Resolve the requested path and reject any path outside the resolved data/public directory."
+      }
+    ],
+    "dismissed": [
+      {
+        "candidate": "Helper CN001: dynamic code evaluation at app.py:22",
+        "counterevidence": "The eval argument is the fixed source string \"2 + 2\"; no request value reaches it. /health returned 4. This is a source conclusion supported by the observed response, not a demonstrated code injection."
+      }
+    ],
+    "runtime_checks": [
+      {
+        "case": "health",
+        "status": 200,
+        "body": {
+          "value": 4
+        }
+      },
+      {
+        "case": "published_books",
+        "status": 200,
+        "body": {
+          "data": [
+            {
+              "id": 1,
+              "title": "Public guide",
+              "published": 1
+            }
+          ]
+        }
+      },
+      {
+        "case": "injected_category",
+        "status": 200,
+        "body": {
+          "data": [
+            {
+              "id": 1,
+              "title": "Public guide",
+              "published": 1
+            },
+            {
+              "id": 2,
+              "title": "Unannounced draft",
+              "published": 0
+            },
+            {
+              "id": 3,
+              "title": "Public toolkit",
+              "published": 1
+            }
+          ]
+        }
+      },
+      {
+        "case": "alice_own_invoice",
+        "status": 200,
+        "body": {
+          "id": 1,
+          "owner": "alice",
+          "amount": 100
+        }
+      },
+      {
+        "case": "alice_bob_invoice",
+        "status": 200,
+        "body": {
+          "id": 2,
+          "owner": "bob",
+          "amount": 200
+        }
+      },
+      {
+        "case": "anonymous_invoice",
+        "status": 401,
+        "body": {
+          "error": "Authentication required"
+        }
+      },
+      {
+        "case": "public_download",
+        "status": 200,
+        "body": {
+          "content": "Public fixture document.\n"
+        }
+      },
+      {
+        "case": "internal_traversal",
+        "status": 200,
+        "body": {
+          "content": "Synthetic internal planning note: draft launch date.\n"
+        }
+      }
+    ],
+    "execution_limit": "Initial shell heredoc failed because it required a temporary file in read-only mode. Equivalent Python -c checks succeeded without changing permissions.",
+    "connector_limit": "Unrelated configured connectors emitted startup authorization warnings; no connector tool was called and local review completed."
+  },
+  "cursor": {
+    "cli_version": "2026.10.16-e3cb207",
+    "requested_model": "configured default; no override",
+    "observed_configuration": "Auto; no successful inference",
+    "installed_package_version": "0.2.1",
+    "exit_code": 1,
+    "seconds": 4.4,
+    "blocker": "Agent usage limit",
+    "successful_model_responses": 0,
+    "skill_loaded_in_fresh_session": false,
+    "detection": "not run",
+    "remediation": "not run",
+    "source_unchanged": true,
+    "retry_or_account_change": false
+  },
+  "independent_http_probe": {
+    "vulnerable": {
+      "exit_code": 1,
+      "checks": {
+        "sql_injection_blocked": false,
+        "cross_user_invoice_blocked": false,
+        "path_traversal_blocked": false,
+        "legitimate_catalog": true,
+        "legitimate_invoice": true,
+        "unauthenticated_invoice_blocked": true,
+        "legitimate_download": true,
+        "health": true
+      }
+    },
+    "fixed": {
+      "exit_code": 0,
+      "checks": {
+        "sql_injection_blocked": true,
+        "cross_user_invoice_blocked": true,
+        "path_traversal_blocked": true,
+        "legitimate_catalog": true,
+        "legitimate_invoice": true,
+        "unauthenticated_invoice_blocked": true,
+        "legitimate_download": true,
+        "health": true
+      }
+    }
+  },
+  "changes": "Corrected stale five-rule baseline wording in the fixture README. No portable scanner/skill defect was found; deliberately vulnerable examples remain intact.",
+  "limits": [
+    "Known owner-authored fixture, not unseen-app accuracy evidence.",
+    "Codex review runtime used dispatch calls; HTTP verification was separately evaluator-run.",
+    "The existing fixed variant passed; no new native remediation request was made.",
+    "Cursor fresh-session skill loading and detection remain unverified because inference was blocked.",
+    "No fresh desktop picker or UI session test; these are native CLI sessions.",
+    "No dependency, credential-content, production or comprehensive security audit."
+  ],
+  "repository_verification": {
+    "unit_tests": 75,
+    "unit_tests_result": "passed",
+    "scripts/demo.py": "passed",
+    "changed_markdown_links": "passed",
+    "source_digest_and_installed_resource_checks": "passed",
+    "git_diff_check": "passed"
+  }
+}
