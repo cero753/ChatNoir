@@ -6,7 +6,7 @@ Use [GitHub private vulnerability reporting](https://github.com/fhajjej-ship-it/
 
 Include the affected ChatNoir version/commit, host and Python version, synthetic reproducer, expected security boundary, observed result and impact. Do not test third-party or production systems to demonstrate a ChatNoir issue. No response-time guarantee or bounty is offered.
 
-The current 0.1.x release is the supported line. This is an early release, not a security certification.
+The current 0.2.x release is the supported line. This is an early release, not a security certification.
 
 ## Threat model
 
