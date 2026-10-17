@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.1 — October 17, 2026
+
+- Updated the README hook to “Protect what you build from agent attacks.” and aligned portable, Codex, Claude Code and Cursor plugin/marketplace descriptions with security review, attack-path analysis and fix verification.
+- Published a refreshed download with synchronized plugin/helper versions and direct README ZIP/checksum links. Scanner rules and authorization behavior are unchanged from 0.2.0.
+- Packaged the native CLI evaluation runners, synthetic coordinated approval-laundering example and measured evidence already merged since 0.2.0. The coordinated Codex/Cursor chain remains incomplete because Cursor hit its usage limit; offline controls and source review are kept distinct from successful mixed-host testing.
+- The release retains explicit limits: no continuous runtime blocking, general swarm-defense guarantee or comparative-superiority claim. Packaging checks do not rerun provider model sessions.
+
 ## 0.2.0 — October 17, 2026
 
 - Added CN006/CN007/CN008 Python heuristic leads for dynamic privileged prompt roles, JSON-to-action dispatch and message-supplied permission merges. These remain candidates requiring provenance, reachability and control validation.
