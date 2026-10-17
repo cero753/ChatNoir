@@ -47,7 +47,7 @@ The demo also challenges a false positive and binds a committed patch to exact r
 
 For real HTTP boundary checks, [the local application fixture](examples/http-app/README.md) demonstrates SQL injection, cross-user invoice access and file traversal, with fixed controls. All data is synthetic.
 
-**Fresh installed v0.2.1 check:** Codex loaded the installed skill, reproduced all three HTTP-app flaws and dismissed the constant `eval` candidate. Independent HTTP verification passed all eight checks on the fixed app. The fresh Cursor request hit its account usage limit before inference, so its loading and detection remain unverified in this run. [Results, commands and access limits →](docs/installed-0.2.1-e2e.md)
+**Fresh installed v0.2.2 check:** Codex loaded the installed skill, reproduced all three HTTP-app flaws and dismissed the constant `eval` candidate. Independent HTTP verification passed all eight checks on the fixed app. The fresh Cursor request hit its account usage limit before inference, so its loading and detection remain unverified in this run. [Results, commands and access limits →](docs/installed-0.2.2-e2e.md)
 
 ## Agent attack demos: catch, reproduce, verify
 
@@ -165,7 +165,7 @@ For a local plugin session with Cursor CLI:
 cursor-agent --plugin-dir /absolute/path/to/ChatNoir
 ```
 
-For the IDE, use the project skill installer below, open that project, then type `/chatnoir` in a new agent conversation. This path was exercised through the native skill picker, review and remediation in Cursor 3.24.12. [Desktop test evidence →](docs/desktop-e2e.md) Native desktop plugin installation, version 0.2.1 and the updated descriptions were subsequently checked separately; the latest fresh Cursor model request hit its usage limit before inference. Installation does not establish a successful model review. [Current compatibility →](docs/compatibility.md)
+For the IDE, use the project skill installer below, open that project, then type `/chatnoir` in a new agent conversation. This path was exercised through the native skill picker, review and remediation in Cursor 3.24.12. [Desktop test evidence →](docs/desktop-e2e.md) Native desktop plugin installation, version 0.2.2 and the updated descriptions were subsequently checked separately; the latest fresh Cursor model request hit its usage limit before inference. Installation does not establish a successful model review. [Current compatibility →](docs/compatibility.md)
 
 **Codex, Cursor, Claude Code, or another Agent Skills host**
 

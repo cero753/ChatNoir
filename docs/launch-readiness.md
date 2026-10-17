@@ -6,11 +6,11 @@ Reviewed October 17, 2026. **Ready for an early public release as an evidence-fi
 
 | Surface | Evidence |
 |---|---|
-| Codex | Installed v0.2.1 source reviews reproduced the known HTTP and coordinated flaws. [Installed HTTP results](installed-0.2.1-e2e.md), [coordinated review](coordinated-agent-security.md#fresh-installed-v021-follow-up) |
+| Codex | The fresh installed v0.2.2 review reproduced the known HTTP flaws; the earlier coordinated review used v0.2.1. [Latest HTTP results](installed-0.2.2-e2e.md), [coordinated review](coordinated-agent-security.md#fresh-installed-v021-follow-up) |
 | Multiple real Codex agents | Seven distinct sessions authored and handed off actual messages. ChatNoir found the missing root authorization; the fixed app denied those messages and preserved summaries. The coordinator resisted the attack. [Exact messages and results](codex-coordinated-attack.md) |
-| Cursor | Earlier CLI detection and IDE project-skill review/remediation passed. Native desktop installation and v0.2.1 descriptions were later checked separately. The latest fresh model request hit its usage limit before inference. [Historical IDE results](desktop-e2e.md), [fresh access limit](installed-0.2.1-e2e.md) |
+| Cursor | Earlier CLI detection and IDE project-skill review/remediation passed. Native desktop installation and v0.2.2 descriptions were later checked separately. The latest fresh v0.2.2 model request hit its usage limit before inference. [Historical IDE results](desktop-e2e.md), [fresh access limit](installed-0.2.2-e2e.md) |
 | Claude Code | Manifest validation and native discovery passed. Model requests failed authentication; no successful detection/remediation run is claimed. [Harness evidence](harness-e2e.md) |
-| Local implementation | 80 repository tests and the included demos passed. Coverage includes scanner/report/file/Git handling, installation, synthetic app fixes and native-evaluator verdicts. [Validation record](validation.md) |
+| Local implementation | 81 repository tests and the included demos passed. Coverage includes scanner/report/file/Git handling, installation, synthetic app fixes and native-evaluator verdicts. [Validation record](validation.md) |
 | Distribution | The downloaded v0.2.1 ZIP matched its checksum and all 98 tagged files. The packaged helper and four demos passed; project-local installs for Codex, Cursor, Claude and generic Agent Skills executed helper version 0.2.1. Repository Markdown file links passed. |
 
 ## Corrections in this review
