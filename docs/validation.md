@@ -2,6 +2,10 @@
 
 Observed October 16, 2026 on macOS arm64. This is bounded release evidence, not a benchmark or third-party security certification.
 
+## Fresh installed version 0.2.2 follow-up
+
+On October 17, one fresh Codex CLI session loaded installed v0.2.2 from the native catalog, read the actual skill/references and executed its helper. Nine in-memory controls reproduced SQL injection, cross-user invoice access and download traversal, preserved legitimate requests and dismissed the constant `eval` candidate. One fresh Cursor request hit its usage limit before inference; no fresh Cursor loading/detection pass is claimed. Independent loopback HTTP checks reproduced the three failures and passed all eight checks on the existing fixed app. All 81 tests and `scripts/demo.py` passed. No scanner/skill runtime defect or source patch was needed. [Method and access limits](installed-0.2.2-e2e.md), [source-bound measured evidence](e2e/installed-0.2.2-results.json).
+
 ## Version 0.2.2 package update
 
 The October 17 packaging update includes the latest launch documentation, actual-message all-Codex evaluator and its historical v0.2.1 evidence. All **81 offline tests** and `scripts/demo.py` passed. A new regression reproduces the evaluator's hardcoded-version failure with 0.2.2, verifies matching selected-helper/reviewer/scan versions for 0.2.1 and 0.2.2, and rejects mismatches. The updated adapter also verified the retained real v0.2.1 records without another model request. Scanner implementation differs from 0.2.1 only in its version constant.
@@ -79,6 +83,6 @@ A fresh read-only agent used the skill and raw fixtures to inspect the SQL and c
 
 ## Not established
 
-Full Claude model-session behavior; remediation in the earlier Cursor CLI Auto session; fresh Codex desktop install/picker screens; fresh Cursor v0.2.1 model loading/detection after the usage-limit block; adaptive same-agent revision rounds; Windows/Linux execution; detection accuracy on unseen applications; comparative performance; real customer outcomes; and official marketplace approval are not established by these checks. Native Cursor desktop installation and v0.2.1 descriptions were checked separately; they do not close the model-access gap. The tests run under the available local Python version, not a multi-version matrix. Source workflows cover more security topics than the eight deterministic lead rules; those workflows need the host model's source inspection and judgment. See the [launch-readiness review](launch-readiness.md).
+Full Claude model-session behavior; remediation in the earlier Cursor CLI Auto session; fresh Codex desktop install/picker screens; fresh Cursor v0.2.2 model loading/detection after the usage-limit block; adaptive same-agent revision rounds; Windows/Linux execution; detection accuracy on unseen applications; comparative performance; real customer outcomes; and official marketplace approval are not established by these checks. Native Cursor desktop installation and v0.2.2 descriptions were checked separately; they do not close the model-access gap. The tests run under the available local Python version, not a multi-version matrix. Source workflows cover more security topics than the eight deterministic lead rules; those workflows need the host model's source inspection and judgment. See the [launch-readiness review](launch-readiness.md).
 
 Reproduce locally with the commands above. Inspect the code and pinned release before using it against sensitive projects. No new CI workflow is required to run this suite.
