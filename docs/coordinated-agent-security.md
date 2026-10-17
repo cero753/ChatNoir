@@ -2,6 +2,8 @@
 
 Observed October 17, 2026. **ChatNoir's real Codex source review found and reproduced a quorum authorization flaw, and verified the supplied fix. The coordinated Codex/Cursor chain is incomplete: Cursor rejected requests at its agent usage limit before inference.** This is not a successful mixed-host or swarm-defense test.
 
+A later [completed all-Codex evaluation](codex-coordinated-attack.md) used seven distinct real sessions with model-authored attack and endorsement arguments, actual file handoffs, coordinator decisions and ChatNoir runtime verification of those exact messages. It is separate from this historical mixed-host test and the single-reviewer follow-up below.
+
 ## Fresh installed v0.2.1 follow-up
 
 A fresh Codex CLI 0.157.0 session, using the approved `gpt-6-sol` with high reasoning, loaded the **installed v0.2.1 package** rather than a project-local skill copy. The registry showed it installed and enabled; retained tool events show actual reads of the skill and agent-security/review/evidence/remediation references, helper version `0.2.1`, both baseline scans and runtime execution. Installed resources matched the tested source. The prompt named the installed fallback path and required these controls, so this was not blind skill discovery or an unseen-attack benchmark.

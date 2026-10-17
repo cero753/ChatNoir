@@ -69,6 +69,8 @@ The fixed action gate also denies an always-hostile model proposal. Everything r
 
 A fresh Codex session using **installed v0.2.1** also reproduced this flaw, verified the supplied fix and restored the export by bypassing only the gate in memory. Legitimate summaries still worked. This was one real reviewer executing synthetic peer messages, not a completed live multi-agent chain. [Installed-package verification →](docs/coordinated-agent-security.md#fresh-installed-v021-follow-up)
 
+**Completed with multiple real Codex agents:** seven fresh sessions authored and handed off their own attack/endorsement messages, ran a legitimate control, and reviewed the app with ChatNoir. Replaying those exact hostile messages caused **1 synthetic export before → 0 after**; legitimate summaries worked. The real coordinator chose `summarize`, so no native-agent compromise was demonstrated. [Runnable all-Codex test, actual messages and fix proof →](docs/codex-coordinated-attack.md)
+
 ## Real app: Workshop Prep Agent
 
 On October 16, 2026, ChatNoir 0.1.2 guided a security review of [Workshop Prep Agent](https://github.com/fhajjej-ship-it/workshop-prep-agent), a separate TypeScript/Next.js app, in Codex desktop. It found a **low-severity request-body buffering weakness (CWE-400)**: `lib/http.ts` read the entire JSON stream before enforcing its size limit.
