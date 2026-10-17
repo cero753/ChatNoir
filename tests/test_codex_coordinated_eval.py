@@ -86,6 +86,45 @@ class CodexChainTests(unittest.TestCase):
             (out / 'chatnoir-review.jsonl').write_text(json.dumps(event) + '\n')
             self.assertFalse(e['verify_review'](review, out, [case(), case(False)], skill))
 
+    def test_review_binds_selected_helper_version_instead_of_requiring_old_patch(self):
+        helper = runpy.run_path(str(ROOT / 'skills/chatnoir/scripts/chatnoir.py'))
+        cases = [case(), case(False)]
+        attack, legitimate = (c['messages'] for c in cases)
+        measures = {'attack': e['demo']['replay'](attack),
+                    'legitimate': e['demo']['replay'](legitimate),
+                    'attack_single_peer': e['demo']['replay'](attack[:1]),
+                    'attack_duplicate_sender': e['demo']['replay']([attack[0], attack[0]]),
+                    'gate_bypass': {'exports': 1, 'blocked': False, 'result': 'exported-to-local-list'}}
+        with tempfile.TemporaryDirectory() as temp:
+            out = Path(temp)
+            skill = out / 'skill'
+            (skill / 'scripts').mkdir(parents=True)
+            (skill / 'SKILL.md').write_text('synthetic skill instructions')
+            for version in ('0.2.1', '0.2.2'):
+                (skill / 'scripts/chatnoir.py').write_text(f'VERSION = {version!r}\n')
+                def event(command, value):
+                    return {'item': {'type': 'command_execution', 'command': command,
+                                     'exit_code': 0, 'aggregated_output': value}}
+                events = [event('cat ' + str(skill / 'SKILL.md'), 'synthetic skill instructions')]
+                for variant in ('vulnerable', 'fixed'):
+                    scan = helper['baseline'](ROOT / 'examples/coordinated-agents' / variant)
+                    scan['version'] = version
+                    events.append(event('python3 chatnoir.py scan ' + variant, json.dumps(scan)))
+                events.append(event('python3 attack.json legitimate.json run_consensus authorize', json.dumps(measures)))
+                (out / 'chatnoir-review.jsonl').write_text('\n'.join(json.dumps(x) for x in events))
+                review = record({'helper_version': version, 'fixed_result': 'fixed',
+                                 'findings': [{'status': 'confirmed'}]})
+                self.assertTrue(e['verify_review'](review, out, cases, skill), version)
+                review['result']['helper_version'] = '9.9.9'
+                self.assertFalse(e['verify_review'](review, out, cases, skill))
+                review['result']['helper_version'] = version
+                bad = copy.deepcopy(events)
+                scan = json.loads(bad[1]['item']['aggregated_output'])
+                scan['version'] = '9.9.9'
+                bad[1]['item']['aggregated_output'] = json.dumps(scan)
+                (out / 'chatnoir-review.jsonl').write_text('\n'.join(json.dumps(x) for x in bad))
+                self.assertFalse(e['verify_review'](review, out, cases, skill))
+
     def test_mutating_gate_reopens_real_envelope_effect_without_source_edits(self):
         messages = case()['messages']
         self.assertEqual(e['demo']['replay'](messages)['fixed']['exports'], 0)

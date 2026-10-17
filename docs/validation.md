@@ -2,6 +2,12 @@
 
 Observed October 16, 2026 on macOS arm64. This is bounded release evidence, not a benchmark or third-party security certification.
 
+## Version 0.2.2 package update
+
+The October 17 packaging update includes the latest launch documentation, actual-message all-Codex evaluator and its historical v0.2.1 evidence. All **81 offline tests** and `scripts/demo.py` passed. A new regression reproduces the evaluator's hardcoded-version failure with 0.2.2, verifies matching selected-helper/reviewer/scan versions for 0.2.1 and 0.2.2, and rejects mismatches. The updated adapter also verified the retained real v0.2.1 records without another model request. Scanner implementation differs from 0.2.1 only in its version constant.
+
+Release verification checks exact archive contents, synchronized manifests/helper, packaged tests/demos, copied-skill helpers, checksum and downloaded bytes. Claude's manifest and marketplace validators passed locally. Existing installed plugins were not upgraded or retested in new provider sessions; an installed Codex registry still reported its cached 0.2.1 version, which is not counted as 0.2.2 native loading. No new model calls or adaptive rounds were run, and earlier access/coverage limits remain. This release makes no additional model-resistance or general swarm-protection claim.
+
 ## Fresh installed version 0.2.1 follow-up
 
 On October 17, 2026, one fresh Codex CLI session loaded the installed v0.2.1 skill, ran its helper, reproduced all three known HTTP-app vulnerabilities and dismissed the constant `eval` candidate. One fresh Cursor CLI request failed at its usage limit before inference; no fresh Cursor skill loading or detection is claimed. The evaluator independently reproduced the three failures over loopback HTTP and verified all eight checks on the existing fixed app. No scanner/skill defect was found; the fixture's obsolete five-rule wording was corrected to eight. See the [method and limits](installed-0.2.1-e2e.md) and [source-bound ledger](e2e/installed-0.2.1-results.json). Historical results below remain separate evidence.

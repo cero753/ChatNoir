@@ -19,7 +19,7 @@ Reviewed October 17, 2026. **Ready for an early public release as an evidence-fi
 - Reconciled Cursor installation wording with the later native installation checks while retaining the fresh model-access blocker.
 - Made the unexecuted adaptive test and current launch limits visible from the README.
 
-No new scanner or skill runtime defect was established. The plugin remains v0.2.1. This documentation update does not alter the existing release assets or rewrite history.
+No new scanner or skill runtime defect was established in the launch review. Version 0.2.2 packages that review and the later all-Codex evaluator; its helper-version verdict check now accepts the selected release while rejecting mismatches. Historical 0.2.1 evidence remains labeled with its tested version. Existing releases and history are preserved.
 
 ## Limits to retain publicly
 
@@ -29,4 +29,4 @@ No new scanner or skill runtime defect was established. The plugin remains v0.2.
 - Only the documented environments and flows are verified. Provider authentication, quota and content controls can prevent a review even when installation succeeds.
 - Historical public-reference cleanup has no verified closure in this review. Current docs are anonymized; no claim that all historical objects have been removed is made. Existing history is preserved.
 
-The v0.2.1 download is an immutable tagged snapshot. Newer case studies and the all-Codex evaluator were added on `main` afterward; clone the repository to use those additions. They are not silently added to the old ZIP. [Release download](https://github.com/fhajjej-ship-it/ChatNoir/releases/tag/v0.2.1).
+The [v0.2.2 download](https://github.com/fhajjej-ship-it/ChatNoir/releases/tag/v0.2.2) includes the launch documentation, newer case studies and real Codex test runner. The v0.2.1 download remains its original immutable snapshot. Provider-backed findings above were measured with the documented earlier versions; packaging verification does not rerun those model sessions.

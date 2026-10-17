@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.2 — October 17, 2026
+
+- Packages the latest launch/compatibility documentation, fresh installed-skill results and seven-session real Codex evaluator with its sanitized actual-message evidence. Those provider-backed results were collected with 0.2.1; no new provider session is claimed for this packaging release.
+- Fixes the evaluator’s hardcoded 0.2.1 verdict check: it now reads the selected installed helper’s version without executing it, and requires the reported and scanned versions to match. A regression covers 0.2.1/0.2.2 acceptance and mismatched-version rejection.
+- Synchronizes all plugin manifests, helper version and download links at 0.2.2. Scanner rules and application authorization logic remain unchanged.
+- Retains blocked Claude/fresh Cursor access, unexecuted adaptive same-agent rounds and bounded early-release claims. No continuous runtime shield, general swarm-defense guarantee or comparative accuracy claim.
+
 ## 0.2.1 — October 17, 2026
 
 - Updated the README hook to “Protect what you build from agent attacks.” and aligned portable, Codex, Claude Code and Cursor plugin/marketplace descriptions with security review, attack-path analysis and fix verification.

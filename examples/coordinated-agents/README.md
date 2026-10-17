@@ -38,7 +38,7 @@ python3 scripts/codex_coordinated_eval.py \
   --skill-path /absolute/path/to/installed/skills/chatnoir
 ```
 
-This separate POSIX runner makes up to seven native Codex requests and loads your explicitly selected installed v0.2.1 skill for review. It verifies actual input reads, message lineage, application effects, legitimate controls and the reviewer's runtime gate proof. [Measured results, exact synthetic messages and limits](../../docs/codex-coordinated-attack.md). The coordinator resisted the attack; replaying the actual producer messages exposed the app flaw and confirmed its fix. This does not fill the mixed-host gap below.
+This separate POSIX runner makes up to seven native Codex requests and loads your explicitly selected installed skill for review (with matching helper/reviewer/scan versions). It verifies actual input reads, message lineage, application effects, legitimate controls and the reviewer's runtime gate proof. [Measured results, exact synthetic messages and limits](../../docs/codex-coordinated-attack.md). The coordinator resisted the attack; replaying the actual producer messages exposed the app flaw and confirmed its fix. This does not fill the mixed-host gap below.
 
 With existing authenticated Codex and Cursor CLIs on a POSIX host:
 

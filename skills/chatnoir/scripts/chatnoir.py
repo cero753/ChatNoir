@@ -17,7 +17,7 @@ import subprocess
 import sys
 from urllib.parse import quote
 
-VERSION = "0.2.1"
+VERSION = "0.2.2"
 FORMAT = "chatnoir.report/v1"
 MAX_FILE = 1024 * 1024
 MAX_TOTAL = 64 * 1024 * 1024

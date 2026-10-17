@@ -50,7 +50,7 @@ This completes a bounded all-Codex chain and verification using real message aut
 
 ## Run it
 
-With existing Codex inference access and an installed ChatNoir v0.2.1 skill:
+With existing Codex inference access and an installed ChatNoir skill:
 
 ```sh
 python3 scripts/codex_coordinated_eval.py \
@@ -62,4 +62,6 @@ Use a new private output directory and your actual installed skill path. The POS
 
 Exit 0 requires successful distinct sessions, observed file handoffs, exact parent/bundle lineage, unchanged sources, the before/after app effects, preserved legitimate controls, a policy-preserving coordinator and the native review's measured gate-bypass proof. Model assurance alone cannot pass. Raw output contains local paths and session metadata; publish only deliberately sanitized evidence.
 
-The run passed without retries or access blockers. All **80 repository tests** and `scripts/demo.py` passed. Five new offline regressions exercise tampered lineage, missing actual reads, altered effects, failed-call stopping, unsupported review assurances and gate causality. No scanner, skill or app runtime defect was found; the update adds the opt-in runner, its verification tests and evidence. ChatNoir remains v0.2.1, and the earlier [single-reviewer run](coordinated-agent-security.md#fresh-installed-v021-follow-up) remains separate historical evidence.
+The historical v0.2.1 run passed without retries or access blockers. All **80 repository tests** and `scripts/demo.py` passed. Five new offline regressions exercise tampered lineage, missing actual reads, altered effects, failed-call stopping, unsupported review assurances and gate causality. No scanner, skill or app runtime defect was found; the update adds the opt-in runner, its verification tests and evidence. ChatNoir remains v0.2.1, and the earlier [single-reviewer run](coordinated-agent-security.md#fresh-installed-v021-follow-up) remains separate historical evidence.
+
+The v0.2.2 release includes this evaluator and the recorded v0.2.1 results. Its verdict checks the selected installed helper version against both the reviewer and scanner outputs. The packaging update does not establish a new v0.2.2 provider-backed run or an adaptive same-agent test.
