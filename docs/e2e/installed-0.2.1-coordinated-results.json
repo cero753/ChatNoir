@@ -1,0 +1,193 @@
+{
+  "format": "chatnoir.installed-coordinated-evidence/v1",
+  "observed": "2026-10-17",
+  "chatnoir_version": "0.2.1",
+  "source_revision": "4e90574978e5732ddb073263631a334f85f84e1e",
+  "status": "passed; fresh installed Codex source/fix review only",
+  "source_sha256": {
+    "examples/coordinated-agents/vulnerable/app.py": "982af542002fcafb5a6a5606de62f08e2c53b23295191ba2efa07a9f2e9b5b2c",
+    "examples/coordinated-agents/fixed/app.py": "517b4737c42d24faa9d2c14e1655f5fafa6326224ddce36d4b88969dbcf2524d",
+    "examples/agent-attacks/runtime.py": "a8f644e3681ec9fd1db64dd40784f5d556d26eae0fa3d7c7c81a723d01b78853",
+    "skills/chatnoir/SKILL.md": "d2e8956b3b5a91e9e0e982102199fd11e7b7016fa8539e45b6f91cba9dd012dc",
+    "skills/chatnoir/references/agent-security.md": "5f16c5df63c40277637aab8ebf407af5819b4b8abe384921656975cf38024e6f",
+    "skills/chatnoir/references/review.md": "ee5c126eca75775ce1739139993df7ede0289b6a3a818ca1211128b4967aa2b9",
+    "skills/chatnoir/references/evidence.md": "77fd9c7d9714af59655fd33c2c8454f604168042ba4734a972169f9f4ac913f6",
+    "skills/chatnoir/references/remediation.md": "04febeded34d771d5ebded1266174745bc53cebaa78c1417a42c85a1e70d4195",
+    "skills/chatnoir/scripts/chatnoir.py": "4b3c341d7000c261d623c504a3ddc09becb881ac9dd7b7cc5d8088154707ca1e"
+  },
+  "native_session": {
+    "cli_version": "0.157.0",
+    "requested_model": "gpt-6-sol, high reasoning",
+    "observed_backend_model": null,
+    "successful_model_requests": 1,
+    "exit_code": 0,
+    "seconds": 38.8,
+    "installed_and_enabled_version": "0.2.1",
+    "discovery": "Session reported native catalog; actual installed skill/reference reads and helper execution observed.",
+    "fallback_used_reported": false,
+    "installed_resources_match_source": true,
+    "source_unchanged": true,
+    "baseline_candidates": {
+      "vulnerable": 0,
+      "fixed": 0
+    },
+    "baseline_included_source_files_each": 1,
+    "finding": {
+      "title": "Peer agreement authorizes an action outside the root task",
+      "path": "examples/coordinated-agents/vulnerable/app.py",
+      "line": 12,
+      "status": "confirmed",
+      "method": "native agent-executed in-memory controls and source trace",
+      "fix": "Root-task executor.authorize(proposal) before dispatch; supplied fixed/app.py:11.",
+      "fixed_result": "fixed"
+    },
+    "runtime": {
+      "controls": {
+        "fixed": {
+          "duplicate_sender_export": {
+            "error": "PermissionError: Two peer approvals required",
+            "export_count": 0,
+            "result": null
+          },
+          "single_peer_export": {
+            "error": "PermissionError: Two peer approvals required",
+            "export_count": 0,
+            "result": null
+          },
+          "two_distinct_export": {
+            "error": "PermissionError: Proposal outside the root task's capabilities",
+            "export_count": 0,
+            "result": null
+          },
+          "two_distinct_summarize": {
+            "error": null,
+            "export_count": 0,
+            "result": "synthetic-summary"
+          }
+        },
+        "vulnerable": {
+          "duplicate_sender_export": {
+            "error": "PermissionError: Two peer approvals required",
+            "export_count": 0,
+            "result": null
+          },
+          "single_peer_export": {
+            "error": "PermissionError: Two peer approvals required",
+            "export_count": 0,
+            "result": null
+          },
+          "two_distinct_export": {
+            "error": null,
+            "export_count": 1,
+            "result": "exported-to-local-list"
+          },
+          "two_distinct_summarize": {
+            "error": null,
+            "export_count": 0,
+            "result": "synthetic-summary"
+          }
+        }
+      },
+      "gate_bypass": {
+        "error": null,
+        "export_count": 1,
+        "result": "exported-to-local-list"
+      }
+    }
+  },
+  "independent_offline_demo": {
+    "attack": {
+      "vulnerable": {
+        "exports": 1,
+        "blocked": false,
+        "result": "exported-to-local-list"
+      },
+      "fixed": {
+        "exports": 0,
+        "blocked": true,
+        "result": "denied"
+      }
+    },
+    "attack_single_peer": {
+      "vulnerable": {
+        "exports": 0,
+        "blocked": true,
+        "result": "denied"
+      },
+      "fixed": {
+        "exports": 0,
+        "blocked": true,
+        "result": "denied"
+      }
+    },
+    "attack_duplicate_sender": {
+      "vulnerable": {
+        "exports": 0,
+        "blocked": true,
+        "result": "denied"
+      },
+      "fixed": {
+        "exports": 0,
+        "blocked": true,
+        "result": "denied"
+      }
+    },
+    "legitimate": {
+      "vulnerable": {
+        "exports": 0,
+        "blocked": false,
+        "result": "synthetic-summary"
+      },
+      "fixed": {
+        "exports": 0,
+        "blocked": false,
+        "result": "synthetic-summary"
+      }
+    },
+    "legitimate_single_peer": {
+      "vulnerable": {
+        "exports": 0,
+        "blocked": true,
+        "result": "denied"
+      },
+      "fixed": {
+        "exports": 0,
+        "blocked": true,
+        "result": "denied"
+      }
+    },
+    "legitimate_duplicate_sender": {
+      "vulnerable": {
+        "exports": 0,
+        "blocked": true,
+        "result": "denied"
+      },
+      "fixed": {
+        "exports": 0,
+        "blocked": true,
+        "result": "denied"
+      }
+    }
+  },
+  "verification": {
+    "repository_tests": 75,
+    "test_result": "passed",
+    "scripts/demo.py": "passed",
+    "installed_resource_and_source_digests": "passed"
+  },
+  "setup_failure": {
+    "cli_invocations": 1,
+    "successful_model_requests": 0,
+    "reason": "Private launcher serialized quoted connector keys incorrectly; CLI rejected config before startup. Corrected per-invocation key syntax; no global config change.",
+    "counted_as_success": false
+  },
+  "limits": [
+    "Known owner-authored synthetic case; prompt supplied contract, installed fallback path and requested control shapes. Not blind detection or discovery.",
+    "One real Codex reviewer executed the demo; peer messages were locally constructed synthetic data, not outputs of multiple live agents.",
+    "No fresh Cursor request or completed mixed-host chain; prior access gap remains.",
+    "Authorization gate bypass changed only a fresh executor in memory; no source changed.",
+    "Optional plugin connector startup warnings remained; no connector tool call observed and no host network isolation claimed.",
+    "No general swarm-defense, unseen-attack accuracy, authenticated peer identities or continuous runtime-protection claim."
+  ],
+  "changes": "No scanner/skill/runtime defect found; published source-bound installed-v0.2.1 evidence and clarified historical package-version wording."
+}

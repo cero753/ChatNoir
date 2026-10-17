@@ -67,6 +67,8 @@ The fixed action gate also denies an always-hostile model proposal. Everything r
 
 **Coordinated approval laundering:** a separate two-peer quorum fixture reproduces **1 synthetic export before → 0 after**, with single-peer, duplicate-sender and legitimate controls. A real Codex ChatNoir review confirmed the authorization flaw even though the scanner returned zero candidates. The mixed Codex/Cursor chain remains **incomplete because Cursor hit its agent usage limit**. [Runnable coordinated case, measured evidence and access gap →](docs/coordinated-agent-security.md)
 
+A fresh Codex session using **installed v0.2.1** also reproduced this flaw, verified the supplied fix and restored the export by bypassing only the gate in memory. Legitimate summaries still worked. This was one real reviewer executing synthetic peer messages, not a completed live multi-agent chain. [Installed-package verification →](docs/coordinated-agent-security.md#fresh-installed-v021-follow-up)
+
 ## Real app: Workshop Prep Agent
 
 On October 16, 2026, ChatNoir 0.1.2 guided a security review of [Workshop Prep Agent](https://github.com/fhajjej-ship-it/workshop-prep-agent), a separate TypeScript/Next.js app, in Codex desktop. It found a **low-severity request-body buffering weakness (CWE-400)**: `lib/http.ts` read the entire JSON stream before enforcing its size limit.

@@ -2,6 +2,18 @@
 
 Observed October 17, 2026. **ChatNoir's real Codex source review found and reproduced a quorum authorization flaw, and verified the supplied fix. The coordinated Codex/Cursor chain is incomplete: Cursor rejected requests at its agent usage limit before inference.** This is not a successful mixed-host or swarm-defense test.
 
+## Fresh installed v0.2.1 follow-up
+
+A fresh Codex CLI 0.157.0 session, using the approved `gpt-6-sol` with high reasoning, loaded the **installed v0.2.1 package** rather than a project-local skill copy. The registry showed it installed and enabled; retained tool events show actual reads of the skill and agent-security/review/evidence/remediation references, helper version `0.2.1`, both baseline scans and runtime execution. Installed resources matched the tested source. The prompt named the installed fallback path and required these controls, so this was not blind skill discovery or an unseen-attack benchmark.
+
+The agent confirmed the flaw at `vulnerable/app.py:12` despite **zero baseline candidates in both variants**. Its eight in-memory controls measured one synthetic export for two agreeing peers before the fix, zero with `PermissionError` afterward, successful legitimate summaries in both variants, and denials for single-peer and duplicate-sender proposals. On a fresh executor, bypassing only `authorize` in memory restored one export through the fixed entrypoint. This confirms the root gate causes the denial; source files remained unchanged.
+
+The independent offline demo also passed, as did all 75 repository tests and `scripts/demo.py`. No new scanner, skill or runtime defect was found. No new patch or release package was required; ChatNoir remains v0.2.1. [Source hashes, actual measurements and validation ledger →](e2e/installed-0.2.1-coordinated-results.json)
+
+One initial private-launcher invocation failed to parse incorrectly quoted connector override keys before any model request. Correcting per-invocation syntax produced the successful fresh session; global configuration was unchanged. Optional plugin connector startup warnings remained, but no connector tool was called. Raw traces and local account/session paths remain private.
+
+**Scope:** one real Codex reviewer executed synthetic peer-message controls. Multiple live agents did not generate those messages, and Cursor was not called. This does not complete the earlier mixed-host chain or measure native coordinator resistance. The historical v0.2.0 run and its access gaps are recorded below.
+
 ## The attack and finding
 
 The original task authorizes only `summarize`. A synthetic analyst proposes `export_note` and claims root approval; a second synthetic peer endorses the same task/action. The [vulnerable receiver](../examples/coordinated-agents/vulnerable/app.py) counts distinct approving sender strings and dispatches the action once there are two. It mistakes peer agreement for permission from the original user. No peer has authority to grant export.
@@ -21,7 +33,7 @@ The offline regressions also check wrong-task, denied and conflicting-action end
 
 Codex CLI **0.157.0**, requested model **`gpt-6-sol` with high reasoning**, loaded a fresh project copy of ChatNoir **0.2.0**, read its review/evidence/agent-security guidance, inspected both entrypoints and executed in-memory controls against the actual sources. Retained tool output shows the vulnerable export, fixed denial, single/duplicate-peer denials and legitimate summaries. Codex confirmed the missing root authorization at `vulnerable/app.py:12` and assessed the supplied patch as fixed. It did not generate a new patch. Its events did not independently expose the backend model identity.
 
-**The deterministic scanner returned zero candidates on both versions.** This is an agent-guided source-review finding, not a new scanner rule. CN008 recognizes selected permission-container merges; it does not recognize arbitrary quorum-to-dispatch policy decisions. No scanner/skill implementation defect was established, and the portable package remains 0.2.0.
+**The deterministic scanner returned zero candidates on both versions.** This is an agent-guided source-review finding, not a new scanner rule. CN008 recognizes selected permission-container merges; it does not recognize arbitrary quorum-to-dispatch policy decisions. This historical run established no scanner/skill implementation defect and required no change to the then-current 0.2.0 package.
 
 ## What did not run successfully
 
