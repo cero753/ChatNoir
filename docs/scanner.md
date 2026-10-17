@@ -9,8 +9,13 @@ Run `python3 chatnoir.py --help` from the checkout, or the installed skill's `sc
 | CN003 | Pickle/dill/marshal loading and unsafe YAML loaders | 502 |
 | CN004 | Query execution with constructed expressions, including prior straight-line local assignments | 89 |
 | CN005 | Requests/httpx calls with literal `verify=False` | 295 |
+| CN006 | Dynamic content in a literal system/developer-role dictionary | 1427 |
+| CN007 | Direct/straight-line `json.loads` data passed to a recognized action dispatcher | 862 |
+| CN008 | Selected permission containers widened using subscripted permission fields | 807 |
 
 AST matching recognizes straightforward import aliases. It is not type checking, interprocedural data flow or taint analysis. Rebindings can create false positives; wrapped calls, computed keywords, custom loaders and indirect imports can be missed. CN004 follows prior simple local assignments in the same statement block, respecting later reassignment and function boundaries. It does not trace branches, compound updates, object attributes, closures or cross-function query construction, and may flag a safe query-construction API. The JS/TS check matches only lexical `eval(...)` and `new Function(...)`; comments and strings can match. Agent validation is essential.
+
+CN006 does not establish untrusted provenance or whether a dictionary is ever sent to a model; dynamic trusted policy can match. CN007 recognizes only `execute_action`, `dispatch_action`, `execute_tool`, `call_tool` and `dispatch`, with Python `json.loads` imports/aliases and simple local bindings. A validation wrapper can hide a genuinely unsafe flow; a downstream gate can make a flagged flow safe. CN008 recognizes `.update`, `.union` and `|=` on names ending in `capabilities`, `permissions`, `scopes`, `allowed_tools` or `allowed_actions`, with input subscript fields using those same names. Unrelated sets may match and differently named/framework-mediated flows may be missed. None of these rules proves attacker control or effective authorization. [CWE-1427](https://cwe.mitre.org/data/definitions/1427.html), [CWE-862](https://cwe.mitre.org/data/definitions/862.html) and [CWE-807](https://cwe.mitre.org/data/definitions/807.html) describe the mapped weakness classes. [Run the synthetic before/after cases](../examples/agent-attacks/README.md).
 
 ## Scope and privacy
 

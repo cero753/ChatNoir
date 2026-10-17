@@ -64,3 +64,11 @@ python3 scripts/http_probe.py examples/http-app/fixed
 The first command exits 1: SQL injection exposes unpublished records, Alice can fetch Bob's invoice, and a download escapes its public directory. The second exits 0: the same three attacks are blocked and all five legitimate/authentication controls pass. Both commands start only an ephemeral loopback WSGI server; all data is synthetic and proxy environment variables are ignored.
 
 The fixed fixture contains the patch produced during the native Codex ChatNoir test, independently checked through HTTP afterward. [Inspect the actual agent patch](e2e/codex-fix.diff). This demonstrates source review, remediation and verification on a bounded local application, not a detection benchmark for unseen applications.
+
+## 5. Prompt, tool-output and agent-to-agent boundaries
+
+```sh
+python3 examples/agent-attacks/demo.py
+```
+
+The scanner flags CN006/CN007/CN008 in the vulnerable Python entrypoints. Runtime checks observe one synthetic local export per attack before the fix and zero afterward, preserve legitimate summaries, and deny a deliberately hostile model proposal. The runner uses a scripted model and no network or provider calls. [Full source, expected output and limits](../examples/agent-attacks/README.md) · [Measured results](e2e/agent-security-results.json). This demonstrates three known application boundaries, not general prompt-injection or swarm-defense accuracy.

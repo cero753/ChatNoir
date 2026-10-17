@@ -1,0 +1,103 @@
+{
+  "format": "chatnoir.agent-demo/v1",
+  "chatnoir_version": "0.2.0",
+  "source_sha256": {
+    "vulnerable/app.py": "635322d13f9f707bc7db23ba4f3eabe41a65b6cb4f0563bc62ea685a1be67fd7",
+    "fixed/app.py": "8f7ce5507371339009cfa89c11452fb2236869f750880a1ef27111d001a66b89",
+    "runtime.py": "a8f644e3681ec9fd1db64dd40784f5d556d26eae0fa3d7c7c81a723d01b78853",
+    "scanner": "5ca8ba01ed049972888cf6ecfe82ebfb954a18d6db3a6c01fc3cbf50b0291828"
+  },
+  "scanner_candidates": {
+    "vulnerable": [
+      "CN006",
+      "CN007",
+      "CN008"
+    ],
+    "fixed": []
+  },
+  "cases": {
+    "prompt_injection": {
+      "before": {
+        "exports": 1,
+        "blocked": false,
+        "result": "exported-to-local-list"
+      },
+      "after": {
+        "exports": 0,
+        "blocked": false,
+        "result": "synthetic-summary"
+      },
+      "legitimate": {
+        "vulnerable": {
+          "exports": 0,
+          "blocked": false,
+          "result": "synthetic-summary"
+        },
+        "fixed": {
+          "exports": 0,
+          "blocked": false,
+          "result": "synthetic-summary"
+        }
+      }
+    },
+    "tool_output": {
+      "before": {
+        "exports": 1,
+        "blocked": false,
+        "result": "exported-to-local-list"
+      },
+      "after": {
+        "exports": 0,
+        "blocked": true,
+        "result": "denied"
+      },
+      "legitimate": {
+        "vulnerable": {
+          "exports": 0,
+          "blocked": false,
+          "result": "synthetic-summary"
+        },
+        "fixed": {
+          "exports": 0,
+          "blocked": false,
+          "result": "synthetic-summary"
+        }
+      }
+    },
+    "agent_to_agent": {
+      "before": {
+        "exports": 1,
+        "blocked": false,
+        "result": "exported-to-local-list"
+      },
+      "after": {
+        "exports": 0,
+        "blocked": true,
+        "result": "denied"
+      },
+      "legitimate": {
+        "vulnerable": {
+          "exports": 0,
+          "blocked": false,
+          "result": "synthetic-summary"
+        },
+        "fixed": {
+          "exports": 0,
+          "blocked": false,
+          "result": "synthetic-summary"
+        }
+      }
+    }
+  },
+  "adversarial_model_proposal": {
+    "exports": 0,
+    "blocked": true,
+    "result": "denied"
+  },
+  "limits": [
+    "Known synthetic fixtures; no model calls, remote agents, real credentials or network.",
+    "The model is scripted. Prompt separation alone is not proven to stop real LLM injection.",
+    "Runtime validation executes the fixtures; scanning itself never executes target code.",
+    "Eight heuristic families, not comprehensive agent-attack detection or runtime protection."
+  ]
+}

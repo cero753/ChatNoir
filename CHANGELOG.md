@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.0 — October 17, 2026
+
+- Added CN006/CN007/CN008 Python heuristic leads for dynamic privileged prompt roles, JSON-to-action dispatch and message-supplied permission merges. These remain candidates requiring provenance, reachability and control validation.
+- Added runnable synthetic prompt-injection, malicious-tool-output and agent-to-agent authority demos, fixed entrypoints, legitimate controls and an adversarial model-proposal check. No network, model calls or real credentials.
+- Added agent-security review guidance, measured source-bound results and regressions for authorization, invalid proposals, import aliases, local bindings and documented detection limits.
+- Indexed local statement/write lookups to avoid repeatedly scanning all preceding statements for unresolved prompt/action/permission names; added a structural work-bound regression.
+- The demos use a scripted model and local action sink; no general live-model, swarm-protection or comparative-accuracy claim.
+
 ## 0.1.2 — October 16, 2026
 
 - Fixed target-code execution through Git clean/process filters during inventory and scan dirty-state checks. Configured filters now leave dirty state unknown with a reason; submodule content is excluded from that check.
