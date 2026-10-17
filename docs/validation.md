@@ -14,7 +14,13 @@ On October 17, 2026, real Codex and Cursor CLI sessions each loaded the project-
 
 The follow-up adds an opt-in native evaluator and eight offline protocol/replay/verdict regressions. All 68 repository tests, the existing SQL/report demo and the standalone agent-security demo passed. Final adapter checks also passed against the retained real records. No portable scanner/skill change or version bump was needed; ChatNoir remains 0.2.0. Raw traces stay private, and no new CI was added.
 
-## Earlier executed checks
+## Coordinated-agent follow-up (partial)
+
+The [coordinated approval-laundering case](coordinated-agent-security.md) adds a quorum receiver, a fixed root-permission gate, offline controls and an opt-in mixed Codex/Cursor runner. Real Codex source review confirmed and reproduced one authorization flaw despite zero deterministic candidates and verified the supplied fix. Cursor requests failed at its usage limit before inference, so the coordinated mixed-host chain and native coordinator behavior remain unverified. Seven CLI invocations are accounted for: four successful Codex model requests and three blocked Cursor requests. Final runner fixes stop dependent work after a host failure, isolate temporary parent directories and validate actual message lineage; raw traces remain private.
+
+All 75 repository tests, the existing demo and the new offline coordinated demo passed. The seven new regressions cover actual coordinated effects, required quorum, root-gate bypass, legitimate controls, false passes, failed-host stopping and absolute helper output paths. No plugin version, scanner rule, dependency or CI change was needed. [Structured partial evidence](e2e/coordinated-agent-results.json).
+
+## Historical executed checks
 
 - Version 0.1.1: `python3 -m unittest discover -s tests -v` passed 38 tests. Coverage includes candidate rules and safe controls, no scanner execution of target code, symlink/FIFO/credential-file handling, Git ignore/diff behavior, fsmonitor disabling, report verdict/inventory invariants, Markdown/SARIF output, CLI exit codes and installation without overwriting user changes. New checks reproduce the SQL-variable miss, verify assignment scope/reassignment, and exercise the vulnerable/fixed HTTP routes.
 - `python3 scripts/demo.py`: completed the actual candidate, synthetic SQL reproduction/fix, false-positive challenge and committed-patch identity demos. [Recorded stdout](demo-output.txt).

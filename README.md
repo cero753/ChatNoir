@@ -59,6 +59,8 @@ The fixed action gate also denies an always-hostile model proposal. Everything r
 
 **Tested with real Codex and Cursor agents:** both loaded ChatNoir, confirmed all three flaws and verified the supplied fixes. Separate live agents resisted all six sampled hostile inputs. Real peer messages were exchanged in both directions; replaying each malicious producer message into the app caused **1 synthetic export before the fix and 0 afterward**, while legitimate summaries worked. No native-agent compromise or general swarm protection was demonstrated. [Runnable native evaluation, measured results and limits →](docs/live-agent-security.md)
 
+**Coordinated approval laundering:** a separate two-peer quorum fixture reproduces **1 synthetic export before → 0 after**, with single-peer, duplicate-sender and legitimate controls. A real Codex ChatNoir review confirmed the authorization flaw even though the scanner returned zero candidates. The mixed Codex/Cursor chain remains **incomplete because Cursor hit its agent usage limit**. [Runnable coordinated case, measured evidence and access gap →](docs/coordinated-agent-security.md)
+
 ## Real app: Workshop Prep Agent
 
 On October 16, 2026, ChatNoir 0.1.2 guided a security review of [Workshop Prep Agent](https://github.com/fhajjej-ship-it/workshop-prep-agent), a separate TypeScript/Next.js app, in Codex desktop. It found a **low-severity request-body buffering weakness (CWE-400)**: `lib/http.ts` read the entire JSON stream before enforcing its size limit.
