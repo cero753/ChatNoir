@@ -26,6 +26,8 @@ Inspect the [vulnerable](vulnerable/app.py) and [fixed](fixed/app.py) functions.
 
 The deterministic scanner returns **zero candidates in both variants**: its narrow permission-merge rule does not recognize a quorum-to-dispatch policy error. This case requires ChatNoir's agent-guided source review and runtime validation; zero candidates are not a clean bill of health.
 
+A [fresh Codex review using installed ChatNoir v0.2.1](../../docs/coordinated-agent-security.md#fresh-installed-v021-follow-up) confirmed the flaw, verified the supplied fix and observed the export recur when the authorization gate alone was bypassed in memory. This single-reviewer test used synthetic peer messages; the mixed-host chain remains separate and incomplete.
+
 ## Opt-in real agents
 
 With existing authenticated Codex and Cursor CLIs on a POSIX host:
