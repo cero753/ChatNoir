@@ -3,8 +3,8 @@
 </p>
 
 <h1 align="center">ChatNoir</h1>
-<p align="center"><strong>Find the flaw. Prove the path. Verify the fix.</strong></p>
-<p align="center">Security review for the code you ship.<br>One portable skill. Your coding agent. Evidence you can inspect.</p>
+<p align="center"><strong>Protect what you build from agent attacks.</strong></p>
+<p align="center">Find security gaps. Reproduce attack paths. Verify the fixes.<br>One portable skill. Your coding agent. Evidence you can inspect.</p>
 
 <p align="center">
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-111111"></a>
@@ -15,6 +15,8 @@
 You built the app. Now inspect the boundaries that matter: who can access another user's data, which inputs become commands or queries, and whether a fix closes the original hole.
 
 **ChatNoir turns your coding agent into an evidence-first security reviewer.** It combines 15 review workflows with local scan helpers, attack-path reasoning, false-positive checks, fix verification, and portable reports. No ChatNoir account. No hosted scanner. No Python dependencies. Bring your existing agent and model.
+
+Review how retrieved content, tool outputs and peer messages reach privileged actions. The published tests verify specific application fixes; continuous runtime blocking and broad swarm protection remain unproven. [Measured agent-attack results and limits →](docs/live-agent-security.md)
 
 ## Try it in a minute
 
