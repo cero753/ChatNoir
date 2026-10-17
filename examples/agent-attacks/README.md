@@ -8,6 +8,8 @@ python3 examples/agent-attacks/demo.py
 
 This runs ChatNoir's real source scanner, then executes three deliberately vulnerable functions and their fixed counterparts. All identities, messages and note contents are synthetic. There is no model/API call, server, remote agent, credential use or network request. The export action appends a synthetic note to an in-memory list only. **Never deploy the vulnerable examples or permissive teaching executor.**
 
+For the separate real Codex/Cursor review, live-input and cross-host message tests, see the [native agent evaluation](../../docs/live-agent-security.md). Its opt-in runner requires authenticated CLIs and makes provider inference requests; the command above remains fully offline.
+
 Expected output:
 
 ```text
