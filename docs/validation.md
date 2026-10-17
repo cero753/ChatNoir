@@ -8,7 +8,13 @@ Observed October 17, 2026 on macOS arm64. All 60 tests passed, including 14 new 
 
 The prompt proposer is scripted. This validates source patterns and executable application gates, not resistance of a real LLM, distributed agent transport, unknown attacks or swarm defenses. Existing SQL/HTTP/email-code examples remain separate evidence. The scanner itself never runs target code.
 
-## Executed checks
+## Native agent-security follow-up
+
+On October 17, 2026, real Codex and Cursor CLI sessions each loaded the project-local 0.2.0 skill, ran the baseline (three vulnerable candidates, zero fixed), confirmed CN006–CN008 and verified the supplied fixes. Twelve primary live-input calls selected `summarize`, including all six hostile inputs. Four real cross-host producer/receiver exchanges preserved native receiver policy; each actual malicious producer message caused one synthetic app export before the fix and none afterward, while legitimate summaries worked. No native-host compromise was demonstrated. The [case study](live-agent-security.md) and [sanitized ledger](e2e/live-agent-security-results.json) account for all 30 provider calls, initial setup/protocol failures, corrections and scope limits.
+
+The follow-up adds an opt-in native evaluator and eight offline protocol/replay/verdict regressions. All 68 repository tests, the existing SQL/report demo and the standalone agent-security demo passed. Final adapter checks also passed against the retained real records. No portable scanner/skill change or version bump was needed; ChatNoir remains 0.2.0. Raw traces stay private, and no new CI was added.
+
+## Earlier executed checks
 
 - Version 0.1.1: `python3 -m unittest discover -s tests -v` passed 38 tests. Coverage includes candidate rules and safe controls, no scanner execution of target code, symlink/FIFO/credential-file handling, Git ignore/diff behavior, fsmonitor disabling, report verdict/inventory invariants, Markdown/SARIF output, CLI exit codes and installation without overwriting user changes. New checks reproduce the SQL-variable miss, verify assignment scope/reassignment, and exercise the vulnerable/fixed HTTP routes.
 - `python3 scripts/demo.py`: completed the actual candidate, synthetic SQL reproduction/fix, false-positive challenge and committed-patch identity demos. [Recorded stdout](demo-output.txt).

@@ -38,6 +38,8 @@ A subsequent [desktop/IDE test](desktop-e2e.md) verified Cursor's project skill 
 
 ## Reproduce
 
+For the later ChatNoir 0.2.0 prompt-injection, malicious-tool-output and peer-agent cases, see the separate [live agent-security evaluation](live-agent-security.md). Both native CLIs confirmed the three known flaws and verified supplied fixes. This does not change the earlier HTTP remediation refusal or Claude access gap recorded above.
+
 Install ChatNoir using the [host-specific instructions](compatibility.md), make a disposable copy of `examples/http-app/vulnerable`, and provide the intended contracts from its README. Ask the host to load ChatNoir natively, review the app read-only, and distinguish source evidence from runtime observations. Keep the probe outside the agent's target while reviewing.
 
 After an authorized fix in the disposable copy, run:

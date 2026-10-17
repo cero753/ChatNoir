@@ -57,6 +57,8 @@ ChatNoir flags three source-level leads, and the runner verifies their actual sy
 
 The fixed action gate also denies an always-hostile model proposal. Everything runs locally with synthetic data, an in-memory action sink and a **scripted model**. This demonstrates specific application boundaries, not real-model prompt-injection resistance, protection against arbitrary swarms or continuous runtime blocking. [Source, exact output, tests and limits →](examples/agent-attacks/README.md)
 
+**Tested with real Codex and Cursor agents:** both loaded ChatNoir, confirmed all three flaws and verified the supplied fixes. Separate live agents resisted all six sampled hostile inputs. Real peer messages were exchanged in both directions; replaying each malicious producer message into the app caused **1 synthetic export before the fix and 0 afterward**, while legitimate summaries worked. No native-agent compromise or general swarm protection was demonstrated. [Runnable native evaluation, measured results and limits →](docs/live-agent-security.md)
+
 ## Real app: Workshop Prep Agent
 
 On October 16, 2026, ChatNoir 0.1.2 guided a security review of [Workshop Prep Agent](https://github.com/fhajjej-ship-it/workshop-prep-agent), a separate TypeScript/Next.js app, in Codex desktop. It found a **low-severity request-body buffering weakness (CWE-400)**: `lib/http.ts` read the entire JSON stream before enforcing its size limit.
