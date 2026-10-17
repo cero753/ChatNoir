@@ -115,7 +115,7 @@ def demonstrate():
             print(f"{name}: requests={workers}; sessions={result['stored_sessions']}; "
                   f"replay={result['replay_sessions']}; legitimate={result['legitimate_sessions']}")
     print("PASS: reproduced the race; atomic claim permits exactly one session.")
-    print("Synthetic fixture only: not the Swarmix AI runtime or a scanner detection test.")
+    print("Synthetic fixture only: not a production runtime or a scanner detection test.")
     return results
 
 

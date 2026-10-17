@@ -64,9 +64,9 @@ A second real-app review covered [Roadster Reference](docs/roadster-evaluation.m
 
 A [backend/auth/database evaluation](docs/backend-evaluation.md) then exercised a private FastAPI app with real service-token/JWT verification and fresh PostgreSQL. **18 API integration checks passed**, covering invalid credentials, JWT bypass attempts, SQL injection text and worker workspace consistency. No vulnerability or new ChatNoir defect was confirmed in that scope. That run excluded browser sign-in and complete customer authorization.
 
-## Real app: Swarmix AI
+## Real app: a private SaaS application
 
-On October 16–17, 2026, ChatNoir guided a review and remediation of [Swarmix AI](https://swarmixai.com), a real application with a backend, customer authentication, workspace authorization and PostgreSQL. **An email-code race was reproduced and fixed; dependency remediation finished with zero `npm audit` findings.**
+On October 16–17, 2026, ChatNoir guided a review and remediation of a private SaaS application with a backend, customer authentication, workspace authorization and PostgreSQL. **An email-code race was reproduced and fixed; dependency remediation finished with zero `npm audit` findings.** The application is anonymized; detailed source and release records remain private.
 
 ### Email-code race: one code could create two sessions
 
@@ -101,7 +101,7 @@ The release's `npm audit` gate flagged vulnerable dependencies. Compatible patch
 
 ### Shipped and checked
 
-Both fixes passed exact-revision correctness/security reviews, required CI and production builds. The reviewed artifacts were promoted to production; staged and production smoke checks, Vercel runtime-error checks and Sentry release-health checks passed. The auth fix merged as `40fd8e77`; the dependency follow-up merged as `46cb0ecc`.
+Both fixes passed exact-revision correctness/security reviews, required CI and production builds. The reviewed artifacts were promoted to production; staged and production smoke checks, Vercel runtime-error checks and Sentry release-health checks passed.
 
 The race came from **ChatNoir's agent-guided source review and runtime validation**; dependency findings came from the separately available **`npm audit`**, not ChatNoir's baseline rules. Detailed source and release receipts remain private. Tests used local synthetic accounts and disposable PostgreSQL; no production exploit was demonstrated. Live mail delivery, production Clerk/Google sign-in and complete customer isolation remain unverified. This is bounded owner-run evidence, not a security certification. No new ChatNoir runtime defect was found in this evaluation.
 
