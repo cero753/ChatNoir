@@ -62,6 +62,8 @@ python3 examples/agent-attacks/demo.py
 
 ## What this does not establish
 
+A later [coordinated approval-laundering evaluation](coordinated-agent-security.md) is a distinct case. Codex completed its source/fix review, while Cursor's usage limit prevented completion of the mixed-host chain. The bilateral results above do not substitute for that open test.
+
 Native CLIs read lower-trust files under their existing host policies. The evaluator does not control their system prompts, inject a raw API tool role, or isolate the app's patched prompt-role change under a live model. Live proposals use a cached callback when replayed into application functions; source-review runtime controls still use scripted proposers. The actual cross-host messages travel through local files, not authenticated distributed transport.
 
 This is a bounded, owner-run evaluation of known synthetic inputs, without adaptive retries, unseen-attack recall, large agent swarms or production targets. It is not continuous runtime enforcement, a provider safety benchmark, or evidence of superiority over another product. The [standalone demo](../examples/agent-attacks/README.md) remains a separate deterministic reproduction with no inference dependency.
