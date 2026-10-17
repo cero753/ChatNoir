@@ -20,6 +20,8 @@ You built the app. Now inspect the boundaries that matter: who can access anothe
 
 Review how retrieved content, tool outputs and peer messages reach privileged actions. The published tests verify specific application fixes; continuous runtime blocking and broad swarm protection remain unproven. [Measured agent-attack results and limits →](docs/live-agent-security.md)
 
+**Early public release:** verified Codex reviews and bounded synthetic attack/fix tests are available. Claude model access and the latest Cursor agent run remain blocked; adaptive same-agent attack rounds have not run. [Launch status and exact limits →](docs/launch-readiness.md)
+
 ## Try it in a minute
 
 Python 3.10+ and Git are enough for the demos. No API key or model call is needed.
@@ -163,7 +165,7 @@ For a local plugin session with Cursor CLI:
 cursor-agent --plugin-dir /absolute/path/to/ChatNoir
 ```
 
-For the IDE, use the project skill installer below, open that project, then type `/chatnoir` in a new agent conversation. This path was exercised through the native skill picker, review and remediation in Cursor 3.24.12. [Desktop test evidence →](docs/desktop-e2e.md) The package also includes Cursor's native plugin manifest; IDE marketplace/plugin installation remains unverified.
+For the IDE, use the project skill installer below, open that project, then type `/chatnoir` in a new agent conversation. This path was exercised through the native skill picker, review and remediation in Cursor 3.24.12. [Desktop test evidence →](docs/desktop-e2e.md) Native desktop plugin installation, version 0.2.1 and the updated descriptions were subsequently checked separately; the latest fresh Cursor model request hit its usage limit before inference. Installation does not establish a successful model review. [Current compatibility →](docs/compatibility.md)
 
 **Codex, Cursor, Claude Code, or another Agent Skills host**
 
