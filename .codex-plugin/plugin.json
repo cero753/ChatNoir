@@ -1,6 +1,6 @@
 {
   "name": "chatnoir",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "Evidence-first security review, attack-path analysis, and fix verification for coding agents.",
   "author": {"name": "Farouk Hajjej", "url": "https://github.com/fhajjej-ship-it"},
   "homepage": "https://github.com/fhajjej-ship-it/ChatNoir",

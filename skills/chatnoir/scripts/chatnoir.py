@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import ast
+from bisect import bisect_left
 import hashlib
 import json
 import os
@@ -16,7 +17,7 @@ import subprocess
 import sys
 from urllib.parse import quote
 
-VERSION = "0.1.2"
+VERSION = "0.2.0"
 FORMAT = "chatnoir.report/v1"
 MAX_FILE = 1024 * 1024
 MAX_TOTAL = 64 * 1024 * 1024
@@ -30,6 +31,9 @@ RULES = {
     "CN003": ("Unsafe object deserialization", "CWE-502", "Use a data-only format and validate the decoded schema."),
     "CN004": ("Dynamically constructed SQL", "CWE-89", "Bind data as query parameters; allowlist identifiers separately."),
     "CN005": ("TLS certificate verification disabled", "CWE-295", "Enable certificate verification and configure the intended trust store."),
+    "CN006": ("Dynamic content in a privileged prompt role", "CWE-1427", "Keep retrieved/user/tool content out of system/developer roles; enforce tool authorization independently of model output."),
+    "CN007": ("Decoded data passed directly to an action dispatcher", "CWE-862", "Validate proposal shape and authorize the action against caller-owned capabilities before dispatch; decoded data cannot grant permission."),
+    "CN008": ("Message-provided permissions merged into authority", "CWE-807", "Derive permissions from the trusted root task; never widen authority from a peer message's claimed capabilities."),
 }
 
 
@@ -182,6 +186,16 @@ def candidate(rule: str, path: str, line: int, detail: str) -> dict:
 def python_candidates(path: str, text: str) -> list[dict]:
     tree = ast.parse(text, filename=path)
     parents = {child: parent for parent in ast.walk(tree) for child in ast.iter_child_nodes(parent)}
+    # Index statement locations once. Repeated unresolved prompt/action names
+    # must not rescan all preceding siblings for every candidate.
+    locations = {}
+    for parent in ast.walk(tree):
+        for _, value in ast.iter_fields(parent):
+            if isinstance(value, list):
+                for index, child in enumerate(value):
+                    if isinstance(child, ast.stmt):
+                        locations[child] = (value, index)
+    block_writes = {}
     aliases = {}
     for node in ast.walk(tree):
         if isinstance(node, ast.Import):
@@ -205,28 +219,58 @@ def python_candidates(path: str, text: str) -> list[dict]:
         if not isinstance(expression, ast.Name) or expression.id in seen:
             return expression
         statement = use
-        while statement in parents:
-            parent = parents[statement]
-            block = next((value for _, value in ast.iter_fields(parent)
-                          if isinstance(value, list) and any(item is statement for item in value)), None)
-            if block is not None and isinstance(statement, ast.stmt):
-                for previous in reversed(block[:block.index(statement)]):
-                    targets = previous.targets if isinstance(previous, ast.Assign) else [previous.target] if isinstance(previous, (ast.AnnAssign, ast.AugAssign)) else []
-                    if any(isinstance(target, ast.Name) and target.id == expression.id for target in targets):
-                        if isinstance(previous, ast.AugAssign):
-                            return previous  # unsupported compound updates remain unresolved
-                        value = previous.value
-                        return local_value(value, previous, seen | {expression.id}) if value else expression
-                    # Do not trust an older binding across an intervening control-flow write.
-                    if any(isinstance(node, ast.Name) and isinstance(node.ctx, ast.Store) and node.id == expression.id
-                           for node in ast.walk(previous)):
-                        return expression
-                return expression
-            statement = parent
+        while statement not in locations and statement in parents:
+            statement = parents[statement]
+        if statement not in locations:
+            return expression
+        block, index = locations[statement]
+        key = id(block)
+        if key not in block_writes:
+            writes = {}
+            for position, previous in enumerate(block):
+                for name in {n.id for n in ast.walk(previous)
+                             if isinstance(n, ast.Name) and isinstance(n.ctx, ast.Store)}:
+                    writes.setdefault(name, []).append((position, previous))
+            block_writes[key] = writes
+        events = block_writes[key].get(expression.id, [])
+        previous_index = bisect_left(events, index, key=lambda item: item[0]) - 1
+        if previous_index < 0:
+            return expression
+        previous = events[previous_index][1]
+        targets = previous.targets if isinstance(previous, ast.Assign) else [previous.target] if isinstance(previous, (ast.AnnAssign, ast.AugAssign)) else []
+        if any(isinstance(target, ast.Name) and target.id == expression.id for target in targets):
+            if isinstance(previous, ast.AugAssign):
+                return previous  # unsupported compound updates remain unresolved
+            value = previous.value
+            return local_value(value, previous, seen | {expression.id}) if value else expression
+        # A nested/control-flow write is a barrier, not an older direct binding.
         return expression
+
+    permission_fields = {"capabilities", "permissions", "scopes", "allowed_tools", "allowed_actions"}
+
+    def permission_input(expression: ast.AST, use: ast.AST) -> bool:
+        value = local_value(expression, use)
+        return (isinstance(value, ast.Subscript) and isinstance(value.slice, ast.Constant)
+                and isinstance(value.slice.value, str) and value.slice.value in permission_fields)
+
+    def permission_target(expression: ast.AST) -> bool:
+        return bool(re.search(r"(?:^|_)(?:capabilities|permissions|scopes|allowed_tools|allowed_actions)$",
+                              dotted(expression).rsplit(".", 1)[-1]))
 
     result = []
     for node in ast.walk(tree):
+        if isinstance(node, ast.Dict):
+            fields = {key.value: value for key, value in zip(node.keys, node.values)
+                      if isinstance(key, ast.Constant) and isinstance(key.value, str)}
+            role = fields.get("role")
+            if (isinstance(role, ast.Constant) and role.value in ("system", "developer")
+                    and "content" in fields and not isinstance(local_value(fields["content"], node), ast.Constant)):
+                result.append(candidate("CN006", path, node.lineno,
+                                        "AST matched dynamic content with a literal privileged role; provenance and actual prompt use require review."))
+        if (isinstance(node, ast.AugAssign) and isinstance(node.op, ast.BitOr)
+                and permission_target(node.target) and permission_input(node.value, node)):
+            result.append(candidate("CN008", path, node.lineno,
+                                    "AST matched permission-container union with subscripted permission input; trust boundary requires review."))
         if not isinstance(node, ast.Call):
             continue
         name = resolve(node.func)
@@ -248,6 +292,13 @@ def python_candidates(path: str, text: str) -> list[dict]:
             rule = "CN004"
         elif isinstance(kwargs.get("verify"), ast.Constant) and kwargs["verify"].value is False and name.startswith(("requests.", "httpx.")):
             rule = "CN005"
+        elif name.rsplit(".", 1)[-1] in {"execute_action", "dispatch_action", "execute_tool", "call_tool", "dispatch"} and any(
+                isinstance(value := local_value(arg, node), ast.Call) and resolve(value.func) == "json.loads"
+                for arg in [*node.args, *kwargs.values()]):
+            rule = "CN007"
+        elif (isinstance(node.func, ast.Attribute) and node.func.attr in {"update", "union"}
+              and permission_target(node.func.value) and any(permission_input(arg, node) for arg in node.args)):
+            rule = "CN008"
         if rule:
             result.append(candidate(rule, path, node.lineno, f"AST matched {name} call; source values omitted."))
     return sorted(result, key=lambda item: (item["line"], item["rule_id"]))
@@ -277,7 +328,7 @@ def baseline(root: Path) -> dict:
         reviewed.append(path)
     return {"format": FORMAT, "version": VERSION, "mode": "baseline", "target": target,
             "coverage": {"complete": False, "reviewed": reviewed, "deferred": deferred,
-                         "limitations": ["Five heuristic rule families; not a complete security audit.",
+                         "limitations": ["Eight heuristic rule families; not a complete security audit.",
                                          "No taint, dependency, credential-content or runtime analysis.",
                                          "Absence of candidates does not establish safety.",
                                          "Snapshot identifies included readable files, not excluded content or an atomic filesystem snapshot."]},

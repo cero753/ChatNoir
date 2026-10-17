@@ -8,7 +8,7 @@
 
 <p align="center">
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-111111"></a>
-  <a href="https://github.com/fhajjej-ship-it/ChatNoir/releases"><img alt="Release v0.1.2" src="https://img.shields.io/badge/release-0.1.2-111111"></a>
+  <a href="https://github.com/fhajjej-ship-it/ChatNoir/releases"><img alt="Release v0.2.0" src="https://img.shields.io/badge/release-0.2.0-111111"></a>
   <a href="docs/compatibility.md"><img alt="Codex, Claude Code, Cursor" src="https://img.shields.io/badge/skills-Codex%20%C2%B7%20Claude%20Code%20%C2%B7%20Cursor-111111"></a>
 </p>
 
@@ -40,6 +40,22 @@ Runtime boundary check: PASS (synthetic in-memory SQLite).
 The demo also challenges a false positive and binds a committed patch to exact revisions and a SHA-256 digest. [See the full recorded run and examples →](docs/demos.md)
 
 For real HTTP boundary checks, [the local application fixture](examples/http-app/README.md) demonstrates SQL injection, cross-user invoice access and file traversal, with fixed controls. All data is synthetic.
+
+## Agent attack demos: catch, reproduce, verify
+
+```sh
+python3 examples/agent-attacks/demo.py
+```
+
+ChatNoir flags three source-level leads, and the runner verifies their actual synthetic effects:
+
+| Boundary | Before | After |
+|---|---|---|
+| Retrieved text promoted into privileged instructions | 1 local note export | 0; legitimate summary works |
+| Malicious tool JSON dispatched as an action | 1 local note export | 0; legitimate summary works |
+| Peer-supplied capabilities widen another agent's authority | 1 local note export | 0; legitimate summary works |
+
+The fixed action gate also denies an always-hostile model proposal. Everything runs locally with synthetic data, an in-memory action sink and a **scripted model**. This demonstrates specific application boundaries, not real-model prompt-injection resistance, protection against arbitrary swarms or continuous runtime blocking. [Source, exact output, tests and limits →](examples/agent-attacks/README.md)
 
 ## Real app: Workshop Prep Agent
 
@@ -183,7 +199,7 @@ enforcement boundary and verify the original trigger plus legitimate behavior.
 
 **The skill** guides your agent through source review across languages it can inspect. It supplies the workflow; your host supplies the model and tools. Review quality varies with those capabilities.
 
-**The deterministic helper** inventories files, binds Git diffs, and emits leads from five rule families: dynamic evaluation, shell execution, unsafe deserialization, dynamic SQL and disabled TLS verification. Python uses AST matching. JavaScript/TypeScript have a narrow lexical dynamic-evaluation check. These are deliberately labeled **candidates**, with incomplete coverage.
+**The deterministic helper** inventories files, binds Git diffs, and emits leads from eight rule families: dynamic evaluation, shell execution, unsafe deserialization, dynamic SQL, disabled TLS verification, dynamic privileged-role prompts, decoded action dispatch and message-supplied permission merges. Python uses AST matching. JavaScript/TypeScript have a narrow lexical dynamic-evaluation check. These are deliberately labeled **candidates**, with incomplete coverage.
 
 ```sh
 python3 chatnoir.py scan /path/to/your-app

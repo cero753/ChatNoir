@@ -2,6 +2,12 @@
 
 Observed October 16, 2026 on macOS arm64. This is bounded release evidence, not a benchmark or third-party security certification.
 
+## Version 0.2.0 agent-security demos
+
+Observed October 17, 2026 on macOS arm64. All 60 tests passed, including 14 new tests covering three synthetic agent boundaries, adversarial model proposals, forged peer authority, invalid tool proposals, scanner aliases/local bindings, conservative write barriers, bounded work for repeated unresolved names, safe controls and no target execution. The runnable [agent demos](../examples/agent-attacks/README.md) produced three candidate rules in vulnerable source, zero in fixed source, one local synthetic export per attack before and zero after, and successful legitimate summaries. Bypassing the shared authorization gate causes verification to fail. [Measured source-bound results](e2e/agent-security-results.json).
+
+The prompt proposer is scripted. This validates source patterns and executable application gates, not resistance of a real LLM, distributed agent transport, unknown attacks or swarm defenses. Existing SQL/HTTP/email-code examples remain separate evidence. The scanner itself never runs target code.
+
 ## Executed checks
 
 - Version 0.1.1: `python3 -m unittest discover -s tests -v` passed 38 tests. Coverage includes candidate rules and safe controls, no scanner execution of target code, symlink/FIFO/credential-file handling, Git ignore/diff behavior, fsmonitor disabling, report verdict/inventory invariants, Markdown/SARIF output, CLI exit codes and installation without overwriting user changes. New checks reproduce the SQL-variable miss, verify assignment scope/reassignment, and exercise the vulnerable/fixed HTTP routes.
@@ -47,6 +53,6 @@ A fresh read-only agent used the skill and raw fixtures to inspect the SQL and c
 
 ## Not established
 
-Full Claude model-session behavior; remediation in the earlier Cursor CLI Auto session; fresh Codex desktop install/picker screens; Cursor IDE marketplace/plugin installation; Windows/Linux execution; detection accuracy on unseen applications; comparative performance; real customer outcomes; and official marketplace approval are not established by these checks. The tests run under the available local Python version, not a multi-version matrix. Source workflows cover more security topics than the five deterministic lead rules; those workflows need the host model's source inspection and judgment.
+Full Claude model-session behavior; remediation in the earlier Cursor CLI Auto session; fresh Codex desktop install/picker screens; Cursor IDE marketplace/plugin installation; Windows/Linux execution; detection accuracy on unseen applications; comparative performance; real customer outcomes; and official marketplace approval are not established by these checks. The tests run under the available local Python version, not a multi-version matrix. Source workflows cover more security topics than the eight deterministic lead rules; those workflows need the host model's source inspection and judgment.
 
 Reproduce locally with the commands above. Inspect the code and pinned release before using it against sensitive projects. No new CI workflow is required to run this suite.
