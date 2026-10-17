@@ -2,6 +2,10 @@
 
 Observed October 16, 2026 on macOS arm64. This is bounded release evidence, not a benchmark or third-party security certification.
 
+## Fresh installed version 0.2.1 follow-up
+
+On October 17, 2026, one fresh Codex CLI session loaded the installed v0.2.1 skill, ran its helper, reproduced all three known HTTP-app vulnerabilities and dismissed the constant `eval` candidate. One fresh Cursor CLI request failed at its usage limit before inference; no fresh Cursor skill loading or detection is claimed. The evaluator independently reproduced the three failures over loopback HTTP and verified all eight checks on the existing fixed app. No scanner/skill defect was found; the fixture's obsolete five-rule wording was corrected to eight. See the [method and limits](installed-0.2.1-e2e.md) and [source-bound ledger](e2e/installed-0.2.1-results.json). Historical results below remain separate evidence.
+
 ## Version 0.2.0 agent-security demos
 
 Observed October 17, 2026 on macOS arm64. All 60 tests passed, including 14 new tests covering three synthetic agent boundaries, adversarial model proposals, forged peer authority, invalid tool proposals, scanner aliases/local bindings, conservative write barriers, bounded work for repeated unresolved names, safe controls and no target execution. The runnable [agent demos](../examples/agent-attacks/README.md) produced three candidate rules in vulnerable source, zero in fixed source, one local synthetic export per attack before and zero after, and successful legitimate summaries. Bypassing the shared authorization gate causes verification to fail. [Measured source-bound results](e2e/agent-security-results.json).

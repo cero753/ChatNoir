@@ -11,4 +11,4 @@ The intended contracts are:
 
 Run `python3 scripts/http_probe.py examples/http-app/vulnerable` from the repository root to exercise HTTP requests against an ephemeral loopback server. Use the `fixed` variant for negative controls. The probe exits 1 on a vulnerable variant and 0 when all three security boundaries and the legitimate controls pass. It never contacts an external target.
 
-The fixture is designed to test the agent workflow, including authorization and file access that the five-rule baseline does not automate. See the measured harness results in `docs/validation.md`.
+The fixture is designed to test the agent workflow, including authorization and file access that the eight-rule baseline does not automate. See the [fresh installed v0.2.1 results](../../docs/installed-0.2.1-e2e.md) and [release validation](../../docs/validation.md).

@@ -45,6 +45,8 @@ The demo also challenges a false positive and binds a committed patch to exact r
 
 For real HTTP boundary checks, [the local application fixture](examples/http-app/README.md) demonstrates SQL injection, cross-user invoice access and file traversal, with fixed controls. All data is synthetic.
 
+**Fresh installed v0.2.1 check:** Codex loaded the installed skill, reproduced all three HTTP-app flaws and dismissed the constant `eval` candidate. Independent HTTP verification passed all eight checks on the fixed app. The fresh Cursor request hit its account usage limit before inference, so its loading and detection remain unverified in this run. [Results, commands and access limits →](docs/installed-0.2.1-e2e.md)
+
 ## Agent attack demos: catch, reproduce, verify
 
 ```sh
