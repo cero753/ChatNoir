@@ -4,13 +4,13 @@
     "name": "Farouk Hajjej"
   },
   "metadata": {
-    "description": "ChatNoir security-review skills and local evidence helpers."
+    "description": "Protect what you build from agent attacks. Portable security review, attack-path analysis, and fix verification for coding agents."
   },
   "plugins": [
     {
       "name": "chatnoir",
       "source": "./",
-      "description": "Evidence-first security review for coding agents."
+      "description": "Protect what you build from agent attacks. Portable security review, attack-path analysis, and fix verification for coding agents."
     }
   ]
 }
