@@ -12,8 +12,6 @@
   <a href="docs/compatibility.md"><img alt="Codex, Claude Code, Cursor" src="https://img.shields.io/badge/skills-Codex%20%C2%B7%20Claude%20Code%20%C2%B7%20Cursor-111111"></a>
 </p>
 
-[Download v0.2.3](https://github.com/fhajjej-ship-it/ChatNoir/releases/download/v0.2.3/chatnoir-0.2.3.zip) · [SHA-256 checksum](https://github.com/fhajjej-ship-it/ChatNoir/releases/download/v0.2.3/SHA256SUMS-0.2.3)
-
 You built the app. Now inspect the boundaries that matter: who can access another user's data, which inputs become commands or queries, and whether a fix closes the original hole.
 
 **ChatNoir turns your coding agent into an evidence-first security reviewer.** It combines 15 review workflows with local scan helpers, attack-path reasoning, false-positive checks, fix verification, and portable reports. No ChatNoir account. No hosted scanner. No Python dependencies. Bring your existing agent and model.
@@ -22,9 +20,34 @@ Review how retrieved content, tool outputs and peer messages reach privileged ac
 
 **Early public release:** verified Codex reviews and bounded synthetic attack/fix tests are available. Claude model access and the latest Cursor agent run remain blocked; adaptive same-agent attack rounds have not run. [Launch status and exact limits →](docs/launch-readiness.md)
 
+## Install in Codex or Cursor
+
+### Codex
+
+```sh
+codex plugin marketplace add fhajjej-ship-it/ChatNoir
+codex plugin add chatnoir@chatnoir-marketplace
+```
+
+Open a fresh Codex session in your app and ask it to use ChatNoir. Clients with a plugin directory can use the repository marketplace; client capabilities vary.
+
+### Cursor
+
+Add the repository marketplace with Cursor CLI:
+
+```sh
+cursor-agent plugin marketplace add https://github.com/fhajjej-ship-it/ChatNoir.git
+```
+
+Then open **Customize** in Cursor, find **ChatNoir** from **chatnoir-marketplace**, and install it for your project or user. Adding the marketplace and installing the plugin are separate steps. Open a fresh agent conversation in your app and ask it to use ChatNoir. [Cursor plugin installation guidance →](https://cursor.com/docs/plugins#installing-plugins)
+
+If your Cursor version does not expose this marketplace, use the [project skill installer](#other-installation-options). The native desktop plugin and v0.2.2 descriptions were checked separately from model reviews; the latest fresh Cursor model request hit its usage limit before inference. [Current compatibility and verified host results →](docs/compatibility.md)
+
+This is a community GitHub distribution, not an official directory listing. Your host supplies model access; installation alone does not establish a successful security review.
+
 ## Start your first review (v0.2.3)
 
-After [installing ChatNoir](#install-where-you-build), open your app in a fresh coding-agent session and ask:
+After [installing ChatNoir](#install-in-codex-or-cursor), open your app in a fresh coding-agent session and ask:
 
 ```text
 Use ChatNoir's guided first review on this project. Keep it read-only.
@@ -155,7 +178,7 @@ Both fixes passed exact-revision correctness/security reviews, required CI and p
 
 The race came from **ChatNoir's agent-guided source review and runtime validation**; dependency findings came from the separately available **`npm audit`**, not ChatNoir's baseline rules. Detailed source and release receipts remain private. Tests used local synthetic accounts and disposable PostgreSQL; no production exploit was demonstrated. Live mail delivery, production Clerk/Google sign-in and complete customer isolation remain unverified. This is bounded owner-run evidence, not a security certification. No new ChatNoir runtime defect was found in this evaluation.
 
-## Install where you build
+## Other installation options
 
 **Claude Code plugin**
 
@@ -165,25 +188,6 @@ The race came from **ChatNoir's agent-guided source review and runtime validatio
 ```
 
 Then start a fresh session and invoke `/chatnoir:chatnoir`, or ask Claude to use ChatNoir for a security review.
-
-**Codex plugin**
-
-```sh
-codex plugin marketplace add fhajjej-ship-it/ChatNoir
-codex plugin add chatnoir@chatnoir-marketplace
-```
-
-Open a fresh session and ask Codex to use ChatNoir. Clients with a plugin directory can use the repository marketplace; client capabilities vary. This is a community GitHub distribution, not an official directory listing.
-
-**Cursor plugin**
-
-For a local plugin session with Cursor CLI:
-
-```sh
-cursor-agent --plugin-dir /absolute/path/to/ChatNoir
-```
-
-For the IDE, use the project skill installer below, open that project, then type `/chatnoir` in a new agent conversation. This path was exercised through the native skill picker, review and remediation in Cursor 3.24.12. [Desktop test evidence →](docs/desktop-e2e.md) Native desktop plugin installation, version 0.2.2 and the updated descriptions were subsequently checked separately; the latest fresh Cursor model request hit its usage limit before inference. Installation does not establish a successful model review. [Current compatibility →](docs/compatibility.md)
 
 **Codex, Cursor, Claude Code, or another Agent Skills host**
 
@@ -196,6 +200,24 @@ python3 scripts/install.py --harness claude --project /path/to/your-app
 ```
 
 Choose **one** matching your host. Installation refuses to overwrite an existing skill. For other hosts, copy `skills/chatnoir/` into their documented skill directory or load `SKILL.md` and its linked references manually. Host support for files, terminal tools and skills is required. [Compatibility and installation details →](docs/compatibility.md)
+
+**Local Cursor CLI plugin session**
+
+From a ChatNoir checkout:
+
+```sh
+cursor-agent --plugin-dir /absolute/path/to/ChatNoir
+```
+
+For the project skill path, open that project in Cursor and type `/chatnoir` in a new agent conversation. This path was exercised through the native skill picker, review and remediation in Cursor 3.24.12. [Desktop test evidence →](docs/desktop-e2e.md)
+
+## Manual download (optional)
+
+The release archive is available for manual installation or inspection:
+
+[Download v0.2.3](https://github.com/fhajjej-ship-it/ChatNoir/releases/download/v0.2.3/chatnoir-0.2.3.zip) · [SHA-256 checksum](https://github.com/fhajjej-ship-it/ChatNoir/releases/download/v0.2.3/SHA256SUMS-0.2.3)
+
+Verify the checksum and extract the complete `chatnoir/` directory, including dot-directories. [Manual installation details →](docs/compatibility.md)
 
 ## Ask better security questions
 
