@@ -42,6 +42,7 @@ def main() -> int:
         return 2
     print(f"Installed ChatNoir: {dest}")
     print("Open a fresh agent session in the target project and ask it to use ChatNoir.")
+    print("First review: Use ChatNoir's guided first review on this project. Keep it read-only.")
     return 0
 
 

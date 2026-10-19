@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.3 — October 19, 2026
+
+- Added a guided first-review skill path for authentication, data access or agent permissions, reusing existing source review, evidence, reports and fix verification.
+- Added the read-only `first-review` helper for local setup checks, included-file identity and a scoped agent handoff. Setup success does not claim a vulnerability review or host/model access.
+- Linked the first-review path from the README and project-local installer. Existing v0.2.2 release downloads remain unchanged.
+
 ## 0.2.2 — October 17, 2026
 
 - Packages the latest launch/compatibility documentation, fresh installed-skill results and seven-session real Codex evaluator with its sanitized actual-message evidence. Those provider-backed results were collected with 0.2.1; no new provider session is claimed for this packaging release.

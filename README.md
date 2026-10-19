@@ -8,11 +8,11 @@
 
 <p align="center">
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-111111"></a>
-  <a href="https://github.com/fhajjej-ship-it/ChatNoir/releases/latest"><img alt="Release v0.2.2" src="https://img.shields.io/badge/release-0.2.2-111111"></a>
+  <a href="https://github.com/fhajjej-ship-it/ChatNoir/releases/latest"><img alt="Release v0.2.3" src="https://img.shields.io/badge/release-0.2.3-111111"></a>
   <a href="docs/compatibility.md"><img alt="Codex, Claude Code, Cursor" src="https://img.shields.io/badge/skills-Codex%20%C2%B7%20Claude%20Code%20%C2%B7%20Cursor-111111"></a>
 </p>
 
-[Download v0.2.2](https://github.com/fhajjej-ship-it/ChatNoir/releases/download/v0.2.2/chatnoir-0.2.2.zip) · [SHA-256 checksum](https://github.com/fhajjej-ship-it/ChatNoir/releases/download/v0.2.2/SHA256SUMS-0.2.2)
+[Download v0.2.3](https://github.com/fhajjej-ship-it/ChatNoir/releases/download/v0.2.3/chatnoir-0.2.3.zip) · [SHA-256 checksum](https://github.com/fhajjej-ship-it/ChatNoir/releases/download/v0.2.3/SHA256SUMS-0.2.3)
 
 You built the app. Now inspect the boundaries that matter: who can access another user's data, which inputs become commands or queries, and whether a fix closes the original hole.
 
@@ -22,7 +22,25 @@ Review how retrieved content, tool outputs and peer messages reach privileged ac
 
 **Early public release:** verified Codex reviews and bounded synthetic attack/fix tests are available. Claude model access and the latest Cursor agent run remain blocked; adaptive same-agent attack rounds have not run. [Launch status and exact limits →](docs/launch-readiness.md)
 
-## Try it in a minute
+## Start your first review (v0.2.3)
+
+After [installing ChatNoir](#install-where-you-build), open your app in a fresh coding-agent session and ask:
+
+```text
+Use ChatNoir's guided first review on this project. Keep it read-only.
+```
+
+Choose **authentication**, **data access**, or **agent permissions** when prompted. You can include the focus in your first request. ChatNoir checks local setup, follows one bounded source path, and returns confirmed findings, unresolved candidates, dismissals, what was not tested, and a next action. Fixes require a separate request unless already authorized.
+
+For a local setup check before opening the agent:
+
+```sh
+python3 skills/chatnoir/scripts/chatnoir.py first-review /path/to/your-app
+```
+
+Run this from the ChatNoir checkout, or use your installed skill's actual script path. Select `--focus auth`, `--focus data`, or `--focus agents` to print a ready-to-paste review request. This command inventories files; it **does not perform a vulnerability review or verify model access**. The agent performs the source review. Python is needed only for the helper. [Workflow and limits →](skills/chatnoir/references/first-review.md)
+
+## Try the synthetic demo in a minute
 
 Python 3.10+ and Git are enough for the demos. No API key or model call is needed.
 
