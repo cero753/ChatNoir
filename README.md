@@ -76,6 +76,19 @@ Codex's finding was **static source confirmation**, not a runtime reproduction b
 
 Both session targets stayed unchanged. Other routes and runtime testing were outside Codex's selected review. No new ChatNoir defect or patch was needed. This known-fixture result does not establish a general detection rate or a successful Cursor review.
 
+#### Authentication and agent permissions in Codex
+
+Two additional fresh Codex CLI sessions (`gpt-6-sol`, high reasoning) passed the installed v0.2.3 guided flow on October 19, 2026: `--focus auth` inventoried 2 files and `--focus agents` inventoried 3, with no skips or access blockers. Both loaded the installed guidance, completed source review and left their synthetic targets unchanged. **Neither reviewer executed the application.**
+
+| Scope | Static finding from Codex | Separate runtime checks of the existing demo variants |
+|---|---|---|
+| [Authentication](examples/email-code-race/README.md) | A valid email code can create multiple sessions: `sign_in` reads eligibility before its write transaction, while `consume_vulnerable` updates without rechecking single-use state. | With 2 or 8 concurrent requests, the vulnerable path created 2 or 8 sessions; the atomic-claim path created exactly 1. Sequential replay was rejected and fresh legitimate sign-in succeeded in both variants. |
+| [Agent permissions](examples/coordinated-agents/README.md) | Two peer approvals reach `execute_action` without applying the root task's authorization gate; peer agreement can therefore exceed root-granted capabilities. | The scripted two-peer case produced 1 synthetic export before the existing fix and 0 afterward. Legitimate summaries worked; single-peer and duplicate-sender controls remained denied. |
+
+**Unresolved authentication question:** `sign_in` checks the attempt limit but does not increment attempts after an incorrect code. The reviewed workspace did not establish an external caller or retry policy responsible for counting failures. This remains a proof gap, not a confirmed additional vulnerability or a verified fix; the atomic-claim results do not settle it.
+
+Runtime evidence above comes from separately executed local SQLite concurrency and in-memory action-sink demos. These are known synthetic fixtures, not a blind benchmark, live attacking agents or evidence of general model/swarm resistance. No new ChatNoir defect or patch was needed.
+
 ## Try the synthetic demo in a minute
 
 Python 3.10+ and Git are enough for the demos. No API key or model call is needed.
