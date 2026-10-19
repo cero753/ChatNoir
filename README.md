@@ -103,6 +103,10 @@ After inspecting source and the installed review guidance, this session actually
 
 ChatNoir recognized the counting fix and still identified the intentional race. The copied source stayed unchanged, no unexpected finding or model-access blocker was reported, and no new patch was needed. This runtime follow-up is separate from the earlier static-only reviews and independent checks. It establishes bounded synthetic SQLite behavior, not production authentication security or general detection accuracy.
 
+**Named-skill discovery follow-up:** Later on October 19, 2026, another fresh Codex CLI 0.157.0 session (`gpt-6-sol`, high reasoning) found installed ChatNoir v0.2.3 **by name, without an explicit skill path or project-local skill copy**. The observed commands read the installed skill and review guidance, confirmed helper version 0.2.3, and ran the guided authentication review on the same synthetic app. The session caught the intentional race, verified the protected path and failed-attempt fix, and passed all 9 focused tests. No access blocker or new ChatNoir defect was found.
+
+This verifies discovery when the request names ChatNoir. **Automatic selection from a security request that does not name ChatNoir remains untested.** This follow-up used the Codex CLI; it did not verify desktop UI discovery or Cursor discovery.
+
 ## Try the synthetic demo in a minute
 
 Python 3.10+ and Git are enough for the demos. No API key or model call is needed.
