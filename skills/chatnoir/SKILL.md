@@ -13,6 +13,7 @@ Use the user's requested scope and depth. Ask only if the target or action is ma
 
 | Request | Read next |
 |---|---|
+| First review; help getting started with ChatNoir | [Guided first review](references/first-review.md) |
 | Repository or scoped scan; finding discovery | [Review](references/review.md) |
 | Prompt injection, malicious tool output, or agent-to-agent authority review | [Agent security](references/agent-security.md), then [Review](references/review.md) |
 | Git diff review; assess patch risk | [Patch review](references/patch.md) |

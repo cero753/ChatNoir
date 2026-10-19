@@ -11,13 +11,14 @@ import json
 import os
 from pathlib import Path, PurePosixPath
 import re
+import shlex
 import stat
 import string
 import subprocess
 import sys
 from urllib.parse import quote
 
-VERSION = "0.2.2"
+VERSION = "0.2.3"
 FORMAT = "chatnoir.report/v1"
 MAX_FILE = 1024 * 1024
 MAX_TOTAL = 64 * 1024 * 1024
@@ -39,6 +40,70 @@ RULES = {
 
 class ChatNoirError(Exception):
     pass
+
+
+FIRST_REVIEW_SCOPES = {
+    "auth": "Authentication: how identities and sessions are established and checked",
+    "data": "Data access: whether one user can read or change another user's resources",
+    "agents": "Agent permissions: whether retrieved text, tool outputs or peer messages can authorize actions",
+}
+
+
+def first_review(root: Path, focus: str | None) -> dict:
+    """Prepare a source-review handoff; inventory is not a vulnerability verdict."""
+    skill = Path(__file__).resolve().parents[1]
+    required = ["SKILL.md", "references/first-review.md", "references/review.md",
+                "references/report.md", "references/evidence.md", "references/remediation.md"]
+    if focus == "agents":
+        required.append("references/agent-security.md")
+    if any(not (skill / name).is_file() for name in required):
+        raise ChatNoirError("incomplete skill installation; restore the full ChatNoir skill directory")
+    if focus is not None and focus not in FIRST_REVIEW_SCOPES:
+        raise ChatNoirError("choose auth, data or agents")
+    target, _ = collect(root)
+    if not target["files"]:
+        raise ChatNoirError("inventory includes no readable files; " + target["inventory_strategy"] +
+                           "; inspect exclusions with inventory or use an explicitly scoped manual source review without helper identity")
+    prompt = None
+    if focus:
+        prompt = (f"Use ChatNoir's guided first review on {json.dumps(str(root), ensure_ascii=True)}. "
+                  f"Focus: {FIRST_REVIEW_SCOPES[focus]}. Keep this review read-only. "
+                  "Inspect a bounded source path from entrypoint through enforcement to the sensitive operation; "
+                  "scanner candidates need evidence. Do not run target code or install dependencies. "
+                  "Summarize confirmed findings, unresolved candidates, dismissals, and what was not tested. "
+                  "Show the smallest next action; do not apply a fix unless requested.")
+    return {"version": VERSION, "skill": str(skill), "python": sys.version.split()[0],
+            "target": str(root), "inventory": target, "focus": focus,
+            "state": "ready_for_source_review" if focus else "choose_scope",
+            "host_access": "not_checked", "review_performed": False, "review_request": prompt}
+
+
+def render_first_review(plan: dict) -> str:
+    # JSON quoting keeps control characters in filesystem names inert in output.
+    quoted = lambda value: json.dumps(value, ensure_ascii=True)
+    inventory = plan["inventory"]
+    lines = ["ChatNoir first review", "",
+             f"Local setup: ChatNoir {plan['version']} | Python {plan['python']}",
+             f"Skill directory: {quoted(plan['skill'])}", f"Target: {quoted(plan['target'])}",
+             f"Inventory: {len(inventory['files'])} readable files; {len(inventory['skipped'])} skipped.",
+             f"Included-file snapshot: {inventory['snapshot_sha256']}",
+             f"Git revision: {inventory['git_head'] or 'unavailable (Git is optional)'}",
+             f"Working tree dirty: {inventory['dirty'] if inventory['dirty'] is not None else 'unknown'}"]
+    if inventory["dirty_reason"]:
+        lines.append(inventory["dirty_reason"])
+    lines += ["", "No vulnerability review or runtime tests have run. Host/model access was not checked.",
+              "Inventory exclusions and file hashes are available through the inventory command.", ""]
+    if plan["focus"] is None:
+        lines += ["Choose one scope:"] + [f"  {key}: {value}" for key, value in FIRST_REVIEW_SCOPES.items()]
+        lines += ["", "Then rerun with --focus auth, --focus data, or --focus agents. For example:",
+                  shlex.join([sys.executable, str(Path(plan["skill"]) / "scripts/chatnoir.py"),
+                              "first-review", plan["target"], "--focus", "data"])]
+    else:
+        lines += [f"Scope: {FIRST_REVIEW_SCOPES[plan['focus']]}", "",
+                  "Local setup is ready. Paste this request into your coding agent with ChatNoir loaded:",
+                  "", plan["review_request"], "",
+                  "If the host cannot load ChatNoir or call its model, report that blocker; do not claim a review."]
+    return "\n".join(lines) + "\n"
 
 
 def git(root: Path, *args: str) -> bytes:
@@ -448,9 +513,15 @@ def load_report(path: str) -> dict:
 
 
 def main(argv: list[str] | None = None) -> int:
+    if sys.version_info < (3, 10):
+        print("chatnoir: helpers require Python 3.10+; source review can proceed without them", file=sys.stderr)
+        return 2
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--version", action="version", version=VERSION)
     commands = parser.add_subparsers(dest="command", required=True)
+    first = commands.add_parser("first-review", help="Check local setup and prepare a read-only source review")
+    first.add_argument("target", type=Path)
+    first.add_argument("--focus", choices=FIRST_REVIEW_SCOPES, help="Choose one bounded review scope")
     for name in ("inventory", "scan"):
         cmd = commands.add_parser(name)
         cmd.add_argument("target", type=Path)
@@ -464,7 +535,10 @@ def main(argv: list[str] | None = None) -> int:
         commands.add_parser(name).add_argument("report")
     args = parser.parse_args(argv)
     try:
-        if args.command == "inventory":
+        if args.command == "first-review":
+            print(render_first_review(first_review(args.target.resolve(), args.focus)), end="")
+            return 0
+        elif args.command == "inventory":
             output, _ = collect(args.target.resolve())
         elif args.command == "scan":
             output = baseline(args.target.resolve())
