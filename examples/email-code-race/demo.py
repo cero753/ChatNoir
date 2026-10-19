@@ -63,11 +63,20 @@ def sign_in(path, consume, *, code=CODE, after_read=None):
             FROM codes WHERE email = ?
         """, (EMAIL,)).fetchone()
         if (not row or row[4] is not None or row[2] <= int(time.time())
-                or row[3] >= MAX_ATTEMPTS
-                or not hmac.compare_digest(row[1], code_hash(code))):
+                or row[3] >= MAX_ATTEMPTS):
             return False
         if after_read:
             after_read()
+        if not hmac.compare_digest(row[1], code_hash(code)):
+            # Increment current database state, not the earlier snapshot. Cap the
+            # budget and recheck eligibility when concurrent requests race here.
+            with db:
+                db.execute("""
+                    UPDATE codes SET attempts = attempts + 1
+                    WHERE id = ? AND consumed_at IS NULL
+                      AND expires_at > ? AND attempts < ?
+                """, (row[0], int(time.time()), MAX_ATTEMPTS))
+            return False
         with db:
             if not consume(db, row[0]):
                 return False
@@ -101,6 +110,25 @@ def run_case(consume, workers):
                 "legitimate_sessions": int(sign_in(legitimate, consume))}
 
 
+def run_attempt_case():
+    with tempfile.TemporaryDirectory(prefix="chatnoir-code-attempts-") as directory:
+        path = Path(directory) / "budget.sqlite"
+        seed(path)
+        wrong_successes = sum(sign_in(path, consume_fixed, code="000000")
+                              for _ in range(MAX_ATTEMPTS))
+        correct_after_limit = int(sign_in(path, consume_fixed))
+        with closing(sqlite3.connect(path)) as db:
+            attempts = db.execute("SELECT attempts FROM codes").fetchone()[0]
+            sessions = db.execute("SELECT COUNT(*) FROM sessions").fetchone()[0]
+        legitimate = Path(directory) / "remaining-budget.sqlite"
+        seed(legitimate)
+        for _ in range(MAX_ATTEMPTS - 1):
+            sign_in(legitimate, consume_fixed, code="000000")
+        return {"attempts": attempts, "wrong_successes": wrong_successes,
+                "correct_after_limit": correct_after_limit, "stored_sessions": sessions,
+                "legitimate_sessions": int(sign_in(legitimate, consume_fixed))}
+
+
 def demonstrate():
     print("CHATNOIR / Synthetic email-code race (local SQLite)")
     results = {}
@@ -115,6 +143,15 @@ def demonstrate():
             print(f"{name}: requests={workers}; sessions={result['stored_sessions']}; "
                   f"replay={result['replay_sessions']}; legitimate={result['legitimate_sessions']}")
     print("PASS: reproduced the race; atomic claim permits exactly one session.")
+    attempts = run_attempt_case()
+    if attempts != {"attempts": MAX_ATTEMPTS, "wrong_successes": 0,
+                    "correct_after_limit": 0, "stored_sessions": 0, "legitimate_sessions": 1}:
+        raise RuntimeError(f"Unexpected failed-code budget result: {attempts}")
+    results["attempt_budget"] = attempts
+    print(f"failed-code budget: attempts={attempts['attempts']}; "
+          f"correct-after-limit={attempts['correct_after_limit']}; "
+          f"sessions={attempts['stored_sessions']}; legitimate={attempts['legitimate_sessions']}")
+    print("PASS: failed codes exhaust the budget; valid sign-in below the limit works.")
     print("Synthetic fixture only: not a production runtime or a scanner detection test.")
     return results
 
