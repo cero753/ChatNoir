@@ -41,7 +41,7 @@ cursor-agent plugin marketplace add https://github.com/fhajjej-ship-it/ChatNoir.
 
 Then open **Customize** in Cursor, find **ChatNoir** from **chatnoir-marketplace**, and install it for your project or user. Adding the marketplace and installing the plugin are separate steps. Open a fresh agent conversation in your app and ask it to use ChatNoir. [Cursor plugin installation guidance →](https://cursor.com/docs/plugins#installing-plugins)
 
-If your Cursor version does not expose this marketplace, use the [project skill installer](#other-installation-options). The native desktop plugin and v0.2.2 descriptions were checked separately from model reviews; the latest fresh Cursor model request hit its usage limit before inference. [Current compatibility and verified host results →](docs/compatibility.md)
+If your Cursor version does not expose this marketplace, use the [project skill installer](#other-installation-options). The installed v0.2.3 plugin and description were verified in Cursor; its fresh guided-review request was quota-blocked before inference. [Current compatibility and verified host results →](docs/compatibility.md)
 
 This is a community GitHub distribution, not an official directory listing. Your host supplies model access; installation alone does not establish a successful security review.
 
@@ -62,6 +62,19 @@ python3 skills/chatnoir/scripts/chatnoir.py first-review /path/to/your-app
 ```
 
 Run this from the ChatNoir checkout, or use your installed skill's actual script path. Select `--focus auth`, `--focus data`, or `--focus agents` to print a ready-to-paste review request. This command inventories files; it **does not perform a vulnerability review or verify model access**. The agent performs the source review. Python is needed only for the helper. [Workflow and limits →](skills/chatnoir/references/first-review.md)
+
+### Verified guided first-review results
+
+Tested October 19, 2026 on the [synthetic HTTP app](examples/http-app/README.md), focused on data access. Both installed plugins matched all **110 files** in the v0.2.3 release; Cursor also visibly showed the correct version and description.
+
+| Fresh native CLI session | Result |
+|---|---|
+| **Codex — passed** (`gpt-6-sol`, high reasoning) | Loaded the installed skill and guided-review references. Both setup commands succeeded: scope choices, then `--focus data` (4 readable files, 0 skipped). Source review confirmed missing invoice ownership enforcement at `app.py:33`: Alice's synthetic identity could request Bob's invoice. |
+| **Cursor — quota-blocked** (configured default model) | Returned “You've hit your usage limit” before inference or skill reads. Installation and the local helper passed separate checks; guided loading and model review remain unverified in this run. |
+
+Codex's finding was **static source confirmation**, not a runtime reproduction by that agent. Separate in-memory checks against the supplied app variants returned Bob's invoice before the existing fix (**200**) and rejected Alice's request afterward (**404**). Own-invoice access still returned 200; anonymous and nonexistent-invoice requests retained 401 and 404 respectively.
+
+Both session targets stayed unchanged. Other routes and runtime testing were outside Codex's selected review. No new ChatNoir defect or patch was needed. This known-fixture result does not establish a general detection rate or a successful Cursor review.
 
 ## Try the synthetic demo in a minute
 
