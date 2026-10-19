@@ -89,6 +89,20 @@ Two additional fresh Codex CLI sessions (`gpt-6-sol`, high reasoning) passed the
 
 Runtime evidence above comes from separately executed local SQLite concurrency and in-memory action-sink demos. These are known synthetic fixtures, not a blind benchmark, live attacking agents or evidence of general model/swarm resistance. No new ChatNoir defect or patch was needed during those guided-review runs.
 
+#### Fresh Codex verification of the updated authentication demo
+
+On October 19, 2026, a subsequent fresh Codex CLI 0.157.0 session (`gpt-6-sol`, high reasoning) used installed ChatNoir v0.2.3 to review the corrected synthetic demo. It loaded ChatNoir through the **explicit installed-skill path**; **automatic discovery was not verified** in that session.
+
+After inspecting source and the installed review guidance, this session actually executed the trusted local demo and focused tests with temporary SQLite databases:
+
+| Check | Observed runtime result in the fresh Codex session |
+|---|---|
+| Failed-attempt fix | Five wrong codes produced a stored count of 5; a subsequent correct code was rejected with 0 sessions. A correct code after 4 failures still created 1 session. |
+| Intentional single-use race | With 2 and 8 concurrent requests, the vulnerable path created 2 and 8 sessions; the protected path created exactly 1 in each case. Sequential replay created 0 sessions. |
+| Regression controls | All **9 focused tests passed**, including concurrent failure counting, stale eligibility and legitimate sign-in. |
+
+ChatNoir recognized the counting fix and still identified the intentional race. The copied source stayed unchanged, no unexpected finding or model-access blocker was reported, and no new patch was needed. This runtime follow-up is separate from the earlier static-only reviews and independent checks. It establishes bounded synthetic SQLite behavior, not production authentication security or general detection accuracy.
+
 ## Try the synthetic demo in a minute
 
 Python 3.10+ and Git are enough for the demos. No API key or model call is needed.
