@@ -12,6 +12,8 @@
   <a href="docs/compatibility.md"><img alt="Codex-first" src="https://img.shields.io/badge/focus-Codex-111111"></a>
 </p>
 
+**Current release: [v0.4.1](https://github.com/fhajjej-ship-it/ChatNoir/releases/tag/v0.4.1).** Installation and usage below refer to this release. Older version numbers identify historical test evidence, not the recommended version.
+
 You built the app. Now inspect the boundaries that matter: who can access another user's data, which inputs become commands or queries, and whether a fix closes the original hole.
 
 **Codex-first, portable by design.** Codex is the primary platform for development and verification. The self-contained `SKILL.md`, references and helpers may also work in compatible coding agents, including Cursor and Claude Code, but compatibility depends on the host. Existing integrations and historical test results remain available; ongoing cross-platform testing and support are not promised. [Recorded host results and limits →](docs/compatibility.md)
@@ -35,7 +37,9 @@ Open a fresh Codex session in your app and ask it to use ChatNoir. Clients with 
 
 This is a community GitHub distribution, not an official directory listing. Your host supplies model access; installation alone does not establish a successful security review.
 
-## Start your first review (v0.2.3)
+<a id="start-your-first-review-v023"></a>
+
+## Start your first review
 
 After [installing ChatNoir in Codex](#install-in-codex), open your app in a fresh Codex session and ask:
 
@@ -53,7 +57,14 @@ python3 skills/chatnoir/scripts/chatnoir.py first-review /path/to/your-app
 
 Run this from the ChatNoir checkout, or use your installed skill's actual script path. Select `--focus auth`, `--focus data`, or `--focus agents` to print a ready-to-paste review request. This command inventories files; it **does not perform a vulnerability review or verify model access**. The agent performs the source review. Python is needed only for the helper. [Workflow and limits →](skills/chatnoir/references/first-review.md)
 
-### Verified guided first-review results
+<a id="verified-guided-first-review-results"></a>
+
+### Historical guided first-review results
+
+<details>
+<summary>Recorded v0.2.3 reviews and follow-up checks</summary>
+
+These results describe the versions actually tested; they are not new v0.4.1 test runs.
 
 Tested October 19, 2026 on the [synthetic HTTP app](examples/http-app/README.md), focused on data access. Both installed plugins matched all **110 files** in the v0.2.3 release; Cursor also visibly showed the correct version and description.
 
@@ -97,6 +108,8 @@ ChatNoir recognized the counting fix and still identified the intentional race. 
 
 This verifies discovery when the request names ChatNoir. **Automatic selection from a security request that does not name ChatNoir remains untested.** This follow-up used the Codex CLI; it did not verify desktop UI discovery or Cursor discovery.
 
+</details>
+
 ## Try the synthetic demo in a minute
 
 Python 3.10+ and Git are enough for the demos. No API key or model call is needed.
@@ -122,7 +135,7 @@ The demo also challenges a false positive and binds a committed patch to exact r
 
 For real HTTP boundary checks, [the local application fixture](examples/http-app/README.md) demonstrates SQL injection, cross-user invoice access and file traversal, with fixed controls. All data is synthetic.
 
-**Fresh installed v0.2.2 check:** Codex loaded the installed skill, reproduced all three HTTP-app flaws and dismissed the constant `eval` candidate. Independent HTTP verification passed all eight checks on the fixed app. The fresh Cursor request hit its account usage limit before inference, so its loading and detection remain unverified in this run. [Results, commands and access limits →](docs/installed-0.2.2-e2e.md)
+**Historical installed v0.2.2 check:** Codex loaded the installed skill, reproduced all three HTTP-app flaws and dismissed the constant `eval` candidate. Independent HTTP verification passed all eight checks on the fixed app. The fresh Cursor request hit its account usage limit before inference, so its loading and detection remain unverified in this run. [Results, commands and access limits →](docs/installed-0.2.2-e2e.md)
 
 ## Agent attack demos: catch, reproduce, verify
 
@@ -144,7 +157,7 @@ The fixed action gate also denies an always-hostile model proposal. Everything r
 
 **Coordinated approval laundering:** a separate two-peer quorum fixture reproduces **1 synthetic export before → 0 after**, with single-peer, duplicate-sender and legitimate controls. A real Codex ChatNoir review confirmed the authorization flaw even though the scanner returned zero candidates. The mixed Codex/Cursor chain remains **incomplete because Cursor hit its agent usage limit**. [Runnable coordinated case, measured evidence and access gap →](docs/coordinated-agent-security.md)
 
-A fresh Codex session using **installed v0.2.1** also reproduced this flaw, verified the supplied fix and restored the export by bypassing only the gate in memory. Legitimate summaries still worked. This was one real reviewer executing synthetic peer messages, not a completed live multi-agent chain. [Installed-package verification →](docs/coordinated-agent-security.md#fresh-installed-v021-follow-up)
+In an earlier fresh Codex session, **installed v0.2.1** also reproduced this flaw, verified the supplied fix and restored the export by bypassing only the gate in memory. Legitimate summaries still worked. This was one real reviewer executing synthetic peer messages, not a completed live multi-agent chain. [Installed-package verification →](docs/coordinated-agent-security.md#fresh-installed-v021-follow-up)
 
 **Completed with multiple real Codex agents:** seven fresh sessions authored and handed off their own attack/endorsement messages, ran a legitimate control, and reviewed the app with ChatNoir. Replaying those exact hostile messages caused **1 synthetic export before → 0 after**; legitimate summaries worked. The real coordinator chose `summarize`, so no native-agent compromise was demonstrated. [Runnable all-Codex test, actual messages and fix proof →](docs/codex-coordinated-attack.md)
 
@@ -226,7 +239,7 @@ cursor-agent plugin marketplace add https://github.com/fhajjej-ship-it/ChatNoir.
 
 Then open **Customize** in Cursor, find **ChatNoir** from **chatnoir-marketplace**, and install it for your project or user. Adding the marketplace and installing the plugin are separate steps. Open a fresh agent conversation in your app and ask it to use ChatNoir. [Cursor plugin installation guidance →](https://cursor.com/docs/plugins#installing-plugins)
 
-If your Cursor version does not expose this marketplace, use the [project skill installer](#other-installation-options). The installed v0.2.3 plugin and description were verified in Cursor; its fresh guided-review request was quota-blocked before inference. [Current compatibility and verified host results →](docs/compatibility.md)
+If your Cursor version does not expose this marketplace, use the [project skill installer](#other-installation-options). In the historical v0.2.3 check, the installed plugin and description were verified in Cursor; its fresh guided-review request was quota-blocked before inference. [Current compatibility and verified host results →](docs/compatibility.md)
 
 **Claude Code plugin**
 
@@ -343,8 +356,8 @@ reports. Missing runtime evidence stays undetermined.
 service stand-in changes from a potentially affected version to a fixed version,
 while an unobserved worker remains unresolved. This verifies report plumbing and
 bounded synthetic observations, not protection against a real PHP vulnerability,
-provider breach or agent swarm. This optional workflow is included in v0.4.0;
-update an older installed plugin to use it.
+provider breach or agent swarm. This optional workflow is included in the current
+release; update an older installed plugin to v0.4.1 to use the combined report flow.
 
 ### Export a client review PDF
 
@@ -376,8 +389,8 @@ permissions must not expand the receiving agent's authority. Its
 [offline replay](examples/reports/replay-agent-permissions.py) checks the unauthorized
 action, legitimate summary and a disposable gate-bypass control. It uses no model,
 network or real data and is not a customer or production assessment.
-PDF export was introduced in v0.3.0. In v0.4.0, Markdown preserves the reviewer
-summary, and reviewed Markdown/PDF reports include a next-actions table drawn
+In the current release, Markdown preserves the reviewer summary, and reviewed
+Markdown/PDF reports include a next-actions table drawn
 from the supplied remediation text. The PDF explicitly warns that no confirmed
 open findings is not an all-clear. Export performs no new assessment or fix
 verification. Older installed plugins require an update; previous release
