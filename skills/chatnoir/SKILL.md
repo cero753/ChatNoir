@@ -56,3 +56,8 @@ For dependency or secret-content coverage, use existing trusted tooling such as 
 Lead with confirmed findings ordered by realistic impact, then unresolved candidates and coverage gaps. For every finding preserve its distinct location, actor, controlled input, boundary, exact evidence, counterevidence, validation method, impact and remedy. A representative instance does not close unreviewed sibling paths.
 
 Return useful inline findings when that meets the request. For a retained report, use [the report contract](references/report.md); validate before rendering or SARIF export. Validation checks structure and some consistency rules, not the truth of evidence. End with what was inspected, what actually ran, what remains unknown and the next concrete action. Do not equate no findings with security certification.
+
+For a client PDF from an existing reviewed JSON report, use the report contract's
+`client-report` command. It requires optional ReportLab, writes a new local file,
+and preserves supplied verdicts and validation limits. Export does not run a new
+review. Do not install dependencies or publish reports without authorization.

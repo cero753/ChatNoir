@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.0 - October 22, 2026
+
+- Added optional `client-report` PDF export from validated review JSON, including reviewer-authored executive summaries, scope, findings, evidence, remedies and verification limits. Existing commands remain standard-library only; PDF export requires ReportLab.
+- Preserved unresolved verdicts and baseline labels. Imported report values remain literal text; existing output files and symlinks are not overwritten.
+- Added two three-page sample PDFs: a scoped own-product request-handling review and a clearly labeled synthetic agent-permission case. The latter includes a reproducible offline replay, legitimate control and disposable gate-bypass check. Neither is a customer assessment or a broad AI-security guarantee.
+- Includes the previously merged synthetic sign-in failed-attempt fix and named-skill discovery documentation published after v0.2.3. Historical provider results retain their tested versions; no new provider model sessions are claimed.
+
 ## 0.2.3 — October 19, 2026
 
 - Added a guided first-review skill path for authentication, data access or agent permissions, reusing existing source review, evidence, reports and fix verification.
