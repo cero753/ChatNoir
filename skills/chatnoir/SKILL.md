@@ -54,6 +54,15 @@ For dependency or secret-content coverage, use existing trusted tooling such as 
 
 ## Deliver
 
+Return one clear report per review, combining security findings, any relevant
+incident assessment, recommended or applied fixes, actual verification and
+remaining gaps. Keep distinct statuses and evidence within that report; do not
+split application, incident and fix results into separate deliverables unless
+the user requests it. Default to one human-readable report. JSON, Markdown, PDF
+and SARIF are optional views of the same review, not additional assessments;
+deliver only the requested views. Keep test fixtures and example exports separate
+from the user's review.
+
 Lead with confirmed findings ordered by realistic impact, then unresolved candidates and coverage gaps. For every finding preserve its distinct location, actor, controlled input, boundary, exact evidence, counterevidence, validation method, impact and remedy. A representative instance does not close unreviewed sibling paths.
 
 Return useful inline findings when that meets the request. For a retained report, use [the report contract](references/report.md); validate before rendering or SARIF export. Validation checks structure and some consistency rules, not the truth of evidence. End with what was inspected, what actually ran, what remains unknown and the next concrete action. Do not equate no findings with security certification.

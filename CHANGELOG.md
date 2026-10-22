@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.4.1 - October 22, 2026
+
+- Made one combined report the default for each review: code findings, relevant incident assessment, fixes, verification and remaining gaps. Optional formats are views of the same canonical review; sample/demo exports are not additional user reports.
+- Allowed an incident ledger in repository, diff and deep reports as well as triage/verify, retaining the prohibition on calling an automated baseline an incident assessment. JSON validation and the schema agree.
+- Gave PDF exports a shared security-review title and separated code-finding counts from incident status, without dropping fix evidence or unresolved incident gaps.
+- Clarified producer-version provenance when authoring reports; existing exported reports retain their historical version.
+
 ## 0.4.0 - October 22, 2026
 
 - Added an optional incident-exposure workflow for a named advisory or provider incident. Dated service evidence, applicability gaps and planned/completed/verified/blocked actions reuse the existing report format. JSON validation checks consistency; Markdown/PDF render the ledger and SARIF retains it as run properties.

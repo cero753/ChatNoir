@@ -2,7 +2,27 @@
 
 Use `chatnoir.report/v1` when saving a structured scan report. Start from the baseline helper output or `schemas/report.schema.json` in the repository. A copied skill remains self-contained: `scripts/chatnoir.py validate` enforces the essential contract without needing the root schema or third-party libraries.
 
+Keep one canonical report for each review of a target. Put security findings and
+fix/verification results in `findings`, any relevant incident assessment in
+`incident_review`, and remaining coverage gaps in `coverage` and the affected
+records. Write one executive summary across that evidence. Do not generate
+separate application, incident or remediation reports for the same review unless
+requested. If the review continues through a fix, retain finding IDs and dated
+before/after evidence, refresh target identity and preserve unresolved work in
+the current report. Keep historical files when needed; present one current
+report, without overwriting unrelated files or existing PDFs.
+
+Default to one human-readable result. When retained files are requested, save
+the canonical JSON and render the requested view(s) from that same data. Multiple
+formats are representations of one review, not extra assessments. Do not attach
+unrelated sample/demo reports to the user's deliverable.
+
 The report contains `format`, `version`, `mode`, `target`, `coverage` and `findings`. Target identity records the digest of included file entries, Git revision/dirty state when available (`dirty: null` with `dirty_reason` when Git filters prevent a safe status check), inventory strategy, per-file hashes and skipped paths. Do not relabel a baseline inventory as reviewed source. `reviewed` and `deferred` describe the work actually completed for that mode. Retain baseline provenance when expanding it into an agent review; regenerate file identity if source changes.
+
+For a newly authored report, keep `version` from the helper's baseline output or
+read it with `--version`: it identifies the ChatNoir producer, not the schema
+revision `1` in `format`. Preserve the historical producer version when merely
+exporting an existing report.
 
 Optionally add `executive_summary` as nonempty reviewer-authored text explaining
 the business relevance, scoped outcome and important limits. Ground it in the
@@ -23,8 +43,10 @@ The commands above emit to stdout and do not write reports or upload SARIF thems
 
 ## Incident exposure and actions
 
-For an advisory/provider-incident review, use `mode: triage` or `verify` and the
-optional `incident_review` ledger defined in [incident-review.md](incident-review.md).
+Use the optional `incident_review` ledger defined in
+[incident-review.md](incident-review.md) within the same reviewed report. It is
+supported in `repository`, `diff`, `deep`, `triage` and `verify` modes; an automated
+`baseline` is not an incident assessment. Use the mode matching the actual work.
 Record dated advisory references, service applicability evidence and gaps, and
 planned/completed/verified/blocked actions. No source finding is required merely
 because a runtime version may be affected. Unknown assets and blocked actions

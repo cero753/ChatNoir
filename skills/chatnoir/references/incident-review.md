@@ -17,7 +17,7 @@ Separate planned actions, reported completion, verified results and blockers. Fo
 
 ## Retain the result
 
-Use the existing [report contract](report.md) with `mode: triage` (or `verify` for an authorized follow-up) and the optional `incident_review` object. Bind the inventory to the inspected source/configuration; put deployed observations and their separate dates in incident assets. If only an advisory was assessed, no invented source finding is needed: `findings` may be empty. Keep incomplete coverage explicit. Do not convert all advisory matches into confirmed vulnerabilities.
+Add the optional `incident_review` object to the same [review report](report.md) as any code findings, fixes and verification. Use the mode matching the work: `repository`, `diff` or `deep` for a source review that also considers an incident, `triage` for an incident-only assessment, or `verify` for a follow-up. Do not split these into separate deliverables unless requested. Bind the inventory to the inspected source/configuration; put deployed observations and their separate dates in incident assets. If only an advisory was assessed, no invented source finding is needed: `findings` may be empty. Keep incomplete coverage explicit. Do not convert all advisory matches into confirmed vulnerabilities.
 
 The object records:
 

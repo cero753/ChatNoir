@@ -90,12 +90,12 @@ def write_pdf(report: dict, output: Path, *, project: str, author: str = "") -> 
         "deep": "Detailed source review", "triage": "Finding assessment", "verify": "Fix verification",
     }
     incident = report.get("incident_review")
-    if incident:
+    if incident and not findings:
         method_names = {**method_names, "triage": "Incident exposure assessment", "verify": "Incident response verification"}
     open_count = sum(counts[s] for s in open_status)
     unknown_count = sum(counts[s] for s in unresolved)
     today = date.today().strftime("%d %B %Y").lstrip("0")
-    add("Incident exposure review" if incident else "Application security review", "title")
+    add("Security review", "title")
     add(project, "project")
     add(f"Prepared {today} | {method_names[report['mode']]}", "small")
     if author.strip():
@@ -105,7 +105,8 @@ def write_pdf(report: dict, output: Path, *, project: str, author: str = "") -> 
         add(report["executive_summary"])
     noun = "finding" if len(findings) == 1 else "findings"
     open_label = f"{open_count} confirmed open, " if open_count else ""
-    add(f"Recorded results: {len(findings)} {noun}; {open_label}"
+    result_label = "Recorded code results" if incident else "Recorded results"
+    add(f"{result_label}: {len(findings)} {noun}; {open_label}"
         f"{unknown_count} unresolved, {counts['fixed']} fixed and {counts['dismissed']} dismissed.", "small")
     if not open_count:
         add("No open vulnerability has been confirmed in the supplied findings. "

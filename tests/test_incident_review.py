@@ -59,6 +59,46 @@ class IncidentReviewTests(unittest.TestCase):
         action["checked_at"] = None
         self.invalid(self.report)
 
+    def combined_report(self):
+        report = copy.deepcopy(self.report)
+        sample = json.loads((ROOT / "examples/reports/sql-reviewed.json").read_text())
+        fixed = copy.deepcopy(sample["findings"][0])
+        fixed.update(status="fixed", title="Historical synthetic SQL parameter-binding fix")
+        fixed["path"] = "fixed/app.py"
+        report.update(mode="repository", findings=[fixed], executive_summary="One synthetic review: historical fix plus incident observations and unresolved worker.")
+        return report
+
+    def test_combined_review_modes_preserve_findings_fixes_and_incident_gaps(self):
+        report = self.combined_report()
+        before = copy.deepcopy(report)
+        for mode in ("repository", "diff", "deep", "triage", "verify"):
+            report["mode"] = mode
+            cn["validate_report"](report)
+            rendered = cn["render"](report)
+            self.assertIn("Historical synthetic SQL", rendered)
+            self.assertIn("Validation (runtime)", rendered)
+            self.assertIn("Incident exposure and actions", rendered)
+            self.assertIn("blocked", rendered)
+            self.assertIn("No running", rendered)
+            sarif = cn["sarif"](report)
+            self.assertEqual(sarif["runs"][0]["properties"]["incident_review"], report["incident_review"])
+            self.assertEqual(sarif["runs"][0]["results"], [])  # Fixed source finding omitted, incident ledger retained.
+        report["mode"] = "repository"
+        self.assertEqual(report, before)
+        report["mode"] = "baseline"
+        self.invalid(report)
+
+    @unittest.skipUnless(importlib.util.find_spec("reportlab"), "ReportLab optional")
+    def test_one_pdf_preserves_code_fix_incident_verification_and_remaining_gaps(self):
+        report = self.combined_report()
+        with tempfile.TemporaryDirectory() as temp:
+            out = Path(temp) / "review.pdf"
+            cn["client_report"](report, out, "Combined synthetic review", "")
+            data = out.read_bytes()
+            for expected in (b"Historical synthetic SQL", b"Incident exposure and actions", b"verified", b"undetermined", b"blocked", b"Recorded code results", b"Verification and remaining work"):
+                self.assertIn(expected, data)
+            self.assertEqual([p.name for p in Path(temp).iterdir()], ["review.pdf"])
+
     def test_invalid_references_dates_and_extra_secret_fields_rejected(self):
         mutations = [
             lambda x: x["assets"][0].update(advisory_ids=["missing"]),
