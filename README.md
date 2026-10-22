@@ -28,12 +28,32 @@ Review how retrieved content, tool outputs and peer messages reach privileged ac
 
 ## Install in Codex
 
-```sh
-codex plugin marketplace add fhajjej-ship-it/ChatNoir
-codex plugin add chatnoir@chatnoir-marketplace
-```
+1. **Open Terminal** on macOS/Linux, or PowerShell on Windows. These commands run in your terminal, not in a Codex chat. Check that the Codex CLI is available:
 
-Open a fresh Codex session in your app and ask it to use ChatNoir. Clients with a plugin directory can use the repository marketplace; client capabilities vary.
+   ```sh
+   codex --version
+   ```
+
+   If the command is not found, follow the [official Codex CLI installation guide](https://developers.openai.com/codex/cli#getting-started), then open a new terminal. The plugin commands below were verified with Codex CLI 0.157.0.
+
+2. **Add the marketplace and install ChatNoir.** Run these commands one at a time. The first adds this repository as a plugin source; the second installs the plugin. You do not need to clone the repository or download a ZIP.
+
+   ```sh
+   codex plugin marketplace add fhajjej-ship-it/ChatNoir
+   codex plugin add chatnoir@chatnoir-marketplace
+   ```
+
+3. **Confirm installation.** In the Codex desktop app, open **Plugins**, find **ChatNoir** from **chatnoir-marketplace**, and confirm it is installed and enabled. If the new source is missing, restart the app. You can also check from Terminal:
+
+   ```sh
+   codex plugin list --marketplace chatnoir-marketplace --json
+   ```
+
+   Look for `chatnoir` with version `0.4.1`, `installed: true` and `enabled: true`. Adding the marketplace alone is not installation. These steps are for a new install; an existing marketplace pinned to an older release may still show that older version.
+
+4. **Open your project and start a fresh Codex chat.** Paste the [first-review request below](#start-your-first-review), which names ChatNoir explicitly. For terminal-only use, start a new Codex session in your project's folder instead. Installing a plugin does not add it to an already-running chat.
+
+The [official plugin guidance](https://learn.chatgpt.com/docs/plugins) explains desktop and CLI usage. Marketplace availability can vary by client.
 
 This is a community GitHub distribution, not an official directory listing. Your host supplies model access; installation alone does not establish a successful security review.
 
