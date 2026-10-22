@@ -1,6 +1,6 @@
 ---
 name: chatnoir
-description: Review application code or diffs for security vulnerabilities, triage findings, trace attack paths, and verify requested fixes using source evidence. Use for an explicit security review or vulnerability task, not ordinary feature development.
+description: Review application code or diffs for security vulnerabilities, assess project exposure to a security advisory, triage findings, and verify requested fixes using evidence. Use for an explicit security review or incident-exposure task, not ordinary feature development.
 ---
 
 # ChatNoir
@@ -14,6 +14,7 @@ Use the user's requested scope and depth. Ask only if the target or action is ma
 | Request | Read next |
 |---|---|
 | First review; help getting started with ChatNoir | [Guided first review](references/first-review.md) |
+| Are we affected by an advisory or provider incident? | [Incident exposure review](references/incident-review.md) |
 | Repository or scoped scan; finding discovery | [Review](references/review.md) |
 | Prompt injection, malicious tool output, or agent-to-agent authority review | [Agent security](references/agent-security.md), then [Review](references/review.md) |
 | Git diff review; assess patch risk | [Patch review](references/patch.md) |

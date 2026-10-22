@@ -80,6 +80,23 @@ class ClientReportPdfTests(unittest.TestCase):
         with patch("reportlab.platypus.paraparser.ParaParser.start_img", side_effect=AssertionError("untrusted image")):
             self.assertTrue(b"must-not-be-read.png" in self.export())
 
+    def test_unresolved_report_is_not_an_all_clear_and_reuses_remediation(self):
+        finding = self.report["findings"][0]
+        finding.update(status="needs_review", proof_gaps=["Production reachability untested"],
+                       remediation="Update ExamplePackage; rerun its integration tests and dependency audit.")
+        before = copy.deepcopy(self.report)
+        data = self.export()
+        for expected in (b"No open vulnerability has been confirmed", b"not an all-clear",
+                         b"1 unresolved", b"Next actions", b"Recommended action and verification",
+                         b"Update ExamplePackage; rerun its integration tests and dependency audit."):
+            self.assertIn(expected, data)
+        self.assertNotIn(b"0 confirmed open", data)
+        markdown = cn["render"](self.report)
+        self.assertIn("## Next actions", markdown)
+        self.assertIn("Recommended action and verification", markdown)
+        self.assertIn("Update ExamplePackage", markdown)
+        self.assertEqual(self.report, before)
+
     def test_existing_output_and_symlink_are_not_overwritten(self):
         out = self.root / "review.pdf"
         out.write_bytes(b"user content")
@@ -104,6 +121,16 @@ class ClientReportPdfTests(unittest.TestCase):
         self.report["findings"][0]["evidence"] = ["Long evidence " * 800]
         data = self.export()
         self.assertTrue(data.rstrip().endswith(b"%%EOF"))
+        self.assertGreater(data.count(b"/Type /Page\n"), 3)
+
+    def test_long_next_action_splits_across_pages_without_losing_the_end(self):
+        self.report["findings"][0]["remediation"] = (
+            "Use parameter binding and verify the authorized query still works. " * 250
+            + "End of long remediation."
+        )
+        data = self.export()
+        self.assertTrue(data.rstrip().endswith(b"%%EOF"))
+        self.assertIn(b"End of long remediation.", data)
         self.assertGreater(data.count(b"/Type /Page\n"), 3)
 
     def test_copied_skill_cli_exports_without_repository_imports(self):

@@ -21,6 +21,18 @@ python3 <skill-dir>/scripts/chatnoir.py sarif <report.json>
 
 The commands above emit to stdout and do not write reports or upload SARIF themselves. Explicitly redirect to an output location outside the scanned tree to avoid contaminating its next inventory. Exit codes: 0 success (including zero **or nonzero** baseline candidates), 1 candidates with `scan --fail-on-candidates`, 2 invalid input or operational failure. Baseline success never means a security gate passed. SARIF keeps unresolved leads as `kind: review`, `level: note`; confirmed open findings use `kind: fail`. Dismissed/fixed findings are omitted. Uploading to a provider is a separate authorized action.
 
+## Incident exposure and actions
+
+For an advisory/provider-incident review, use `mode: triage` or `verify` and the
+optional `incident_review` ledger defined in [incident-review.md](incident-review.md).
+Record dated advisory references, service applicability evidence and gaps, and
+planned/completed/verified/blocked actions. No source finding is required merely
+because a runtime version may be affected. Unknown assets and blocked actions
+keep coverage incomplete. The ledger is retained in JSON, rendered in Markdown
+and PDF, and included as SARIF run properties rather than invented code findings.
+The validator enforces references, dates and verdict consistency; it does not
+verify free-text evidence or redact secrets. Do not include credential values.
+
 ## Client PDF export
 
 After completing the source review and recording its evidence, export the same
@@ -46,6 +58,13 @@ invent an impact narrative, upgrade candidates or re-test fixes. A baseline is
 explicitly labeled as an automated baseline, even when empty. A complete declared
 scope does not imply the entire app is secure. Authors must review the underlying
 facts before sharing a report.
+
+For reviewed reports, Markdown and PDF also summarize open and unresolved items
+in a next-actions table using their existing remediation text. Include what to
+change and how to verify it in that text; exporters do not invent a verification
+plan or mark recommendations completed. Zero confirmed open findings is not an
+all-clear. Describe passed tests as tests, rather than implying each proves a
+separate security control.
 
 Unlike the existing stdout commands, this export writes a new local PDF. Its
 parent directory must exist; existing files and symlinks are never overwritten.
