@@ -20,7 +20,7 @@ import subprocess
 import sys
 from urllib.parse import quote, urlsplit
 
-VERSION = "0.4.0"
+VERSION = "0.4.1"
 FORMAT = "chatnoir.report/v1"
 MAX_FILE = 1024 * 1024
 MAX_TOTAL = 64 * 1024 * 1024
@@ -495,7 +495,7 @@ def validate_report(report: dict) -> None:
     require(report.get("mode") in {"baseline", "repository", "diff", "deep", "triage", "verify"}, "invalid mode")
     require(isinstance(report.get("version"), str) and bool(report["version"]), "missing report version")
     if "incident_review" in report:
-        require(report["mode"] in {"triage", "verify"}, "incident review requires triage or verify mode")
+        require(report["mode"] != "baseline", "incident assessment requires a reviewed report, not a baseline")
         validate_incident(report["incident_review"])
     if "executive_summary" in report:
         require(isinstance(report["executive_summary"], str) and bool(report["executive_summary"].strip()),

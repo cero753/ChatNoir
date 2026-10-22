@@ -10,6 +10,11 @@ When authorized, run the original trigger and legitimate control before and afte
 
 Deliver the actual diff, evidence that the original boundary is closed, legitimate behavior retained, tests run and residual gaps. Fix authority does not include commit, push, merge, deploy or issue writeback.
 
+For a retained review, incorporate those results into the same current report
+using the existing finding IDs, dated evidence and refreshed target identity.
+Keep unrelated unresolved findings and incident gaps; a verified code fix does
+not settle them. Present one current report rather than an additional fix report.
+
 If a host or provider blocks a requested step, preserve the unresolved result and report the blocked action and stated reason. Do not turn a refusal or tool-permission failure into evidence that the code is safe or the fix is verified.
 
 ## Verify without changing code

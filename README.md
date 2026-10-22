@@ -8,7 +8,7 @@
 
 <p align="center">
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-111111"></a>
-  <a href="https://github.com/fhajjej-ship-it/ChatNoir/releases/latest"><img alt="Release v0.4.0" src="https://img.shields.io/badge/release-0.4.0-111111"></a>
+  <a href="https://github.com/fhajjej-ship-it/ChatNoir/releases/latest"><img alt="Release v0.4.1" src="https://img.shields.io/badge/release-0.4.1-111111"></a>
   <a href="docs/compatibility.md"><img alt="Codex, Claude Code, Cursor" src="https://img.shields.io/badge/skills-Codex%20%C2%B7%20Claude%20Code%20%C2%B7%20Cursor-111111"></a>
 </p>
 
@@ -259,7 +259,7 @@ For the project skill path, open that project in Cursor and type `/chatnoir` in 
 
 The release archive is available for manual installation or inspection:
 
-[Download v0.4.0](https://github.com/fhajjej-ship-it/ChatNoir/releases/download/v0.4.0/chatnoir-0.4.0.zip) · [SHA-256 checksum](https://github.com/fhajjej-ship-it/ChatNoir/releases/download/v0.4.0/SHA256SUMS-0.4.0)
+[Download v0.4.1](https://github.com/fhajjej-ship-it/ChatNoir/releases/download/v0.4.1/chatnoir-0.4.1.zip) · [SHA-256 checksum](https://github.com/fhajjej-ship-it/ChatNoir/releases/download/v0.4.1/SHA256SUMS-0.4.1)
 
 Verify the checksum and extract the complete `chatnoir/` directory, including dot-directories. [Manual installation details →](docs/compatibility.md)
 
@@ -315,6 +315,14 @@ python3 chatnoir.py validate /path/to/review.json
 python3 chatnoir.py render /path/to/review.json
 python3 chatnoir.py sarif /path/to/review.json
 ```
+
+### One review, one report
+
+ChatNoir defaults to one clear report per review: security findings, any relevant
+incident assessment, fixes, verification and remaining gaps. A fix follow-up
+keeps those results together. JSON, Markdown, PDF and SARIF are optional views
+of the same review; it does not deliver separate security and incident reports
+unless you request them. Examples and test reports are separate from your review.
 
 ### Incident exposure review
 
