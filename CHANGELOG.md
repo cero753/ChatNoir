@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.4.0 - October 22, 2026
+
+- Added an optional incident-exposure workflow for a named advisory or provider incident. Dated service evidence, applicability gaps and planned/completed/verified/blocked actions reuse the existing report format. JSON validation checks consistency; Markdown/PDF render the ledger and SARIF retains it as run properties.
+- Added an offline fictional service example and regressions distinguishing a verified local stand-in update from an unobserved worker. No real runtime, credential, account or deployment is assessed by the demo.
+- Fixed omitted reviewer executive summaries in Markdown. Reviewed Markdown/PDF reports now summarize next actions using existing remediation text; PDF wording avoids treating zero confirmed open findings as an all-clear.
+- Fixed PDF table pagination for long recommendations so a multi-page next action does not prevent report export.
+- Keeps general application and AI-agent security review as the core workflow. Advisory checks require source evidence and separately authorized observations; this is not automatic incident detection, secret rotation, breach prevention or certification.
+- Synchronizes portable, Codex, Claude Code and Cursor manifests and helper version. Prior provider results retain their tested versions; packaging and offline checks do not establish fresh model access.
+
 ## 0.3.0 - October 22, 2026
 
 - Added optional `client-report` PDF export from validated review JSON, including reviewer-authored executive summaries, scope, findings, evidence, remedies and verification limits. Existing commands remain standard-library only; PDF export requires ReportLab.

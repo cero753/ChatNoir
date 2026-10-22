@@ -61,7 +61,7 @@ def write_pdf(report: dict, output: Path, *, project: str, author: str = "") -> 
 
     def table(rows, widths):
         cells = [[paragraph(v, "head" if i == 0 else "cell") for v in row] for i, row in enumerate(rows)]
-        t = Table(cells, colWidths=widths, repeatRows=1, hAlign="LEFT")
+        t = Table(cells, colWidths=widths, repeatRows=1, splitInRow=1, hAlign="LEFT")
         t.setStyle(TableStyle([
             ("VALIGN", (0, 0), (-1, -1), "TOP"),
             ("LEFTPADDING", (0, 0), (-1, -1), 0),
@@ -89,10 +89,13 @@ def write_pdf(report: dict, output: Path, *, project: str, author: str = "") -> 
         "baseline": "Automated baseline", "repository": "Source review", "diff": "Change review",
         "deep": "Detailed source review", "triage": "Finding assessment", "verify": "Fix verification",
     }
+    incident = report.get("incident_review")
+    if incident:
+        method_names = {**method_names, "triage": "Incident exposure assessment", "verify": "Incident response verification"}
     open_count = sum(counts[s] for s in open_status)
     unknown_count = sum(counts[s] for s in unresolved)
     today = date.today().strftime("%d %B %Y").lstrip("0")
-    add("Application security review", "title")
+    add("Incident exposure review" if incident else "Application security review", "title")
     add(project, "project")
     add(f"Prepared {today} | {method_names[report['mode']]}", "small")
     if author.strip():
@@ -101,8 +104,19 @@ def write_pdf(report: dict, output: Path, *, project: str, author: str = "") -> 
     if report.get("executive_summary"):
         add(report["executive_summary"])
     noun = "finding" if len(findings) == 1 else "findings"
-    add(f"Recorded results: {len(findings)} {noun}; {open_count} confirmed open, "
+    open_label = f"{open_count} confirmed open, " if open_count else ""
+    add(f"Recorded results: {len(findings)} {noun}; {open_label}"
         f"{unknown_count} unresolved, {counts['fixed']} fixed and {counts['dismissed']} dismissed.", "small")
+    if not open_count:
+        add("No open vulnerability has been confirmed in the supplied findings. "
+            "This is not an all-clear; review unresolved items and coverage gaps.", "small")
+    if incident:
+        asset_counts = Counter(x["status"] for x in incident["assets"])
+        action_counts = Counter(x["status"] for x in incident["actions"])
+        add(f"Incident ledger: {asset_counts['potentially_affected']} potentially affected, "
+            f"{asset_counts['not_affected']} outside the named advisory conditions, "
+            f"{asset_counts['undetermined']} undetermined; {action_counts['verified']} actions verified "
+            f"and {action_counts['blocked']} blocked.", "small")
     if report["mode"] == "baseline":
         add("AUTOMATED BASELINE ONLY. Pattern matches are candidates, not confirmed vulnerabilities. "
             "This PDF is not a completed security assessment.")
@@ -110,6 +124,15 @@ def write_pdf(report: dict, output: Path, *, project: str, author: str = "") -> 
         add("No findings are recorded in this scope. This does not establish that the application is secure.")
     if unknown_count:
         add("Unresolved items need further investigation. Their assigned severity does not make them confirmed issues.")
+    next_actions = [f for f in findings if f["status"] in unresolved | open_status]
+    if next_actions and report["mode"] != "baseline":
+        add("Next actions", "h2")
+        add("Recommendations only; these changes and follow-up checks have not been performed by exporting this report. "
+            "Resolve the detailed proof gaps before closing an item.", "small")
+        table([["Finding / status", "Recommended action and verification"]] + [
+            [f"{f['id']}: {status_names[f['status']]}", f["remediation"]]
+            for f in next_actions
+        ], [143, width - 143])
     add("2. Scope and method", "h1")
     table([
         ["Review coverage", "Recorded scope"],
@@ -127,7 +150,28 @@ def write_pdf(report: dict, output: Path, *, project: str, author: str = "") -> 
             add(f"{kind}: {item['path']} - {item['reason']}", "small")
     add("Conclusions apply only to the recorded scope and evidence. No overall application security grade is assigned. "
         "This document presents supplied review results; generating it performs no additional testing.", "small")
-    story.append(PageBreak())
+    if "incident_review" in report:
+        incident = report["incident_review"]
+        add("Incident exposure and actions", "h1")
+        add("Recorded observations only. Export does not check advisories, deployments or credentials. "
+            "A potentially affected service is not proof of exploitation; not affected applies only to the named advisory.", "small")
+        for item in incident["advisories"]:
+            add(f"{item['id']}: {item['title']}", "h2")
+            add(f"Reference: {item['url']} | Checked: {item['checked_at']}", "small")
+        for item in incident["assets"]:
+            add(f"{item['id']}: {item['name']}", "h2")
+            add(f"{item['environment']} | {item['status']} | Observed: {item['observed_at'] or 'Not observed'}", "small")
+            add("Advisories: " + ", ".join(item["advisory_ids"]), "small")
+            for label, key in (("Evidence", "evidence"), ("Gap", "proof_gaps")):
+                for value in item[key]:
+                    add(f"{label}: {value}")
+        for item in incident["actions"]:
+            add(f"Action {item['id']}: {item['status']} | Asset: {item['asset_id']}", "h2")
+            add(item["description"])
+            add(f"Checked: {item['checked_at'] or 'Not checked'} | Verification: {item['verification']['method']}", "small")
+            add(item["verification"]["result"])
+    if findings or not incident:
+        story.append(PageBreak())
     add("3. Detailed findings", "h1")
     if not findings:
         add("No findings were supplied. Review the scope limitations and deferred work before deciding the next assessment step.")
@@ -147,7 +191,8 @@ def write_pdf(report: dict, output: Path, *, project: str, author: str = "") -> 
                 add(f"{i}. {value}")
         add("Recommended remedy", "h2")
         add(finding["remediation"])
-    story.append(PageBreak())
+    if findings or not incident:
+        story.append(PageBreak())
     add("4. Verification and remaining work", "h1")
     for finding in findings:
         add(f"{finding['id']}: {status_names[finding['status']]}", "h2")

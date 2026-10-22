@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import ast
 from bisect import bisect_left
+from datetime import date
 import hashlib
 import json
 import os
@@ -17,9 +18,9 @@ import stat
 import string
 import subprocess
 import sys
-from urllib.parse import quote
+from urllib.parse import quote, urlsplit
 
-VERSION = "0.3.0"
+VERSION = "0.4.0"
 FORMAT = "chatnoir.report/v1"
 MAX_FILE = 1024 * 1024
 MAX_TOTAL = 64 * 1024 * 1024
@@ -417,6 +418,75 @@ def exact_diff(root: Path, base: str, head: str) -> dict:
             "note": "Committed comparison only; working-tree changes are not included. Read deleted files at base."}
 
 
+def validate_incident(incident: dict) -> None:
+    """Check the incident ledger's consistency, not the truth of its evidence."""
+    def require(condition, message):
+        if not condition:
+            raise ChatNoirError("incident review: " + message)
+
+    def text(value):
+        return isinstance(value, str) and bool(value.strip())
+
+    def texts(value):
+        return isinstance(value, list) and all(text(x) for x in value)
+
+    def dated(value):
+        if not isinstance(value, str) or not re.fullmatch(r"\d{4}-\d{2}-\d{2}", value):
+            return False
+        try:
+            date.fromisoformat(value)
+        except ValueError:
+            return False
+        return True
+
+    def records(name, keys, nonempty=False):
+        items = incident.get(name)
+        require(isinstance(items, list) and (not nonempty or bool(items)), f"missing {name}")
+        seen = set()
+        for item in items:
+            require(isinstance(item, dict) and set(item) == set(keys), f"invalid {name} fields")
+            require(text(item["id"]) and item["id"] not in seen, f"invalid or duplicate {name} id")
+            seen.add(item["id"])
+        return items, seen
+
+    require(isinstance(incident, dict) and set(incident) == {"advisories", "assets", "actions"}, "invalid fields")
+    advisories, advisory_ids = records("advisories", ("id", "title", "url", "checked_at"), True)
+    for item in advisories:
+        require(text(item["title"]) and text(item["url"]) and dated(item["checked_at"]), "invalid advisory")
+        try:
+            url = urlsplit(item["url"])
+            valid_url = url.scheme in {"https", "http"} and bool(url.hostname) and not url.username and not url.password
+        except ValueError:
+            valid_url = False
+        require(valid_url, "advisory needs a public HTTP(S) reference without credentials")
+    assets, asset_ids = records("assets", ("id", "name", "environment", "advisory_ids", "status", "observed_at", "evidence", "proof_gaps"), True)
+    for item in assets:
+        refs = item["advisory_ids"]
+        require(text(item["name"]) and text(item["environment"]), "missing asset identity")
+        require(texts(refs) and bool(refs) and len(set(refs)) == len(refs) and set(refs) <= advisory_ids, "unknown or duplicate advisory reference")
+        require(text(item["status"]) and item["status"] in {"potentially_affected", "not_affected", "undetermined"}, "invalid asset status")
+        require(item["observed_at"] is None or dated(item["observed_at"]), "invalid observation date")
+        require(texts(item["evidence"]) and texts(item["proof_gaps"]), "invalid asset evidence or gaps")
+        if item["status"] != "undetermined":
+            require(bool(item["evidence"]), "applicability verdict needs evidence")
+        if item["status"] == "not_affected":
+            require(dated(item["observed_at"]) and not item["proof_gaps"], "not_affected needs a dated observation and no critical gaps")
+        if item["status"] == "undetermined":
+            require(bool(item["proof_gaps"]), "undetermined needs a stated gap")
+    actions, _ = records("actions", ("id", "asset_id", "description", "status", "checked_at", "verification"))
+    for item in actions:
+        require(text(item["asset_id"]) and item["asset_id"] in asset_ids and text(item["description"]), "invalid action or asset reference")
+        require(text(item["status"]) and item["status"] in {"planned", "completed", "verified", "blocked"}, "invalid action status")
+        require(item["checked_at"] is None or dated(item["checked_at"]), "invalid action date")
+        verification = item["verification"]
+        require(isinstance(verification, dict) and set(verification) == {"method", "result"} and
+                text(verification["method"]) and verification["method"] in {"not_run", "static", "runtime"} and text(verification["result"]), "invalid action verification")
+        if item["status"] in {"completed", "verified"}:
+            require(dated(item["checked_at"]), "completed action needs a date")
+        if item["status"] == "verified":
+            require(verification["method"] == "runtime", "verified action needs observed runtime verification")
+
+
 def validate_report(report: dict) -> None:
     def require(condition: bool, message: str) -> None:
         if not condition:
@@ -424,12 +494,19 @@ def validate_report(report: dict) -> None:
     require(isinstance(report, dict) and report.get("format") == FORMAT, "unsupported report format")
     require(report.get("mode") in {"baseline", "repository", "diff", "deep", "triage", "verify"}, "invalid mode")
     require(isinstance(report.get("version"), str) and bool(report["version"]), "missing report version")
+    if "incident_review" in report:
+        require(report["mode"] in {"triage", "verify"}, "incident review requires triage or verify mode")
+        validate_incident(report["incident_review"])
     if "executive_summary" in report:
         require(isinstance(report["executive_summary"], str) and bool(report["executive_summary"].strip()),
                 "executive_summary must be nonempty review-authored text")
     target, coverage, findings = report.get("target"), report.get("coverage"), report.get("findings")
     require(isinstance(target, dict) and bool(re.fullmatch(r"[a-f0-9]{64}", str(target.get("snapshot_sha256", "")))), "missing snapshot digest")
     require(isinstance(coverage, dict) and type(coverage.get("complete")) is bool, "missing coverage state")
+    if "incident_review" in report:
+        incident = report["incident_review"]
+        incomplete = any(x["status"] == "undetermined" or x["proof_gaps"] for x in incident["assets"]) or any(x["status"] == "blocked" for x in incident["actions"])
+        require(not incomplete or not coverage["complete"], "incident proof gaps contradict complete coverage")
     require(isinstance(target.get("files"), list) and isinstance(target.get("skipped"), list), "missing target inventory")
     for item in target["files"]:
         require(isinstance(item, dict) and isinstance(item.get("path"), str) and safe_relative(item["path"]) and
@@ -478,6 +555,33 @@ def render(report: dict) -> str:
         return "".join(f"&#{ord(c)};" if c in string.punctuation else c if c >= " " else "?" for c in text)
     lines = ["# ChatNoir security review", "", f"Mode: {report['mode']} · coverage complete: {str(report['coverage']['complete']).lower()}",
              f"Snapshot: `{report['target']['snapshot_sha256']}`", "", "Pattern matches are review leads. A zero-candidate baseline is not a clean bill of health.", ""]
+    if report.get("executive_summary"):
+        lines += ["## Executive summary", "", plain(report["executive_summary"]), ""]
+    next_actions = [f for f in report["findings"] if f["status"] in {
+        "candidate", "needs_review", "inconclusive", "confirmed", "still_vulnerable"}]
+    if next_actions and report["mode"] != "baseline":
+        lines += ["## Next actions", "",
+                  "Recommendations only; exporting this report performs no changes or follow-up checks. Resolve the detailed proof gaps before closing an item.", "",
+                  "| Finding / status | Recommended action and verification |", "|---|---|"]
+        lines += [f"| {plain(f['id'])} / {plain(f['status'])} | {plain(f['remediation'])} |" for f in next_actions]
+        lines += [""]
+    if "incident_review" in report:
+        incident = report["incident_review"]
+        lines += ["## Incident exposure and actions", "", "Recorded observations only; export does not check advisories, deployments or credentials.", ""]
+        for item in incident["advisories"]:
+            lines += [f"- {plain(item['id'])}: {plain(item['title'])} | {plain(item['url'])} | checked {plain(item['checked_at'])}"]
+        for item in incident["assets"]:
+            lines += ["", f"### {plain(item['id'])}: {plain(item['name'])}", "",
+                      f"{plain(item['environment'])} | {plain(item['status'])} | observed {plain(item['observed_at'] or 'not observed')}",
+                      f"Advisories: {plain(', '.join(item['advisory_ids']))}", ""]
+            for label, key in (("Evidence", "evidence"), ("Gap", "proof_gaps")):
+                lines += [f"- {label}: {plain(value)}" for value in item[key]]
+        for item in incident["actions"]:
+            lines += ["", f"### Action {plain(item['id'])}: {plain(item['status'])}", "",
+                      f"Asset: {plain(item['asset_id'])} | checked {plain(item['checked_at'] or 'not checked')}", "",
+                      plain(item["description"]), "",
+                      f"Verification ({plain(item['verification']['method'])}): {plain(item['verification']['result'])}"]
+        lines += [""]
     for f in report["findings"]:
         lines += [f"## {plain(f['id'])}: {plain(f['title'])}", "", f"{plain(f['status'])} · {plain(f['severity'])} · {plain(f['path'])}:{f['line']}", ""]
         for label, key in (("Evidence", "evidence"), ("Attack path", "attack_path"), ("Counterevidence", "counterevidence"), ("Proof gaps", "proof_gaps")):
@@ -505,7 +609,10 @@ def sarif(report: dict) -> dict:
                         "message": {"text": f"[{f['status']}] {f['title']} — " + "; ".join(f["evidence"])},
                         "locations": [{"physicalLocation": {"artifactLocation": {"uri": quote(f["path"], safe="/"), "uriBaseId": "%SRCROOT%"}, "region": {"startLine": f["line"]}}}],
                         "properties": {"status": f["status"], "confidence": f["confidence"], "severity": f["severity"]}})
-    return {"$schema": "https://json.schemastore.org/sarif-2.1.0.json", "version": "2.1.0", "runs": [{"tool": {"driver": {"name": "ChatNoir", "version": VERSION, "informationUri": "https://github.com/fhajjej-ship-it/ChatNoir", "rules": list(rules.values())}}, "results": results}]}
+    output = {"$schema": "https://json.schemastore.org/sarif-2.1.0.json", "version": "2.1.0", "runs": [{"tool": {"driver": {"name": "ChatNoir", "version": VERSION, "informationUri": "https://github.com/fhajjej-ship-it/ChatNoir", "rules": list(rules.values())}}, "results": results}]}
+    if "incident_review" in report:
+        output["runs"][0]["properties"] = {"incident_review": report["incident_review"]}
+    return output
 
 
 def load_report(path: str) -> dict:

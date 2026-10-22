@@ -1,0 +1,14 @@
+{
+  "advisory": {
+    "id": "DEMO-INCIDENT-001",
+    "title": "Synthetic DemoRuntime security update",
+    "url": "https://security.example.invalid/demo-runtime",
+    "checked_at": "2026-10-22",
+    "affected_versions": ["1.0.0"],
+    "fixed_versions": ["1.0.1"],
+    "source": "Fictional local advisory snapshot; no website is fetched."
+  },
+  "before_version": "1.0.0",
+  "after_version": "1.0.1",
+  "unobserved_service": "background-worker"
+}
