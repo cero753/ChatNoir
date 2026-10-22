@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""ChatNoir: local evidence helpers. Python 3.10+, standard library only."""
+"""ChatNoir: local evidence helpers. PDF export optionally requires ReportLab."""
 
 from __future__ import annotations
 
@@ -11,6 +11,7 @@ import json
 import os
 from pathlib import Path, PurePosixPath
 import re
+import runpy
 import shlex
 import stat
 import string
@@ -18,7 +19,7 @@ import subprocess
 import sys
 from urllib.parse import quote
 
-VERSION = "0.2.3"
+VERSION = "0.3.0"
 FORMAT = "chatnoir.report/v1"
 MAX_FILE = 1024 * 1024
 MAX_TOTAL = 64 * 1024 * 1024
@@ -423,6 +424,9 @@ def validate_report(report: dict) -> None:
     require(isinstance(report, dict) and report.get("format") == FORMAT, "unsupported report format")
     require(report.get("mode") in {"baseline", "repository", "diff", "deep", "triage", "verify"}, "invalid mode")
     require(isinstance(report.get("version"), str) and bool(report["version"]), "missing report version")
+    if "executive_summary" in report:
+        require(isinstance(report["executive_summary"], str) and bool(report["executive_summary"].strip()),
+                "executive_summary must be nonempty review-authored text")
     target, coverage, findings = report.get("target"), report.get("coverage"), report.get("findings")
     require(isinstance(target, dict) and bool(re.fullmatch(r"[a-f0-9]{64}", str(target.get("snapshot_sha256", "")))), "missing snapshot digest")
     require(isinstance(coverage, dict) and type(coverage.get("complete")) is bool, "missing coverage state")
@@ -512,6 +516,22 @@ def load_report(path: str) -> dict:
     return json.loads(raw)
 
 
+def client_report(report: dict, output: Path, project: str, author: str) -> None:
+    """Format reviewed data; exporting never performs or upgrades a review."""
+    validate_report(report)
+    if output.suffix.lower() != ".pdf":
+        raise ChatNoirError("client-report output must have a .pdf extension")
+    try:
+        exporter = runpy.run_path(str(Path(__file__).with_name("client_report.py")))
+        exporter["write_pdf"](report, output, project=project, author=author)
+    except ImportError:
+        raise ChatNoirError("PDF export requires ReportLab; install it with this Python's 'python3 -m pip install reportlab'. Other commands need no extra dependencies.") from None
+    except FileExistsError:
+        raise ChatNoirError("output already exists; choose a new PDF path") from None
+    except ValueError as error:
+        raise ChatNoirError(str(error)) from None
+
+
 def main(argv: list[str] | None = None) -> int:
     if sys.version_info < (3, 10):
         print("chatnoir: helpers require Python 3.10+; source review can proceed without them", file=sys.stderr)
@@ -533,6 +553,11 @@ def main(argv: list[str] | None = None) -> int:
     diff.add_argument("--head", required=True)
     for name in ("validate", "render", "sarif"):
         commands.add_parser(name).add_argument("report")
+    pdf = commands.add_parser("client-report", help="Export existing review data to a client PDF (requires ReportLab)")
+    pdf.add_argument("report")
+    pdf.add_argument("--output", type=Path, required=True, help="New PDF path; existing files are never overwritten")
+    pdf.add_argument("--project", required=True, help="Client-facing project name, not a private filesystem path")
+    pdf.add_argument("--author", default="", help="Optional reviewer name")
     args = parser.parse_args(argv)
     try:
         if args.command == "first-review":
@@ -548,6 +573,10 @@ def main(argv: list[str] | None = None) -> int:
         else:
             report = load_report(args.report)
             validate_report(report)
+            if args.command == "client-report":
+                client_report(report, args.output, args.project, args.author)
+                print(json.dumps({"output": str(args.output), "format": "pdf", "review_performed": False}))
+                return 0
             if args.command == "render":
                 print(render(report), end="")
                 return 0

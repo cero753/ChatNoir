@@ -347,6 +347,11 @@
           }
         ]
       }
+    },
+    "executive_summary": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Optional reviewer-authored summary grounded in the recorded evidence; not generated or verified by export."
     }
   }
 }

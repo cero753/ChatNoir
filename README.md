@@ -8,13 +8,13 @@
 
 <p align="center">
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-111111"></a>
-  <a href="https://github.com/fhajjej-ship-it/ChatNoir/releases/latest"><img alt="Release v0.2.3" src="https://img.shields.io/badge/release-0.2.3-111111"></a>
+  <a href="https://github.com/fhajjej-ship-it/ChatNoir/releases/latest"><img alt="Release v0.3.0" src="https://img.shields.io/badge/release-0.3.0-111111"></a>
   <a href="docs/compatibility.md"><img alt="Codex, Claude Code, Cursor" src="https://img.shields.io/badge/skills-Codex%20%C2%B7%20Claude%20Code%20%C2%B7%20Cursor-111111"></a>
 </p>
 
 You built the app. Now inspect the boundaries that matter: who can access another user's data, which inputs become commands or queries, and whether a fix closes the original hole.
 
-**ChatNoir turns your coding agent into an evidence-first security reviewer.** It combines 15 review workflows with local scan helpers, attack-path reasoning, false-positive checks, fix verification, and portable reports. No ChatNoir account. No hosted scanner. No Python dependencies. Bring your existing agent and model.
+**ChatNoir turns your coding agent into an evidence-first security reviewer.** It combines 15 review workflows with local scan helpers, attack-path reasoning, false-positive checks, fix verification, and portable reports. No ChatNoir account. No hosted scanner. Core helpers use Python's standard library; optional PDF export uses ReportLab. Bring your existing agent and model.
 
 Review how retrieved content, tool outputs and peer messages reach privileged actions. The published tests verify specific application fixes; continuous runtime blocking and broad swarm protection remain unproven. [Measured agent-attack results and limits →](docs/live-agent-security.md)
 
@@ -259,7 +259,7 @@ For the project skill path, open that project in Cursor and type `/chatnoir` in 
 
 The release archive is available for manual installation or inspection:
 
-[Download v0.2.3](https://github.com/fhajjej-ship-it/ChatNoir/releases/download/v0.2.3/chatnoir-0.2.3.zip) · [SHA-256 checksum](https://github.com/fhajjej-ship-it/ChatNoir/releases/download/v0.2.3/SHA256SUMS-0.2.3)
+[Download v0.3.0](https://github.com/fhajjej-ship-it/ChatNoir/releases/download/v0.3.0/chatnoir-0.3.0.zip) · [SHA-256 checksum](https://github.com/fhajjej-ship-it/ChatNoir/releases/download/v0.3.0/SHA256SUMS-0.3.0)
 
 Verify the checksum and extract the complete `chatnoir/` directory, including dot-directories. [Manual installation details →](docs/compatibility.md)
 
@@ -316,11 +316,49 @@ python3 chatnoir.py render /path/to/review.json
 python3 chatnoir.py sarif /path/to/review.json
 ```
 
+### Export a client review PDF
+
+Once your coding agent has completed a review and saved its evidence, use:
+
+```sh
+python3 chatnoir.py client-report /path/to/review.json \
+  --project "Client application" --author "Reviewer name" \
+  --output /path/to/new-client-review.pdf
+```
+
+The PDF contains an executive summary, scope and method, detailed findings,
+recommended remedies and verification limits. It preserves unresolved and
+dismissed items alongside confirmed/fixed findings. It formats the supplied
+review data; it does not perform another review, certify the app or turn scanner
+candidates into confirmed vulnerabilities. No report or source is uploaded.
+
+PDF export requires the optional `reportlab` package in the Python environment
+running ChatNoir (`python3 -m pip install reportlab`). Other commands need no extra
+packages. Choose a new output path outside the reviewed tree; existing files are
+not overwritten. [Report contract and exact export behavior](skills/chatnoir/references/report.md#client-pdf-export).
+
+The public [Workshop Prep Agent report data](examples/reports/workshop-reviewed.json)
+provides an own-product example with historical review evidence and a separately
+dated local verification. It is not a customer engagement or a model-security
+assessment. The [agent-permission sample](examples/reports/agent-permissions-reviewed.json)
+adds a separately labeled, deliberately vulnerable teaching case: peer-claimed
+permissions must not expand the receiving agent's authority. Its
+[offline replay](examples/reports/replay-agent-permissions.py) checks the unauthorized
+action, legitimate summary and a disposable gate-bypass control. It uses no model,
+network or real data and is not a customer or production assessment.
+The exporter is included in v0.3.0. Existing installed plugins require an update;
+previous release archives are unchanged.
+
+View the [AI agent permission review PDF](output/pdf/agent-permissions-security-review-final.pdf)
+or the [Workshop Prep Agent review PDF](output/pdf/workshop-security-review-final.pdf).
+The first is a controlled synthetic example; the second is an own-product review.
+Neither represents a customer engagement or a complete application assessment.
+
 ChatNoir does not certify an app as secure. It has no comparative benchmark or established detection rate. A zero-candidate result is not a clean bill of health. Dependency auditing and secret-content detection require separately available tools. [Rules, exclusions and limits →](docs/scanner.md)
 
 ## Built to be inspected
 
-- Standard-library Python helpers; no install hooks, background processes or automatic uploads.
+- Standard-library core helpers and optional ReportLab PDF export; no install hooks, background processes or automatic uploads.
 - Source values are omitted from baseline findings; credential filenames are excluded.
 - Structured JSON, readable Markdown and SARIF 2.1.0 exports preserve unresolved leads as review items.
 - Real vulnerable/fixed fixtures, negative controls, and tests for file handling, Git boundaries, reporting and installation.
