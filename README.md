@@ -4,15 +4,17 @@
 
 <h1 align="center">ChatNoir</h1>
 <p align="center"><strong>Protect what you build from agent attacks.</strong></p>
-<p align="center">Find security gaps. Reproduce attack paths. Verify the fixes.<br>One portable skill. Your coding agent. Evidence you can inspect.</p>
+<p align="center">Find security gaps. Reproduce attack paths. Verify the fixes.<br>Security reviews in Codex. Evidence you can inspect.</p>
 
 <p align="center">
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-111111"></a>
   <a href="https://github.com/fhajjej-ship-it/ChatNoir/releases/latest"><img alt="Release v0.4.1" src="https://img.shields.io/badge/release-0.4.1-111111"></a>
-  <a href="docs/compatibility.md"><img alt="Codex, Claude Code, Cursor" src="https://img.shields.io/badge/skills-Codex%20%C2%B7%20Claude%20Code%20%C2%B7%20Cursor-111111"></a>
+  <a href="docs/compatibility.md"><img alt="Codex-first" src="https://img.shields.io/badge/focus-Codex-111111"></a>
 </p>
 
 You built the app. Now inspect the boundaries that matter: who can access another user's data, which inputs become commands or queries, and whether a fix closes the original hole.
+
+**Codex-first, portable by design.** Codex is the primary platform for development and verification. The self-contained `SKILL.md`, references and helpers may also work in compatible coding agents, including Cursor and Claude Code, but compatibility depends on the host. Existing integrations and historical test results remain available; ongoing cross-platform testing and support are not promised. [Recorded host results and limits →](docs/compatibility.md)
 
 **ChatNoir turns your coding agent into an evidence-first security reviewer.** It combines 15 review workflows with local scan helpers, attack-path reasoning, false-positive checks, fix verification, and portable reports. No ChatNoir account. No hosted scanner. Core helpers use Python's standard library; optional PDF export uses ReportLab. Bring your existing agent and model.
 
@@ -20,9 +22,9 @@ Review how retrieved content, tool outputs and peer messages reach privileged ac
 
 **Early public release:** verified Codex reviews and bounded synthetic attack/fix tests are available. Claude model access and the latest Cursor agent run remain blocked; adaptive same-agent attack rounds have not run. [Launch status and exact limits →](docs/launch-readiness.md)
 
-## Install in Codex or Cursor
+<a id="install-in-codex-or-cursor"></a>
 
-### Codex
+## Install in Codex
 
 ```sh
 codex plugin marketplace add fhajjej-ship-it/ChatNoir
@@ -31,23 +33,11 @@ codex plugin add chatnoir@chatnoir-marketplace
 
 Open a fresh Codex session in your app and ask it to use ChatNoir. Clients with a plugin directory can use the repository marketplace; client capabilities vary.
 
-### Cursor
-
-Add the repository marketplace with Cursor CLI:
-
-```sh
-cursor-agent plugin marketplace add https://github.com/fhajjej-ship-it/ChatNoir.git
-```
-
-Then open **Customize** in Cursor, find **ChatNoir** from **chatnoir-marketplace**, and install it for your project or user. Adding the marketplace and installing the plugin are separate steps. Open a fresh agent conversation in your app and ask it to use ChatNoir. [Cursor plugin installation guidance →](https://cursor.com/docs/plugins#installing-plugins)
-
-If your Cursor version does not expose this marketplace, use the [project skill installer](#other-installation-options). The installed v0.2.3 plugin and description were verified in Cursor; its fresh guided-review request was quota-blocked before inference. [Current compatibility and verified host results →](docs/compatibility.md)
-
 This is a community GitHub distribution, not an official directory listing. Your host supplies model access; installation alone does not establish a successful security review.
 
 ## Start your first review (v0.2.3)
 
-After [installing ChatNoir](#install-in-codex-or-cursor), open your app in a fresh coding-agent session and ask:
+After [installing ChatNoir in Codex](#install-in-codex), open your app in a fresh Codex session and ask:
 
 ```text
 Use ChatNoir's guided first review on this project. Keep it read-only.
@@ -150,7 +140,7 @@ ChatNoir flags three source-level leads, and the runner verifies their actual sy
 
 The fixed action gate also denies an always-hostile model proposal. Everything runs locally with synthetic data, an in-memory action sink and a **scripted model**. This demonstrates specific application boundaries, not real-model prompt-injection resistance, protection against arbitrary swarms or continuous runtime blocking. [Source, exact output, tests and limits →](examples/agent-attacks/README.md)
 
-**Tested with real Codex and Cursor agents:** both loaded ChatNoir, confirmed all three flaws and verified the supplied fixes. Separate live agents resisted all six sampled hostile inputs. Real peer messages were exchanged in both directions; replaying each malicious producer message into the app caused **1 synthetic export before the fix and 0 afterward**, while legitimate summaries worked. No native-agent compromise or general swarm protection was demonstrated. [Runnable native evaluation, measured results and limits →](docs/live-agent-security.md)
+**Historical Codex and Cursor agent test:** both loaded ChatNoir, confirmed all three flaws and verified the supplied fixes. Separate live agents resisted all six sampled hostile inputs. Real peer messages were exchanged in both directions; replaying each malicious producer message into the app caused **1 synthetic export before the fix and 0 afterward**, while legitimate summaries worked. No native-agent compromise or general swarm protection was demonstrated. [Runnable native evaluation, measured results and limits →](docs/live-agent-security.md)
 
 **Coordinated approval laundering:** a separate two-peer quorum fixture reproduces **1 synthetic export before → 0 after**, with single-peer, duplicate-sender and legitimate controls. A real Codex ChatNoir review confirmed the authorization flaw even though the scanner returned zero candidates. The mixed Codex/Cursor chain remains **incomplete because Cursor hit its agent usage limit**. [Runnable coordinated case, measured evidence and access gap →](docs/coordinated-agent-security.md)
 
@@ -223,6 +213,20 @@ Both fixes passed exact-revision correctness/security reviews, required CI and p
 The race came from **ChatNoir's agent-guided source review and runtime validation**; dependency findings came from the separately available **`npm audit`**, not ChatNoir's baseline rules. Detailed source and release receipts remain private. Tests used local synthetic accounts and disposable PostgreSQL; no production exploit was demonstrated. Live mail delivery, production Clerk/Google sign-in and complete customer isolation remain unverified. This is bounded owner-run evidence, not a security certification. No new ChatNoir runtime defect was found in this evaluation.
 
 ## Other installation options
+
+These are compatibility options, not a promise of current end-to-end support. Codex remains the primary development and verification target. Historical results below are specific to the tested versions.
+
+**Cursor compatibility option**
+
+Add the repository marketplace with Cursor CLI:
+
+```sh
+cursor-agent plugin marketplace add https://github.com/fhajjej-ship-it/ChatNoir.git
+```
+
+Then open **Customize** in Cursor, find **ChatNoir** from **chatnoir-marketplace**, and install it for your project or user. Adding the marketplace and installing the plugin are separate steps. Open a fresh agent conversation in your app and ask it to use ChatNoir. [Cursor plugin installation guidance →](https://cursor.com/docs/plugins#installing-plugins)
+
+If your Cursor version does not expose this marketplace, use the [project skill installer](#other-installation-options). The installed v0.2.3 plugin and description were verified in Cursor; its fresh guided-review request was quota-blocked before inference. [Current compatibility and verified host results →](docs/compatibility.md)
 
 **Claude Code plugin**
 
