@@ -360,6 +360,29 @@ class ChatNoirTests(unittest.TestCase):
             installer["install"]("codex", self.root)
         self.assertEqual(marker.read_text(), "user edits")
 
+    def run_installer(self, project):
+        return subprocess.run([sys.executable, str(ROOT / "scripts/install.py"), "--harness", "codex", "--project", str(project)], capture_output=True, text=True)
+
+    def test_installer_explains_missing_project(self):
+        result = self.run_installer(self.root / "missing-app")
+        self.assertEqual(result.returncode, 2)
+        self.assertIn("project folder not found", result.stderr)
+        self.assertIn("existing project folder", result.stderr)
+        self.assertNotIn("Traceback", result.stderr)
+        self.assertEqual(result.stdout, "")
+        self.assertFalse((self.root / "missing-app").exists())
+
+    def test_installer_explains_existing_skill_and_keeps_it(self):
+        self.assertEqual(self.run_installer(self.root).returncode, 0)
+        marker = self.root / ".agents/skills/chatnoir/SKILL.md"
+        marker.write_text("user edits")
+        result = self.run_installer(self.root)
+        self.assertEqual(result.returncode, 2)
+        self.assertIn("already installed", result.stderr)
+        self.assertIn("docs/compatibility.md#skill-only-installation", result.stderr)
+        self.assertNotIn("Traceback", result.stderr)
+        self.assertEqual(marker.read_text(), "user edits")
+
     def test_installer_refuses_linked_destination(self):
         (self.root / ".agents").symlink_to(self.root.parent, target_is_directory=True)
         with self.assertRaises(ValueError):

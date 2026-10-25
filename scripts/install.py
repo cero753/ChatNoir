@@ -37,6 +37,15 @@ def main() -> int:
     args = parser.parse_args()
     try:
         dest = install(args.harness, args.project)
+    except FileNotFoundError:
+        print(f"Install failed: project folder not found: {args.project}", file=sys.stderr)
+        print("Pass --project the path of an existing project folder, for example the folder you open in your agent. Nothing was installed.", file=sys.stderr)
+        return 2
+    except FileExistsError:
+        existing = Path(LOCATIONS[args.harness]) / "chatnoir"
+        print(f"Install failed: ChatNoir is already installed at {existing} in this project. The existing skill was kept unchanged.", file=sys.stderr)
+        print("To update it, follow docs/compatibility.md#skill-only-installation.", file=sys.stderr)
+        return 2
     except (OSError, ValueError) as error:
         print(f"Install failed ({type(error).__name__}); existing skills were not replaced.", file=sys.stderr)
         return 2
