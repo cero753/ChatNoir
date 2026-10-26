@@ -336,7 +336,7 @@ enforcement boundary and verify the original trigger plus legitimate behavior.
 
 **The skill** guides your agent through source review across languages it can inspect. It supplies the workflow; your host supplies the model and tools. Review quality varies with those capabilities.
 
-**The deterministic helper** inventories files, binds Git diffs, and emits leads from eight rule families: dynamic evaluation, shell execution, unsafe deserialization, dynamic SQL, disabled TLS verification, dynamic privileged-role prompts, decoded action dispatch and message-supplied permission merges. Python uses AST matching. JavaScript/TypeScript have a narrow lexical dynamic-evaluation check. These are deliberately labeled **candidates**, with incomplete coverage.
+**The deterministic helper** inventories files, binds Git diffs, and emits leads from nine rule families: dynamic evaluation, shell execution, unsafe deserialization, dynamic SQL, disabled TLS verification, dynamic privileged-role prompts, decoded action dispatch, message-supplied permission merges and model-proposed tool calls dispatched without a visible gate. Python uses AST matching. JavaScript/TypeScript have narrow lexical checks for dynamic evaluation and ungated tool-call dispatch. These are deliberately labeled **candidates**, with incomplete coverage.
 
 ```sh
 python3 chatnoir.py scan /path/to/your-app

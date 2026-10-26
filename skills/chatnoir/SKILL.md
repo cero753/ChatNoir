@@ -46,7 +46,7 @@ python3 <skill-dir>/scripts/chatnoir.py scan <target>
 python3 <skill-dir>/scripts/chatnoir.py diff <target> --base <base> --head <head>
 ```
 
-`scan` supplies heuristic leads from eight rule families, including three narrow Python agent-boundary patterns, not confirmed vulnerabilities. It omits credential files, binaries, linked files, ignored untracked files and common generated directories; it reports skips and unsupported file types. Git-tracked ignored files remain in scope except explicit exclusions. Baseline coverage always remains incomplete. Inventory digests identify included bytes; rerun or re-read affected files when the target changes. Diff mode binds committed revisions only.
+`scan` supplies heuristic leads from nine rule families, including three narrow Python agent-boundary patterns and one lexical JS/TS tool-dispatch pattern, not confirmed vulnerabilities. It omits credential files, binaries, linked files, ignored untracked files and common generated directories; it reports skips and unsupported file types. Git-tracked ignored files remain in scope except explicit exclusions. Baseline coverage always remains incomplete. Inventory digests identify included bytes; rerun or re-read affected files when the target changes. Diff mode binds committed revisions only.
 
 If a host's read-only mode blocks the helper or runtime checks, continue with permitted source inspection, label those checks not run, and report the limit. Do not repeatedly retry the same denied command or infer safety from a blocked check.
 

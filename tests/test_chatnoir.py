@@ -149,6 +149,16 @@ class ChatNoirTests(unittest.TestCase):
         self.write("app.rs", "fn main() {}")
         self.assertEqual(len(cn.baseline(self.root)["coverage"]["deferred"]), 2)
 
+    def test_js_model_tool_dispatch_without_gate_is_a_lead(self):
+        self.write("agent.ts", "for (const tc of msg.tool_calls) {\n  const name = tc.function.name;\n  const out = await run.call(name, args);\n}\n")
+        hits = [x for x in cn.baseline(self.root)["findings"] if x["rule_id"] == "CN009"]
+        self.assertEqual([(x["path"], x["line"], x["status"]) for x in hits], [("agent.ts", 3, "candidate")])
+
+    def test_js_model_tool_dispatch_with_gate_is_not_flagged(self):
+        self.write("agent.ts", "for (const tc of msg.tool_calls) {\n  if (needsApproval(tc) && !(await confirmAction(tc))) continue;\n  const out = await client.callTool({ name: tc.name });\n}\n")
+        self.write("plain.ts", "const res = await client.callTool({ name: 'list' });\n")
+        self.assertEqual([x for x in cn.baseline(self.root)["findings"] if x["rule_id"] == "CN009"], [])
+
     def test_javascript_lexical_scope_is_explicit(self):
         self.write("app.ts", "// eval(value)\n")
         report = cn.baseline(self.root)

@@ -37,6 +37,7 @@ RULES = {
     "CN006": ("Dynamic content in a privileged prompt role", "CWE-1427", "Keep retrieved/user/tool content out of system/developer roles; enforce tool authorization independently of model output."),
     "CN007": ("Decoded data passed directly to an action dispatcher", "CWE-862", "Validate proposal shape and authorize the action against caller-owned capabilities before dispatch; decoded data cannot grant permission."),
     "CN008": ("Message-provided permissions merged into authority", "CWE-807", "Derive permissions from the trusted root task; never widen authority from a peer message's claimed capabilities."),
+    "CN009": ("Model-proposed tool call dispatched without a visible approval gate", "CWE-862", "Treat tool calls proposed after untrusted tool output as untrusted; require caller-owned authorization or human approval before state-changing tools run."),
 }
 
 
@@ -371,6 +372,24 @@ def python_candidates(path: str, text: str) -> list[dict]:
     return sorted(result, key=lambda item: (item["line"], item["rule_id"]))
 
 
+JS_TOOL_CALLS = re.compile(r"\b(?:tool_calls|toolCalls|tool_use)\b")
+JS_DISPATCH = re.compile(r"\b(?:callTool|executeTool|runTool)\s*\(|\.call\s*\(\s*(?:name|tool|tc|call|fn)\b")
+JS_GATE = re.compile(r"approv|confirm|allowlist|allowed|permit|authori[sz]|policy|guard", re.IGNORECASE)
+
+
+def js_dispatch_candidates(path: str, text: str, window: int = 15) -> list[dict]:
+    """Lexical lead: a model's tool calls reach a tool dispatcher with no gate word nearby."""
+    lines = text.splitlines()
+    result = []
+    for index, source in enumerate(lines):
+        if not JS_DISPATCH.search(source):
+            continue
+        context = lines[max(0, index - window):index + 1]
+        if any(JS_TOOL_CALLS.search(x) for x in context) and not any(JS_GATE.search(x) for x in context):
+            result.append(candidate("CN009", path, index + 1, "Lexical lead: model-proposed tool calls reach a dispatcher with no approval or authorization check in the preceding lines. Not data-flow analysis; a gate may exist elsewhere."))
+    return result
+
+
 def baseline(root: Path) -> dict:
     target, blobs = collect(root)
     findings, reviewed, deferred = [], [], []
@@ -391,11 +410,12 @@ def baseline(root: Path) -> dict:
             for line, source in enumerate(text.splitlines(), 1):
                 if re.search(r"\b(?:eval|new\s+Function)\s*\(", source):
                     findings.append(candidate("CN001", path, line, "Lexical dynamic-evaluation pattern; may be a comment, string or unreachable code."))
+            findings.extend(js_dispatch_candidates(path, text))
             deferred.append({"path": path, "reason": "JS/TS lexical check only; semantic review required"})
         reviewed.append(path)
     return {"format": FORMAT, "version": VERSION, "mode": "baseline", "target": target,
             "coverage": {"complete": False, "reviewed": reviewed, "deferred": deferred,
-                         "limitations": ["Eight heuristic rule families; not a complete security audit.",
+                         "limitations": ["Nine heuristic rule families; not a complete security audit.",
                                          "No taint, dependency, credential-content or runtime analysis.",
                                          "Absence of candidates does not establish safety.",
                                          "Snapshot identifies included readable files, not excluded content or an atomic filesystem snapshot."]},
