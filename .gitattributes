@@ -1,0 +1,3 @@
+# Keep LF on every platform so published SHA-256 receipts match a fresh clone,
+# including Git for Windows with core.autocrlf=true. Binary files are detected automatically.
+* text=auto eol=lf
