@@ -383,6 +383,14 @@ class ChatNoirTests(unittest.TestCase):
         self.assertNotIn("Traceback", result.stderr)
         self.assertEqual(marker.read_text(), "user edits")
 
+    def test_installer_does_not_misreport_a_stray_file_as_installed(self):
+        self.write(".agents", "not a directory")
+        result = self.run_installer(self.root)
+        self.assertEqual(result.returncode, 2)
+        self.assertNotIn("already installed", result.stderr)
+        self.assertIn("FileExistsError", result.stderr)
+        self.assertEqual((self.root / ".agents").read_text(), "not a directory")
+
     def test_installer_refuses_linked_destination(self):
         (self.root / ".agents").symlink_to(self.root.parent, target_is_directory=True)
         with self.assertRaises(ValueError):
